@@ -1,0 +1,3 @@
+[submodule "vipFramework"]
+	path = vipFramework
+	url = https://github.com/suryavip/vipFramework
