@@ -1,6 +1,7 @@
 if (typeof dat === 'undefined') var dat = {};
 
 dat.rdb = {
+	cacheUserId: '0',
 	channels: [],
 	add: function (channel) {
 		var ref = firebase.database().ref(`poke/${this.cacheUserId}/${channel}`);
@@ -14,7 +15,7 @@ dat.rdb = {
 	removeAll: function () {
 		for (i in this.channels) this.remove(this.channels[i]);
 	},
-	onChange: function (snapshot) {
+	onChange: async function (snapshot) {
 		var p = snapshot.ref;
 		var channel = '';
 		while (p.key !== this.cacheUserId) {
@@ -24,19 +25,11 @@ dat.rdb = {
 
 		var newVal = snapshot.val();
 		if (newVal == null) return;
-		/*if (dat.rdb.ignore[dat.rdb.cacheUserId] === true) {
-			delete dat.rdb.ignore[dat.rdb.cacheUserId];
-			return;
-		}
-		var oldVal = localJSON.get('dat', 'personalRDBLastChange');
-		if (newVal !== oldVal) {
-			if (dat.sync.status.value <= 0) {
-				console.log('personal rdb change!');
-				dat.sync.start();
-			}
-			else console.log('personal rdb change ignored');
-			localJSON.put('dat', 'personalRDBLastChange', newVal);
-		}*/
+
+		var curVal = await dat.db.saved.where({ channel: channel }).first();
+		if (curVal != null) curVal = curVal['lastTimestamp'];
+
+		if (newVal !== curVal) dat.fetch.do(channel, newVal);
 	},
 };
 

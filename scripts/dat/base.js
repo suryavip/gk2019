@@ -4,8 +4,8 @@ dat.init = function () {
 	this.db = new Dexie(`${projectId}_data`);
 
 	this.db.version(1).stores({
-		saved: 'path',
+		saved: 'channel,lastTimestamp',
 	});
 
-	//dat.rdb.init();
+	this.fetch.init();
 };
