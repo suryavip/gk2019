@@ -1,0 +1,40 @@
+{
+	"short_name": "Ruang Kelas",
+	"name": "Ruang Kelas",
+	"icons": [
+		{
+			"src": "icon/ldpi.png",
+			"type": "image/png",
+			"sizes": "36x36"
+		},
+		{
+			"src": "icon/mdpi.png",
+			"type": "image/png",
+			"sizes": "48x48"
+		},
+		{
+			"src": "icon/hdpi.png",
+			"type": "image/png",
+			"sizes": "72x72"
+		},
+		{
+			"src": "icon/xhdpi.png",
+			"type": "image/png",
+			"sizes": "96x96"
+		},
+		{
+			"src": "icon/xxhdpi.png",
+			"type": "image/png",
+			"sizes": "144x144"
+		},
+		{
+			"src": "icon/xxxhdpi.png",
+			"type": "image/png",
+			"sizes": "192x192"
+		}
+	],
+	"start_url": "index.html",
+	"display": "standalone",
+	"theme_color": "#1D89E8",
+	"background_color": "#1D89E8"
+}

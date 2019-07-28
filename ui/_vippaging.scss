@@ -1,0 +1,178 @@
+body {
+	background-color: #000;
+	color: #fff;
+}
+
+#vipLoading {
+	background-color: $closeTriggerColor;
+	color: #fff;
+}
+
+.vipPaging-vLayout {
+	& > .body:not([class*="backColor-"]) {
+		background-color: $b-0;
+		color: $f-0;
+	}
+	& > .head, & > .foot {
+		background-color: $b-1;
+		color: $f-1;
+		box-shadow: $strongShadow;
+	}
+}
+.vipPaging-floatingButton > div {
+	background-color: $b-10;
+	color: $f-10;
+	box-shadow: $strongShadow;
+	@extend %lightFeedback;
+}
+.vipPaging-closeTrigger {
+	background-color: $closeTriggerColor;
+}
+
+#vipPaging-floatBar > div {
+	box-shadow: $strongShadow;
+	& > div {
+		background-color: $b-1;
+		color: $f-1;
+		&.error {
+			background-color: $b-12;
+			color: $f-12;
+		}
+		&.success {
+			background-color: $b-11;
+			color: $f-11;
+		}
+	}
+}
+
+.vipPaging-menu {
+	background-color: $b-0;
+	color: $f-0;
+	box-shadow: $strongShadow;
+}
+
+.vipPaging-popUp > div {
+	border-radius: 10px;
+	box-shadow: $strongShadow;
+	background-color: $b-1;
+	color: $f-1;
+	padding: 10px;
+}
+
+.alert > div,
+.confirm > div,
+.prompt > div,
+.profile > div,
+.timePicker > div {
+	padding: 20px;
+	text-align: center;
+}
+
+.datePicker > div {
+	text-align: center;
+}
+.calendarHead {
+	display: flex;
+	align-items: stretch;
+	width: 100%;
+	& > div {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 45px;
+		&:not(.title) {
+			border-radius: 45px;
+			width: 45px;
+			@extend %feedback;
+		}
+		&.title {
+			padding-left: 10px;
+			padding-right: 10px;
+			flex-grow: 99;
+			@extend .childSingleLine;
+			width: calc(100% - 45px - 45px);
+		}
+	}
+}
+.calendarRow {
+	@extend .table;
+	width: 100%;
+	@extend %h6;
+	opacity: 1;
+	&.dayName {
+		font-weight: bold;
+	}
+	& > div {
+		width: 14%;
+		height: 35px;
+		&:first-child, &:last-child {width: 15%;}
+		& > div {
+			width: 30px;
+			height: 30px;
+			border-radius: 30px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			@extend %feedback; //for light theme
+			&.today {
+				border: solid 2px $b-10;
+				color: $b-10;
+			}
+			&.selected {
+				background-color: $b-10;
+				color: $f-10;
+			}
+		}
+	}
+}
+
+$timePickerBlockSize: 40px;
+.timePickerScroll {
+	width: 100%;
+	max-width: 180px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	& > div:first-child { padding-right: 10px; }
+	& > div:last-child { padding-left: 10px; }
+	& > div:first-child, & > div:last-child {
+		width: 50%;
+		height: $timePickerBlockSize * 3;
+		max-height: $timePickerBlockSize * 3;
+		overflow: hidden;
+
+		//shade
+		position: relative;
+		&::before, &::after {
+			content: ' ';
+			position: absolute;
+			left: 0;
+			right: 0;
+			height: $timePickerBlockSize;
+			pointer-events: none;
+		}
+		&::before {
+			top: 0;
+			background-image: linear-gradient($b-1 40%, transparent 100%);
+			z-index: 1; //so it wont overlapped
+		}
+		&::after {
+			bottom: 0;
+			background-image: linear-gradient(transparent 0%, $b-1 60%);
+		}
+
+		& > div {
+			position: relative;
+			top: -40px;
+			& > div {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				height: $timePickerBlockSize;
+				@extend %h1;
+				pointer-events: none;
+			}
+		}
+	}
+}

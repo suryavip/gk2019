@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Ruang Kelas</title>
+	<link rel="manifest" href="manifest.json">
+	<link rel="icon" href="icon/mdpi.png" sizes="48x48">
+	<meta name="theme-color" content="#1D89E8">
+	<script src="lib/bowser-1.9.4/bowser.min.js"></script>
+	<script src="scripts/localJSON.js"></script>
+	<script src="vipFramework/import.js"></script>
+	<script src="vipFramework/loading.js"></script>
+	<link rel="stylesheet" href="vipFramework/loading.css">
+	<link rel="stylesheet" href="font/roboto.css">
+	<style>
+		#vipLoading[data-active=initial] {
+			background-color: #1D89E8;
+			color: #fff;
+			background-image: url(icon/xxxhdpi.png);
+			background-size: 96px;
+			background-position: center;
+			background-repeat: no-repeat;
+		}
+	</style>
+	<script>
+		var appVersion = `0.0.1`;
+		var projectId = 'rk2019';
+		var isCordova = navigator.userAgent.match(/(Cordova)/) != null;
+		var isLocal = location.protocol !== 'https:';
+
+		function loadStage1() {
+			var isSupported = isCordova ||
+				bowser.check({ chrome: '70' }, true) ||
+				bowser.check({ firefox: '63' }, true) ||
+				bowser.check({ safari: '11' }, true);
+
+			if (!isSupported) {
+				alert('Your browser is not supported yet. We recommend to use latest Google Chrome, Firefox, or Safari');
+				return;
+			}
+
+			importResources([
+				`vipFramework/history.js?${appVersion}`,
+				`vipFramework/gesture.js?${appVersion}`,
+				`vipFramework/transitor.js?${appVersion}`,
+				`vipFramework/language.js?${appVersion}`,
+				`vipFramework/paging.css?${appVersion}`,
+				`vipFramework/paging.js?${appVersion}`,
+
+				isCordova ? 'scripts/cordova-only.js' : null,
+
+				`ui/default.css?${appVersion}`,
+				`ui/popUp.js?${appVersion}`,
+				`ui/float.js?${appVersion}`,
+				`ui/btnLoading.js?${appVersion}`,
+
+				`lib/moment-2.24.0/moment-with-locales.js`,
+				`lib/tippy-1.3.0/tippy.min.css`,
+				`lib/tippy-1.3.0/tippy.min.js`,
+				`lib/dexie-2.0.4/dexie.js`,
+
+				//`scripts/dat.js?${appVersion}`,
+				`scripts/dat/base.js?${appVersion}`,
+				`scripts/dat/sync.js?${appVersion}`,
+				`scripts/dat/rdb.js?${appVersion}`,
+				`scripts/dat/maintenance.js?${appVersion}`,
+
+				`scripts/firebaseAuth.js?${appVersion}`,
+				`scripts/firebaseCommonError.js?${appVersion}`,
+				`scripts/app.js?${appVersion}`,
+				`scripts/tippyHandler.js?${appVersion}`,
+				`scripts/photoLoader.js?${appVersion}`,
+				`scripts/jsonFetch.js?${appVersion}`,
+				isCordova ? `scripts/firebaseStorageShadow-cordova.js` : `scripts/firebaseStorageShadow.js?${appVersion}`,
+			], async () => {
+				var fontawesomeVersion = '5.8.2';
+				importResources([
+					`lib/font-awesome-${fontawesomeVersion}/css/solid.min.css`,
+					`lib/font-awesome-${fontawesomeVersion}/css/regular.min.css`,
+					`lib/font-awesome-${fontawesomeVersion}/css/fontawesome.min.css`,
+				]);
+
+				var firebaseVersion = '6.0.4';
+				var importFirebase = isLocal ? part => `lib/firebase-${firebaseVersion}/firebase-${part}.min.js` : part => `https://www.gstatic.com/firebasejs/${firebaseVersion}/firebase-${part}.js`;
+				importResources([importFirebase('app')], () => {
+					importResources([
+						importFirebase('auth'),
+						importFirebase('database'),
+						importFirebase('storage'),
+					], () => {
+						var fbConfig = {
+							apiKey: "AIzaSyDKoUXXyKeagJmlBhX-n66OS_BR36-aatc",
+							authDomain: "rk2019-rk2019.firebaseapp.com",
+							databaseURL: "https://rk2019-rk2019.firebaseio.com",
+							projectId: "rk2019-rk2019",
+							storageBucket: "rk2019-rk2019.appspot.com",
+							messagingSenderId: "1019825268094",
+							appId: "1:1019825268094:web:dc7a9a071b981368"
+						};
+						firebase.initializeApp(fbConfig);
+						window.dispatchEvent(new Event('firebase-ready'));
+					});
+				});
+
+				dat.init();
+				vipGesture.init();
+				vipTransitor.init();
+				vipLanguage.init('id');
+				vipPaging.init();
+				vipHistory.init();
+				moment.locale(vipLanguage.key);
+			});
+		}
+		window.addEventListener('load', () => {
+			if (isCordova) {
+				document.addEventListener('deviceready', loadStage1, false);
+				importResources('file:///android_asset/www/cordova.js');
+			}
+			else loadStage1();
+		});
+	</script>
+</head>
+
+<body>
+
+	<div id="vipLoading" data-active="initial"></div>
+
+</body>
+
+</html>

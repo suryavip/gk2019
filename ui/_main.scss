@@ -1,0 +1,754 @@
+$line-height: 1.8;
+$font-size: 12px;
+//$font-family: 'Roboto', Arial;
+$font-family: 'Roboto', sans-serif;
+
+%h1 {
+	font-size: 20px;
+	font-weight: bold;
+}
+%h2 {
+	font-size: 16px;
+	font-weight: bold;
+}
+%h3 {
+	font-size: 14px;
+	font-weight: bold;
+}
+%h4 {
+	font-size: $font-size;
+	font-weight: bold;
+}
+%h5 {
+	font-size: $font-size;
+	font-weight: normal;
+	opacity: .6;
+}
+%h6 {
+	font-size: $font-size - 1px;
+	font-weight: normal;
+	opacity: .6;
+}
+
+%lightFeedback, %darkFeedback, %feedback, .highlightable {
+	position: relative;
+	z-index: 1;
+	&:after {
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		margin: auto;
+		width: 100%;
+		height: 100%;
+		content: '.';
+		color: transparent;
+		opacity: 0;
+		z-index: 99;
+		transition: opacity 300ms;
+		border-radius: inherit;
+		pointer-events: none;
+	}
+}
+%lightFeedback, %darkFeedback, %feedback {
+	cursor: pointer;
+	&:active:after {
+		transition: none;
+		opacity: 1;
+	}
+}
+.highlightable.highlight:after {
+	transition: none;
+	opacity: 1;
+}
+%lightFeedback:after { background-color: $lightFeedback; }
+%darkFeedback:after { background-color: $darkFeedback; }
+%feedback:after { background-color: $feedback; }
+.highlightable:after { background-color: $feedback; }
+
+.feedback { @extend %feedback; }
+.lightFeedback { @extend %lightFeedback; }
+.darkFeedback { @extend %darkFeedback; }
+.strongShadow { box-shadow: $strongShadow; }
+
+@import 'vippaging';
+@import 'tippy';
+@import 'typography';
+
+* {
+	color: inherit;
+	border-color: inherit;
+}
+
+.activable:not([data-active=true]) {
+	display: none;
+}
+
+.singleLine {
+	max-width: 100%;
+	white-space: nowrap;
+	overflow-y: hidden;
+	overflow-x: hidden;
+	text-overflow: ellipsis;
+	& > br {
+		display: none;
+	}
+}
+.childSingleLine > * {
+	@extend .singleLine;
+}
+
+.vSpace-30 { padding-top: 30px; }
+.vSpace-20 { padding-top: 20px; }
+.vSpace-10 { padding-top: 10px; }
+
+.table {
+	display: table;
+	width: 100%;
+	& > div {
+		display: table-cell;
+		vertical-align: middle;
+	}
+	&.center > div {
+		text-align: center;
+	}
+	&.dual-10 > div {
+		width: 50%;
+		&:first-child { padding-right: 5px; }
+		&:last-child { padding-left: 5px; }
+	}
+	&.dual-20 > div {
+		width: 50%;
+		&:first-child { padding-right: 10px; }
+		&:last-child { padding-left: 10px; }
+	}
+	&.startToEnd > div {
+		&:first-child { width: 50%; padding-right: 20px; }
+		&:last-child { width: 50%; padding-left: 20px; }
+	}
+}
+
+///////////////////////////////////////////////////
+
+@mixin maxWidthWrap($size) {
+	.maxWidthWrap-#{$size} {
+		margin: 0 auto;
+		max-width: #{$size}px;
+		width: 100%;
+	}
+}
+@include maxWidthWrap(640);
+@include maxWidthWrap(480);
+@include maxWidthWrap(360);
+
+///////////////////////////////////////////////////
+
+a.underline, a.showMore, a.showLess {
+	text-decoration: underline;
+	cursor: pointer;
+	color: $b-10;
+}
+
+///////////////////////////////////////////////////
+
+button:not(.pswp__button) {
+	&:disabled { opacity: .5; }
+	padding: 0;
+	line-height: $line-height;
+	border: none;
+	border-radius: 45px;
+	min-height: 45px;
+	outline: none;
+	width: 100%;
+	max-width: 360px;
+	margin: 0 auto;
+	display: block;
+	font-family: $font-family;
+	@extend %h3;
+
+	background-color: $b-2;
+	color: $f-2;
+	&:not([data-loading=true]) { @extend %feedback; }
+	& > .loading > div { background-color: $b-10; }
+
+	&.primary {
+		background-color: $b-10;
+		color: $f-10;
+		&:not([data-loading=true]) { @extend %lightFeedback; }
+		& > .loading > div { background-color: $f-10; }
+	}
+	&.negative {
+		background-color: $b-12;
+		color: $f-12;
+		&:not([data-loading=true]) { @extend %lightFeedback; }
+		& > .loading > div { background-color: $f-12; }
+	}
+
+	//LOADING PART
+	position: relative;
+	z-index: 1;
+	overflow: hidden;
+	& > .loading {
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 300ms;
+		z-index: 99;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		background-color: inherit;
+		& > div {
+			width: 10px;
+			height: 10px;
+			border-radius: 10px;
+			& + div {margin-left: 10px;}
+			transform: scale(0.1);
+			animation: btnLoading 600ms infinite;
+			&:nth-child(2) {animation-delay: 200ms;}
+			&:nth-child(3) {animation-delay: 400ms;}
+		}
+	}
+	&[data-loading=true] {
+		pointer-events: none;
+		& > .loading { opacity: 1; }
+	}
+}
+@keyframes btnLoading {
+	0% { transform: scale(0.1); }
+	50% { transform: scale(1); }
+	100% { transform: scale(0.1); }
+}
+
+////////////////////////////////////////////////////////
+
+@mixin circleCenter($size) {
+	.circleCenter-#{$size} {
+		width: #{$size}px;
+		height: #{$size}px;
+		border-radius: #{$size}px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		& > i {
+			font-size: #{$size / 2}px;
+		}
+		background-position: center;
+		background-size: cover;
+		&[data-hideIcon] > i {
+			opacity: 0;
+		}
+	}
+}
+@include circleCenter(35);
+@include circleCenter(50);
+@include circleCenter(120);
+
+.profilePhoto {
+	//use in tandem with circleCenter-50
+	@extend .circleCenter-50;
+	background-color: $b-10;
+	color: $f-10;
+	@extend %lightFeedback;
+}
+
+.profilePhoto.circleCenter-120 + .clearPhotoButton {
+	position: relative;
+	top: 60px - 35px;
+	margin-left: -35px;
+	background-color: $b-12;
+	color: $f-12;
+	@extend .circleCenter-35;
+	@extend %lightFeedback;
+	box-shadow: $strongShadow;
+}
+.profilePhoto:not([data-hideIcon=true]) + .clearPhotoButton {
+	display: none;
+}
+
+.circleButton {
+	@extend .circleCenter-35;
+	@extend %feedback;
+}
+
+/////////////////////////////////////////////////////////
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus
+input:-webkit-autofill {
+	background: transparent;
+	transition: background-color 5000s linear 5000s; //HACK
+	-webkit-text-fill-color: $f-0 !important;
+}
+input[type=text], input[type=number], input[type=tel], input[type=email], input[type=password], textarea {
+	width: 100%;
+	padding: 0 15px;
+	min-height: 45px;
+	outline: none;
+	background-color: $b-2;
+	color: $f-2;
+	border: none;
+	border-radius: 10px;
+	//border-bottom: 1px solid $b-10;
+	&::-webkit-input-placeholder {
+		color: $fh-0;
+	}
+	& + .inputLabel {
+		margin-top: 25px;
+	}
+}
+::-webkit-input-placeholder {
+	font-style: italic;
+}
+
+textarea {
+	padding: 15px;
+	overflow: scroll;
+	resize: none;
+	font-family: $font-family;
+}
+
+.inputLabel {
+	text-align: left;
+	@extend %h3;
+	margin-bottom: 15px;
+}
+.inputHint {
+	margin-top: -10px;
+	margin-bottom: 15px;
+}
+
+.inputWithButton {
+	//wrapper for input[type=password] and button to hide/show password
+	// almost the same like .actionBar
+	display: flex;
+	align-items: center;
+	width: 100%;
+	& > div {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		&:first-child {
+			// for input[type=password]
+			flex-grow: 99;
+			& > input {
+				padding-right: 45px;
+			}
+		}
+		&:last-child {
+			// show/hide btn
+			margin-left: -45px;
+			width: 45px;
+			min-width: 45px;
+			height: 45px;
+			border-radius: 45px;
+			& > i {
+				font-size: 15px;
+			}
+			@extend %feedback;
+		}
+	}
+	& + .inputLabel {
+		margin-top: 25px;
+	}
+}
+
+///////////////////////////////////////////////////////////
+
+$actionBarInnerSize: 45px;
+.actionBar {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	padding: 5px;
+	& > div {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: $actionBarInnerSize;
+	}
+	& > .title {
+		@extend .singleLine;
+		flex-grow: 99;
+		overflow: hidden;
+		padding: 0 10px;
+		&:not(.center) { justify-content: flex-start; }
+		@extend %h2;
+	}
+	& > .button {
+		width: $actionBarInnerSize;
+		min-width: $actionBarInnerSize;
+		border-radius: $actionBarInnerSize;
+		& > i {
+			font-size: 15px;
+		}
+		@extend %feedback;
+	}
+}
+
+////////////////////////////////////////////////////////////
+
+.tabBar {
+	@extend .table;
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 5px;
+	& > div {
+		text-align: center;
+		min-height: 45px;
+		height: 45px;
+		white-space: nowrap;
+		border-radius: 45px;
+		@extend %h3;
+		@extend %feedback;
+		&[data-active=true] {
+			background-color: $b-0;
+			color: $b-10;
+			@extend %lightFeedback;
+		}
+	}
+	&.dual > div {
+		width: 50%;
+	}
+}
+
+.scrollableTab {
+	overflow-x: scroll;
+	white-space: nowrap;
+	width: 100%;
+	padding: 5px;
+	& > div {
+		vertical-align: top;
+		& + div {
+			margin-left: 5px;
+			/*PLEASE DONT PUT SPACE/TAB/NEW-LINE BETWEEN THIS DIVs AS IT WILL GIVE A SPACE BETWEEN IT TWO*/
+		}
+	}
+	& > div {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		height: $actionBarInnerSize;
+		min-width: $actionBarInnerSize;
+		border-radius: $actionBarInnerSize;
+		@extend %feedback;
+		& > i {
+			width: 45px;
+			text-align: center;
+			font-size: 15px;
+		}
+		& > h3 {
+			display: none;
+			margin-right: 20px;
+		}
+	}
+	& > div[data-active=true] {
+		background-color: $b-0;
+		color: $b-10;
+		& > h3 {
+			display: block;
+		}
+	}
+}
+
+@media only screen and (min-width: 1060px) {
+	//tab text will always visible on wide screen
+	.scrollableTab > div > h3 {
+		display: block;
+	}
+}
+
+////////////////////////////////////////////////////////////
+
+.card {
+	background-color: $b-1;
+	color: $f-1;
+	//box-shadow: $strongShadow;
+	border-radius: 10px;
+	overflow: hidden;
+}
+
+.container {
+	border-bottom: solid 1px $borderColor;
+}
+.container-20 {
+	padding: 20px;
+	border-bottom: solid 1px $borderColor;
+}
+
+///////////////////////////////////////////////////////////
+
+$listPadding: 20px;
+.list {
+	display: flex;
+	align-items: stretch;
+	width: 100%;
+	& > div {
+		display: flex !important;
+		align-items: flex-start;
+		flex-direction: column;
+		justify-content: center;
+		padding: $listPadding ($listPadding / 2);
+		&:first-child { padding-left: $listPadding; }
+		&:last-child { padding-right: $listPadding; }
+	}
+}
+
+/*.list.noOutside > div {
+	padding-top: 0;
+	padding-bottom: 0;
+	&:first-child { padding-left: 0; }
+	&:last-child { padding-right: 0; }
+}*/
+
+.list > .icon > i {
+	font-size: 15px;
+	width: 25px;
+	text-align: center;
+}
+
+.list > .iconCircle {
+	align-items: center;
+	box-sizing: content-box;
+	min-width: 35px;
+	width: 35px;
+	& > div {
+		box-sizing: border-box;
+		background-color: $b-2;
+		color: $f-2;
+		@extend .circleCenter-35;
+		display: flex !important;
+	}
+}
+
+.list > .photo {
+	align-items: center;
+	box-sizing: content-box;
+	min-width: 50px;
+	width: 50px;
+	& > div {
+		box-sizing: border-box;
+		@extend .profilePhoto;
+		display: flex !important;
+	}
+}
+
+.list > .content {
+	flex-grow: 99;
+	overflow: hidden;
+}
+
+///////////////////////////////////////////////////////
+
+.bottomAction {
+	display: flex;
+	align-items: stretch;
+	width: 100%;
+	& > .space {
+		flex-grow: 99;
+	}
+	& > div:not(.space) {
+		display: flex !important;
+		align-items: center;
+		//flex-direction: column;
+		justify-content: center;
+		&:not(:last-child) {
+			margin-right: 5px;
+		}
+		min-width: 35px;
+		height: 35px;
+		border-radius: 35px;
+		background-color: $b-1;
+		color: $b-10;
+		@extend %feedback;
+		& > i {
+			font-size: 15px;
+			width: 35px;
+			text-align: center;
+		}
+		& > p, & > h4 {
+			margin-right: 15px;
+		}
+	}
+}
+
+///////////////////////////////////////////////////////
+
+#dat-syncIndicator {
+	@extend .activable;
+	pointer-events: none;
+	z-index: 99;
+	position: relative;
+	height: 4px;
+	display: block;
+	width: 100%;
+	background-clip: padding-box;
+	overflow: hidden;
+	& > div {
+		background-color: $b-10;
+		&:before, &:after {
+			content: '';
+			position: absolute;
+			background-color: inherit;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			will-change: left, right;
+			animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+		}
+		&:before {
+			animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+		}
+		&:after {
+			animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+			animation-delay: 1.15s;
+		}
+	}
+}
+@keyframes indeterminate {
+	0% {
+		left: -35%;
+		right: 100%;
+	}
+	60% {
+		left: 100%;
+		right: -90%;
+	}
+	100% {
+		left: 100%;
+		right: -90%;
+	}
+}
+@keyframes indeterminate-short {
+	0% {
+		left: -200%;
+		right: 100%;
+	}
+	60% {
+		left: 107%;
+		right: -8%;
+	}
+	100% {
+		left: 107%;
+		right: -8%;
+	}
+}
+
+///////////////////////////////////////////////////////////////////
+
+@keyframes photoLoading {
+	0% { transform: rotate(0deg); }
+	50% { transform: rotate(180deg); }
+	100% { transform: rotate(360deg); }
+}
+
+.photoLoading {
+	animation: photoLoading 1500ms infinite;
+}
+
+////////////////////////////////////////////////////////////
+
+.horizontalOverflow {
+	&::-webkit-scrollbar {
+		height: 10px;
+	}
+	&::-webkit-scrollbar-thumb {
+		background-color: $b-2;
+		border-radius: 10px;
+	}
+	padding-bottom: 5px;
+	overflow-x: auto;
+	white-space: nowrap;
+	width: 100%;
+	& > div {
+		vertical-align: top;
+		& + div {
+			margin-left: 10px;
+			/*PLEASE DONT PUT SPACE/TAB/NEW-LINE BETWEEN THIS DIVs AS IT WILL GIVE A SPACE BETWEEN IT TWO*/
+		}
+	}
+	& > .card {
+		display: inline-block;
+		width: 50%;
+		min-width: 180px;
+	}
+	& > .attachment, .smallAttachment {
+		display: inline-flex;
+		align-items: center;
+		flex-direction: column;
+		justify-content: center;
+		background-color: $b-1;
+		color: $f-1;
+		@extend %lightFeedback;
+		width: 160px;
+		height: 120px;
+		background-position: center;
+		background-size: cover;
+		background-repeat: no-repeat;
+		border-radius: 5px;
+		& > i {
+			font-size: 20px;
+		}
+		& > p {
+			//this is for file name. after icon
+			margin-top: 5px;
+			@extend .singleLine;
+		}
+		padding: 10px;
+	}
+	& > .smallAttachment {
+		width: 120px;
+		height: 90px;
+	}
+	& > .arrow {
+		display: inline-block;
+		padding-top: 15px;
+		padding-bottom: 15px;
+		& > i {
+			font-size: 20px;
+		}
+	}
+}
+
+/////////////////////////////////////////////////////////////
+
+.theme-1 {
+	background-color: $b-1;
+	color: $f-1;
+}
+
+.theme-2 {
+	background-color: $b-2;
+	color: $f-2;
+}
+
+.theme-primary {
+	background-color: $b-10 !important;
+	color: $f-10 !important;
+}
+
+.theme-positive {
+	background-color: $b-11 !important;
+	color: $f-11 !important;
+}
+
+.theme-negative {
+	background-color: $b-12 !important;
+	color: $f-12 !important;
+}
+
+.aPadding-30 { padding: 30px; }
+.vPadding-30 { padding: 30px 0; }
+.aPadding-20 { padding: 20px; }
+.aPadding-20-tandem {
+	padding: 20px;
+	padding-top: 0;
+}
+.aPadding-10 { padding: 10px; }

@@ -1,0 +1,33 @@
+//set the color map here
+
+$themeName: 'default';
+
+$b-0: #15202B;
+$f-0: #fff;
+$fh-0: rgba(255, 255, 255, .6);
+
+$b-1: #1C2938;
+$f-1: #fff;
+
+$b-2: #253341;
+$f-2: #fff;
+
+$b-10: #1D89E8;
+$f-10: #fff;
+
+$b-11: #17BF63;
+$f-11: #fff;
+
+$b-12: #DE2A42;
+$f-12: #fff;
+
+$borderColor: #223547;
+
+$lightFeedback: rgba(255, 255, 255, .1);
+$darkFeedback: rgba(0, 0, 0, .1);
+$feedback: $lightFeedback;
+
+$closeTriggerColor: rgba(16, 20, 30, .8);
+$strongShadow: 0 0 10px 0 rgba(0, 0, 0, .4);
+
+@import 'main';

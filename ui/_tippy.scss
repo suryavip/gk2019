@@ -1,0 +1,10 @@
+.tippy-tooltip.base-theme {
+	background-color: $b-10;
+	color: $f-10;
+}
+.tippy-popper[x-placement^=top] [x-arrow] {
+	border-top-color: $b-10 !important;
+}
+.tippy-popper[x-placement^=bottom] [x-arrow] {
+	border-bottom-color: $b-10 !important;
+}
