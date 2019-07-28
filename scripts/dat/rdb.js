@@ -15,8 +15,6 @@ dat.rdb = {
 		for (i in this.channels) this.remove(this.channels[i]);
 	},
 	onChange: function (snapshot) {
-		var channel = `${snapshot.ref.parent.key}/${snapshot.key}`;
-
 		var p = snapshot.ref;
 		var channel = '';
 		while (p.key !== this.cacheUserId) {
