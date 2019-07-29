@@ -46,6 +46,8 @@ dat.fetch = {
 		},
 	},
 
+	retryCoolDown: 10 * 1000, //when sync retry after failed
+
 	do: async function (channel, lastTimestamp) {
 		//fetch data
 		this.status.add(channel);
@@ -62,6 +64,17 @@ dat.fetch = {
 
 			//for group channel, update (add or remove as necessary) rdb listeners
 			if (channel === 'group') dat.rdb.updateGroups(f.body);
+		}
+		else {
+			this.status.remove(channel);
+			if (this.param.noRetry) {
+				console.error(`sync error on stepB, but noRetry`);
+				return;
+			}
+			console.error(`fetch error, retrying after cooldown (${this.retryCoolDown} ms)`);
+			setTimeout(() => {
+				this.do(channel, lastTimestamp);
+			}, this.retryCoolDown);
 		}
 	},
 };

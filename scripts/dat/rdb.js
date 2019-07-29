@@ -78,6 +78,7 @@ dat.rdb = {
 window.addEventListener('firebase-status-signedin', () => {
 	dat.rdb.cacheUserId = firebaseAuth.userId;
 	dat.rdb.add('group');
+	dat.rdb.add('notification');
 });
 
 window.addEventListener('firebase-signout', () => {
