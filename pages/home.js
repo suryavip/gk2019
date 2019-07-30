@@ -1,23 +1,19 @@
 vipPaging.pageTemplate['home'] = {
 	import: [
-		//
+		'scripts/GroundLevel.js'
 	],
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
-		enableAllTippy();
+		GroundLevel.init();
 	},
-	innerHTML: () => `
+	innerHTML: d => `
 <div class="vipPaging-vLayout">
 	<div class="head"><div>
-		<div class="actionBar aPadding-10">
-			<div class="button" onclick="go('settings')" title="Grup-grup"><i class="fas fa-users"></i></div>
-			<div class="title center">Beranda</div>
-			<div class="profilePhoto" id="embeddedHomePhoto" onclick="embeddedHome.profilePopUp()" title="Profil"><i class="fas fa-user"></i></div>
-		</div>
+		${GroundLevel.head(d.pageId)}
 	</div></div>
-	<div class="body"><div><div class="maxWidthWrap-640 aPadding-20">
+	<div class="body"><div><div class="maxWidthWrap-640">
 		
-		<div class="aPadding-10 activable" style="text-align:center" id="freshStart">
+		<div class="aPadding-30 activable" style="text-align:center" id="freshStart">
 			<h2>Selamat datang...</h2>
 			<div class="vSpace-30"></div>
 			<img src="illustrations/undraw_welcome_3gvl.svg" width="200px" />
@@ -27,7 +23,7 @@ vipPaging.pageTemplate['home'] = {
 			<h3>atau minta link bergabung dari grup yang sudah ada</h3>
 		</div>
 
-		<div class="aPadding-10 activable" style="text-align:center" id="empty">
+		<div class="aPadding-30 activable" style="text-align:center" id="empty">
 			<h2>Mulai isi data</h2>
 			<div class="vSpace-30"></div>
 			<img src="illustrations/undraw_product_teardown_elol.svg" width="200px" />
@@ -37,6 +33,44 @@ vipPaging.pageTemplate['home'] = {
 			<button onclick="">Tambah Tugas</button>
 			<div class="vSpace-20"></div>
 			<button onclick="">Tambah Ujian</button>
+		</div>
+
+		<div class="container-20 activable" id="quickSchedule">
+			<div class="table">
+				<div style="width:100%"><h3>Jadwal besok:</h3></div>
+				<div>
+					<div class="circleButton" onclick=""><i class="fas fa-ellipsis-h"></i></div>
+				</div>
+			</div>
+			<div class="vSpace-10"></div>
+			<div class="card aPadding-20 feedback" onclick="pg.highlight(2, 'a${pg.groupId}schedule${moment().add(1, 'days').format('d')}')">
+				<div class="table">
+					<div id="quickScheduleSubjects"></div>
+					<div style="width: 80px; text-align: right" id="quickScheduleHours"></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-20 activable" id="quickAssignment">
+			<div class="table">
+				<div style="width:100%"><h3>Tugas besok:</h3></div>
+				<div>
+					<div class="circleButton" onclick=""><i class="fas fa-ellipsis-h"></i></div>
+				</div>
+			</div>
+			<div class="vSpace-10"></div>
+			<div id="quickAssignmentContent"></div>
+		</div>
+
+		<div class="container-20 activable" id="quickExam">
+			<div class="table">
+				<div style="width:100%"><h3>Ujian besok:</h3></div>
+				<div>
+					<div class="circleButton" onclick=""><i class="fas fa-ellipsis-h"></i></div>
+				</div>
+			</div>
+			<div class="vSpace-10"></div>
+			<div id="quickExamContent"></div>
 		</div>
 
 	</div></div></div>
