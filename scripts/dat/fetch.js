@@ -5,7 +5,6 @@ dat.fetch = {
 		this.status.installIndicator();
 	},
 	status: {
-		value: 99,
 		ongoing: [],
 		add: function (v) {
 			this.ongoing.push(v);
@@ -30,9 +29,9 @@ dat.fetch = {
 			}
 		},
 		listen: function (callBack) {
-			callBack(this.value);
+			callBack(this.ongoing.length);
 			pg.thisPage.addEventListener('dat-status-change', () => {
-				callBack(this.value);
+				callBack(this.ongoing.length);
 			});
 		},
 		installIndicator: function () {
@@ -41,7 +40,7 @@ dat.fetch = {
 			var syncIndicator = document.createElement('div');
 			syncIndicator.id = 'dat-syncIndicator';
 			syncIndicator.innerHTML = '<div></div>';
-			syncIndicator.setAttribute('data-active', this.value > 0 && this.value !== 99);
+			syncIndicator.setAttribute('data-active', this.ongoing.length > 0);
 			document.body.appendChild(syncIndicator);
 		},
 	},
@@ -60,10 +59,14 @@ dat.fetch = {
 				lastTimestamp: lastTimestamp,
 				data: f.body,
 			});
-			this.status.remove(channel);
 
 			//for group channel, update (add or remove as necessary) rdb listeners
 			if (channel === 'group') dat.rdb.updateGroups(f.body);
+
+			this.status.remove(channel);
+
+			//trigger changes
+			dat.triggerChange(channel);
 		}
 		else {
 			this.status.remove(channel);
@@ -80,5 +83,5 @@ dat.fetch = {
 };
 
 window.addEventListener('firebase-status-signedin', () => {
-	dat.fetch.status.value = 0;
+	dat.fetch.status.ongoing = [];
 });
