@@ -31,7 +31,7 @@ vipPaging.pageTemplate['signin'] = {
 			<div onclick="app.passwordShowHideToggle(this)"><i class="fas fa-eye"></i></div>
 		</div>
 
-		<div class="vSpace-20"></div>
+		<div class="vSpace-30"></div>
 		<button id="btn" class="primary" onclick="pg.done()">${gl('done')}</button>
 		<div class="vSpace-20"></div>
 		<button id="forgotBtn" onclick="pg.forgot()">${gl('forgotPassword')}</button>

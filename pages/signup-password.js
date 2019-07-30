@@ -40,7 +40,7 @@ vipPaging.pageTemplate['signup-password'] = {
 			<div><input id="repassword" maxlength="32" type="password" placeholder="${gl('repasswordPlaceholder')}" /></div>
 			<div onclick="app.passwordShowHideToggle(this)"><i class="fas fa-eye"></i></div>
 		</div>
-		<div class="vSpace-20"></div>
+		<div class="vSpace-30"></div>
 		<button id="btn" class="primary" onclick="pg.done()">${gl('done')}</button>
 
 	</div></div></div>

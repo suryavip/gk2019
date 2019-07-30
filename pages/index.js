@@ -29,7 +29,7 @@ vipPaging.pageTemplate['index'] = {
 		<div class="vSpace-20"></div>
 		<div class="inputLabel">${gl('email')}</div>
 		<input id="email" maxlength="254" type="email" placeholder="${gl('emailPlaceholder')}" />
-		<div class="vSpace-20"></div>
+		<div class="vSpace-30"></div>
 		<button id="btn" class="primary" onclick="pg.done()">${gl('continue')}</button>
 
 	</div></div></div>

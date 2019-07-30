@@ -27,7 +27,7 @@ vipPaging.pageTemplate['signup-name'] = {
 		<input id="name" maxlength="50" type="text" placeholder="${gl('namePlaceholder')}" />
 		<div class="inputLabel">${gl('school')}</div>
 		<input id="school" maxlength="50" type="text" placeholder="${gl('schoolPlaceholder')}" />
-		<div class="vSpace-20"></div>
+		<div class="vSpace-30"></div>
 		<button id="btn" class="primary" onclick="pg.done()">${gl('continue')}</button>
 
 	</div></div></div>
