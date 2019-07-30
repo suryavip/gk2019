@@ -25,6 +25,8 @@ vipPaging.pageTemplate['signup-name'] = {
 		<div class="vSpace-20"></div>
 		<div class="inputLabel">${gl('name')}</div>
 		<input id="name" maxlength="50" type="text" placeholder="${gl('namePlaceholder')}" />
+		<div class="inputLabel">${gl('school')}</div>
+		<input id="school" maxlength="50" type="text" placeholder="${gl('schoolPlaceholder')}" />
 		<div class="vSpace-20"></div>
 		<button id="btn" class="primary" onclick="pg.done()">${gl('continue')}</button>
 
@@ -34,7 +36,7 @@ vipPaging.pageTemplate['signup-name'] = {
 	functions: {
 		done: () => {
 			var name = pg.getEl('name');
-			go(`signup-photo`, [pg.parameter, name.value]);
+			go(`signup-photo`, [pg.parameter, name.value, school.value]);
 		},
 	},
 	lang: {
@@ -42,12 +44,16 @@ vipPaging.pageTemplate['signup-name'] = {
 			title: `Let's create your account`,
 			name: 'Name:',
 			namePlaceholder: 'Your name...',
+			school: 'School name:',
+			schoolPlaceholder: 'ex: SMAN 5 Bekasi',
 			continue: 'Continue',
 		},
 		id: {
 			title: 'Mari kita buat akun-mu',
 			name: 'Nama:',
-			namePlaceholder: 'Nama pengenal mu...',
+			namePlaceholder: 'Nama mu...',
+			school: 'Sekolah:',
+			schoolPlaceholder: 'Misal: SMAN 5 Bekasi',
 			continue: 'Lanjutkan',
 		},
 	},
