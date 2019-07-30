@@ -92,11 +92,6 @@ var app = {
 		var d = moment(i);
 		return parseInt(d.format('YYYYMMDD'));
 	},
-	forceValidUsername: i => {
-		var a = i.replace(/[^a-z0-9_]/gi, '');
-		if (a.substr(0, 1) === '_') a = a.substr(1);
-		return a;
-	},
 	dynamicBackButton: (isIndex) => {
 		if (vipHistory.isFirstPage.get()) {
 			//show exit or home
@@ -104,23 +99,6 @@ var app = {
 			else return `<div class="button" onclick="go('${firebaseAuth.isSignedIn() ? 'home' : 'index'}', null, true);"><i class="fas fa-home"></i></div>`
 		}
 		else return `<div class="button" onclick="window.history.go(-1)"><i class="fas fa-arrow-left"></i></div>`;
-	},
-	activeGroup: {
-		get: () => {
-			var groups = localJSON.get('dat', 'groups');
-			if (groups == null || groups.length == 0) return 'empty';
-
-			var activeGroup = localJSON.get('appState', 'activeGroup');
-			if (activeGroup == null || groups.indexOf(activeGroup) < 0) {
-				app.activeGroup.set(groups[0]);
-				return groups[0];
-			}
-			return activeGroup;
-		},
-		set: (groupId) => {
-			localJSON.put('appState', 'activeGroup', groupId);
-			dat.triggerChange(null, 'activeGroup.set');
-		},
 	},
 };
 

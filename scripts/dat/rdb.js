@@ -17,15 +17,15 @@ dat.rdb = {
 		for (i in this.channels) this.remove(this.channels[i]);
 	},
 	onChange: async function (snapshot) {
+		var newVal = snapshot.val();
+		if (newVal == null) return;
+
 		var p = snapshot.ref;
 		var channel = '';
 		while (p.key !== this.cacheUserId) {
 			channel = `${p.key}/${channel}`;
 			p = p.parent;
 		}
-
-		var newVal = snapshot.val();
-		if (newVal == null) return;
 
 		var curVal = await dat.db.saved.where({ channel: channel }).first();
 		if (curVal != null) curVal = curVal['lastTimestamp'];

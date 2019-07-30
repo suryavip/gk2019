@@ -2,7 +2,7 @@ var embeddedHome = {
 	opening: () => {
 		enableAllTippy();
 		photoLoader.load(pg.getEl('embeddedHomePhoto'), `profile_pic/${firebaseAuth.userId}_small.jpg`, `profile_pic/${firebaseAuth.userId}.jpg`);
-		dat.attachListener(embeddedHome.loadGroups);
+		dat.attachListener(embeddedHome.loadGroups, ['group']);
 	},
 	loadGroups: async () => {
 		var currentPage = `${pg.thisPage.id}`;
