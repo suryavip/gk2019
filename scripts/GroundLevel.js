@@ -13,6 +13,16 @@ var GroundLevel = {
 		</div>`;
 	},
 
+	foot: function (pageId) {
+		return `<div class="tabBar five">
+			<div data-active="${pageId === 'home'}" onclick="" title="Beranda"><i class="fas fa-home"></i></div>
+			<div data-active="${pageId === 'notifications'}" onclick="" title="Notifikasi"><i class="fas fa-bell"></i></div>
+			<div onclick="" class="theme-primary"><i class="fas fa-plus"></i></div>
+			<div data-active="${pageId === 'schedules'}" onclick="" title="Jadwal"><i class="fas fa-clock"></i></div>
+			<div data-active="${pageId === 'assignmnetsAndExams'}" onclick="" title="Tugas dan ujian"><i class="fas fa-tasks"></i></div>
+		</div>`;
+	},
+
 };
 
 vipLanguage.lang['GroundLevel'] = {

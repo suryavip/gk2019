@@ -30,7 +30,15 @@ dat.rdb = {
 		var curVal = await dat.db.saved.where({ channel: channel }).first();
 		if (curVal != null) curVal = curVal['lastTimestamp'];
 
-		if (newVal !== curVal) dat.fetch.do(channel, newVal);
+		if (newVal !== curVal) {
+			var f = await dat.fetch.do(channel, newVal);
+			var groups = f.body;
+		}
+		else {
+			var groups = curVal['data'];
+		}
+
+		if (channel === 'group') this.updateGroups(groups);
 	},
 	endpoints: (groupId) => [
 		`member/${groupId}`,
@@ -79,6 +87,7 @@ window.addEventListener('firebase-status-signedin', () => {
 	dat.rdb.cacheUserId = firebaseAuth.userId;
 	dat.rdb.add('group');
 	dat.rdb.add('notification');
+
 });
 
 window.addEventListener('firebase-signout', () => {

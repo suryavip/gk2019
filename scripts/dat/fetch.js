@@ -60,20 +60,14 @@ dat.fetch = {
 				data: f.body,
 			});
 
-			//for group channel, update (add or remove as necessary) rdb listeners
-			if (channel === 'group') dat.rdb.updateGroups(f.body);
-
 			this.status.remove(channel);
 
 			//trigger changes
 			dat.triggerChange(channel);
+			return f;
 		}
 		else {
 			this.status.remove(channel);
-			if (this.param.noRetry) {
-				console.error(`sync error on stepB, but noRetry`);
-				return;
-			}
 			console.error(`fetch error, retrying after cooldown (${this.retryCoolDown} ms)`);
 			setTimeout(() => {
 				this.do(channel, lastTimestamp);

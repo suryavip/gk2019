@@ -8,9 +8,7 @@ vipPaging.pageTemplate['home'] = {
 	},
 	innerHTML: d => `
 <div class="vipPaging-vLayout">
-	<div class="head"><div>
-		${GroundLevel.head(d.pageId)}
-	</div></div>
+	<div class="head"><div>${GroundLevel.head(d.pageId)}</div></div>
 	<div class="body"><div><div class="maxWidthWrap-640">
 		
 		<div class="aPadding-30 activable" style="text-align:center" id="freshStart">
@@ -74,15 +72,7 @@ vipPaging.pageTemplate['home'] = {
 		</div>
 
 	</div></div></div>
-	<div class="foot"><div>
-		<div class="tabBar five">
-			<div onclick="" data-active="true" title="Beranda"><i class="fas fa-home"></i></div>
-			<div onclick="" title="Notifikasi"><i class="fas fa-bell"></i></div>
-			<div class="theme-primary" onclick=""><i class="fas fa-plus"></i></div>
-			<div onclick="" title="Jadwal"><i class="fas fa-clock"></i></div>
-			<div onclick="" title="Tugas dan ujian"><i class="fas fa-tasks"></i></div>
-		</div>
-	</div></div>
+	<div class="foot"><div>${GroundLevel.foot(d.pageId)}</div></div>
 </div>
 `,
 	functions: {
