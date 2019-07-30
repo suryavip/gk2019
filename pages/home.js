@@ -4,7 +4,7 @@ vipPaging.pageTemplate['home'] = {
 	],
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
-		//
+		enableAllTippy();
 	},
 	innerHTML: () => `
 <div class="vipPaging-vLayout">
@@ -15,31 +15,38 @@ vipPaging.pageTemplate['home'] = {
 			<div class="profilePhoto" id="embeddedHomePhoto" onclick="embeddedHome.profilePopUp()" title="Profil"><i class="fas fa-user"></i></div>
 		</div>
 	</div></div>
-	<div class="body"><div><div class="maxWidthWrap-480 aPadding-20" style="text-align:center">
-		--
+	<div class="body"><div><div class="maxWidthWrap-640 aPadding-20">
+		
+		<div class="aPadding-10 activable" style="text-align:center" id="freshStart">
+			<h2>Selamat datang...</h2>
+			<div class="vSpace-30"></div>
+			<img src="illustrations/undraw_welcome_3gvl.svg" width="200px" />
+			<div class="vSpace-30"></div>
+			<button class="primary" onclick="go('groupForm')">Buat Grup Kelas baru</button>
+			<div class="vSpace-30"></div>
+			<h3>atau minta link bergabung dari grup yang sudah ada</h3>
+		</div>
+
+		<div class="aPadding-10 activable" style="text-align:center" id="empty">
+			<h2>Mulai isi data</h2>
+			<div class="vSpace-30"></div>
+			<img src="illustrations/undraw_product_teardown_elol.svg" width="200px" />
+			<div class="vSpace-30"></div>
+			<button onclick="">Atur Jadwal</button>
+			<div class="vSpace-20"></div>
+			<button onclick="">Tambah Tugas</button>
+			<div class="vSpace-20"></div>
+			<button onclick="">Tambah Ujian</button>
+		</div>
+
 	</div></div></div>
 	<div class="foot"><div>
-		<div class="actionBar aPadding-10">
-			<div class="vipPaging-subNavigator" onclick="vipPaging.subPage.change(this)" data-active="true">
-				<i class="fas fa-home"></i>
-				<h3>${gl('home')}</h3>
-			</div>
-			<div class="vipPaging-subNavigator" id="announcementTabBtn" onclick="vipPaging.subPage.change(this)">
-				<i class="fas fa-bullhorn"></i>
-				<h3>${gl('announcement')}</h3>
-			</div>
-			<div class="vipPaging-subNavigator" id="scheduleTabBtn" onclick="vipPaging.subPage.change(this)">
-				<i class="fas fa-clock"></i>
-				<h3>${gl('schedule')}</h3>
-			</div>
-			<div class="vipPaging-subNavigator" id="assignmentTabBtn" onclick="vipPaging.subPage.change(this)">
-				<i class="fas fa-tasks"></i>
-				<h3>${gl('assignment')}</h3>
-			</div>
-			<div class="vipPaging-subNavigator" id="examTabBtn" onclick="vipPaging.subPage.change(this)">
-				<i class="fas fa-flag-checkered"></i>
-				<h3>${gl('exam')}</h3>
-			</div>
+		<div class="tabBar five">
+			<div onclick="" data-active="true" title="Beranda"><i class="fas fa-home"></i></div>
+			<div onclick="" title="Notifikasi"><i class="fas fa-bell"></i></div>
+			<div class="theme-primary" onclick=""><i class="fas fa-plus"></i></div>
+			<div onclick="" title="Jadwal"><i class="fas fa-clock"></i></div>
+			<div onclick="" title="Tugas dan ujian"><i class="fas fa-tasks"></i></div>
 		</div>
 	</div></div>
 </div>

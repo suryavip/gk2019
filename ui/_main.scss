@@ -417,6 +417,9 @@ $actionBarInnerSize: 45px;
 	&.dual > div {
 		width: 50%;
 	}
+	&.five > div {
+		width: 20%;
+	}
 }
 
 .scrollableTab {

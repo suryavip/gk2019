@@ -862,6 +862,10 @@ textarea {
   width: 50%;
 }
 
+.tabBar.five > div {
+  width: 20%;
+}
+
 .scrollableTab {
   overflow-x: scroll;
   white-space: nowrap;
