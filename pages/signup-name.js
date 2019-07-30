@@ -45,7 +45,7 @@ vipPaging.pageTemplate['signup-name'] = {
 			name: 'Name:',
 			namePlaceholder: 'Your name...',
 			school: 'School name:',
-			schoolPlaceholder: 'ex: SMAN 5 Bekasi',
+			schoolPlaceholder: 'example: SMAN 5 Bekasi',
 			continue: 'Continue',
 		},
 		id: {
@@ -53,7 +53,7 @@ vipPaging.pageTemplate['signup-name'] = {
 			name: 'Nama:',
 			namePlaceholder: 'Nama mu...',
 			school: 'Sekolah:',
-			schoolPlaceholder: 'Misal: SMAN 5 Bekasi',
+			schoolPlaceholder: 'contoh: SMAN 5 Bekasi',
 			continue: 'Lanjutkan',
 		},
 	},

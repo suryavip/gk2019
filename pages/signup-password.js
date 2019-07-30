@@ -50,6 +50,8 @@ vipPaging.pageTemplate['signup-password'] = {
 		done: async () => {
 			var photo = localJSON.get('signupPhoto');
 			var name = pg.parameter[1];
+			var school = pg.parameter[2];
+			if (school === '') school = null;
 			var password = pg.getEl('password');
 			var repassword = pg.getEl('repassword');
 			if (password.value !== repassword.value) {
@@ -76,6 +78,7 @@ vipPaging.pageTemplate['signup-password'] = {
 				method: 'POST',
 				body: JSON.stringify({
 					name: name,
+					school: school,
 					password: password.value,
 					email: email,
 				}),
