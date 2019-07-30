@@ -1,11 +1,7 @@
 var ProfileResolver = {
 	emptyUser: {
 		name: '...',
-	},
-	deletedUser: () => {
-		return {
-			name: gl('deletedName', null, 'ProfileResolver'),
-		}
+		school: null,
 	},
 	lastResolveOnline: 0,
 	resolve: async function (userIds, callBack) {
@@ -22,7 +18,6 @@ var ProfileResolver = {
 				user = this.emptyUser;
 				notFullFilled++;
 			}
-			if (user === '-deleted-') user = this.deletedUser();
 			fromCache[userId] = user;
 		}
 		if (this.currentPage !== pg.thisPage.id) return;
@@ -36,7 +31,7 @@ var ProfileResolver = {
 		}
 
 		//load online data
-		var url = `${app.baseAPIAddress}/users?`;
+		var url = `${app.baseAPIAddress}/profiles?`;
 		var args = []
 		for (i in userIds) args.push(`userId=${userIds[i]}`);
 		url += args.join('&');
@@ -51,7 +46,6 @@ var ProfileResolver = {
 				var userId = userIds[i];
 				var user = f.b[userId];
 				if (user == null) user = this.emptyUser;
-				if (user === '-deleted-') user = this.deletedUser();
 				fromOnline[userId] = user;
 				cache[userId] = user;
 			}
@@ -90,19 +84,14 @@ var ProfileResolver = {
 				for (var i = 0; i < target.length; i++) {
 					var col = target[i].getAttribute('data-profileData');
 					var data = user[col];
-					if (data == null) continue;
+					if (data == null) {
+						if (col === 'school') target[i].classList.add('activable');
+						continue;
+					}
 					target[i].textContent = data;
+					if (col === 'school') target[i].classList.remove('activable');
 				}
 			}
 		});
-	},
-};
-
-vipLanguage.lang['ProfileResolver'] = {
-	en: {
-		deletedName: '(Deleted account)',
-	},
-	id: {
-		deletedName: '(Akun dihapus)',
 	},
 };

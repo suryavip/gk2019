@@ -44,7 +44,6 @@ window.addEventListener('firebase-ready', () => {
 		console.log('signed-in');
 
 		localJSON.put('userdata', 'userId', tempGlobalUserId);
-		localJSON.put('userdata', 'name', user.displayName);
 		localJSON.put('userdata', 'email', user.email);
 		localJSON.put('userdata', 'emailVerified', user.emailVerified);
 		firebaseAuth.userId = tempGlobalUserId;
@@ -75,7 +74,6 @@ window.addEventListener('firebase-ready', () => {
 			firebaseAuth.userId = tempGlobalUserId;
 			localJSON.put('userdata', 'emailVerified', user.emailVerified);
 			firebaseAuth.emailVerified = user.emailVerified;
-			localJSON.put('userdata', 'name', user.displayName);
 			localJSON.put('userdata', 'email', user.email);
 		}
 		window.dispatchEvent(new Event('firebase-status-signedin'));

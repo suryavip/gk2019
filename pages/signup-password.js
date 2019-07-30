@@ -98,7 +98,6 @@ vipPaging.pageTemplate['signup-password'] = {
 					if (typeof photo.small === 'string' && typeof photo.big === 'string') {
 						await profilePhotoUploader(userCredential.user.uid, photo.small, photo.big);
 					}
-					firebase.database().ref(`user/${userCredential.user.uid}/lastChange`).set(firebase.database.ServerValue.TIMESTAMP);
 					userCredential.user.sendEmailVerification();
 				}
 				catch { }

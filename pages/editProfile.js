@@ -3,6 +3,7 @@ vipPaging.pageTemplate['editProfile'] = {
 		'scripts/reauth.js',
 		'scripts/imagePicker.js',
 		'scripts/profilePhotoUploader.js',
+		'scripts/ProfileResolver.js',
 	],
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
@@ -15,7 +16,9 @@ vipPaging.pageTemplate['editProfile'] = {
 				pg.getEl('email').value === '';
 		});
 		
-		pg.loadData();
+		vipPaging.bodyState('loading');
+		ProfileResolver.resolve([firebaseAuth.userId], pg.loadData);
+
 		if (app.state.cropPhoto.justFinish) {
 			photoLoader.set(pg.getEl('photo'), app.state.cropPhoto.small, true);
 			delete app.state.cropPhoto.justFinish;
@@ -61,20 +64,38 @@ vipPaging.pageTemplate['editProfile'] = {
 			app.state.cropPhoto.input = image64;
 			go('cropPhoto');
 		},
-		loadData: () => {
+		loadData: (u) => {
+			vipPaging.bodyState();
+
 			var currentUser = localJSON.get('userdata');
-			pg.getEl('name').value = currentUser.name;
 			pg.getEl('email').value = currentUser.email;
+			pg.getEl('email').setAttribute('data-original', currentUser.email);
+
+			pg.getEl('name').value = u[firebaseAuth.userId].name;
+			pg.getEl('name').setAttribute('data-original', u[firebaseAuth.userId].name);
+
+			var school = u[firebaseAuth.userId].school;
+			if (school == null) school = '';
+			pg.getEl('school').value = school;
+			pg.getEl('school').setAttribute('data-original', school);
 		},
 		done: async () => {
-			var currentUser = localJSON.get('userdata');
 			var name = pg.getEl('name');
+			var school = pg.getEl('school');
 			var email = pg.getEl('email');
 			var photo = pg.getEl('photo');
 
 			var changes = 0;
+			var nameAndSchool = false;
 			if (photo.getAttribute('data-imageChanged') === 'true') changes++;
-			if (name.value !== currentUser.name) changes++;
+			if (name.value !== name.getAttribute('data-original')) {
+				changes++;
+				nameAndSchool = true;
+			}
+			if (school.value !== school.getAttribute('data-original')) {
+				changes++;
+				nameAndSchool = true;
+			}
 			if (email.value !== currentUser.email) {
 				changes++;
 				try { await reauth.prompt(); } catch { }
@@ -102,9 +123,24 @@ vipPaging.pageTemplate['editProfile'] = {
 					//delete fss for full photo
 					fss.delete(`profile_pic/${firebaseAuth.userId}.jpg`);
 				}
-				if (name.value !== currentUser.name) {
-					await firebase.auth().currentUser.updateProfile({ displayName: name.value });
-					localJSON.put('userdata', 'name', name.value);
+				if (nameAndSchool) {
+					var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/user`, {
+						method: 'PUT',
+						body: JSON.stringify({
+							name: name,
+							school: school,
+						}),
+					});
+					if (f.status !== 200) {
+						ui.btnLoading.off(pg.getEl('btn'));
+						if (f.status === 'connectionError') {
+							ui.float.error(gl('connectionError', null, 'app'));
+						}
+						else {
+							ui.float.error(gl('unexpectedError', `${f.status}: ${f.b.code}`, 'app'));
+						}
+						return;
+					}
 				}
 				if (email.value !== currentUser.email) {
 					await firebase.auth().currentUser.updateEmail(email.value);
