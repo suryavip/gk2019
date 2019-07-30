@@ -259,7 +259,7 @@ window.addEventListener('vipPagingPGInit', ev => {
 		id: {
 			edit: 'Ubah info',
 			inviteFriend: 'Ajak Teman Bergabung',
-			freshStart: 'Lengkapi Ruang Kelas mu',
+			freshStart: 'Lengkapi Grup Kelas mu',
 			manageSchedule: 'Atur Jadwal',
 			addAssignment: 'Tambah Tugas',
 			addExam: 'Tambah Ujian',

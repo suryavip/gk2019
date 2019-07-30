@@ -24,7 +24,7 @@ vipPaging.pageTemplate['index'] = {
 	</div></div>
 	<div class="body body-center"><div><div class="maxWidthWrap-480 aPadding-30" style="text-align: center">
 
-		<h1>Ruang Kelas</h1>
+		<h1>Grup Kelas</h1>
 		<h6>v${appVersion}${location.pathname === '/sdcard/bs2019/index.html' ? ' devSD' : ''}</h6>
 		<div class="vSpace-20"></div>
 		<div class="inputLabel">${gl('email')}</div>

@@ -23,7 +23,7 @@ var embeddedHome = {
 		var out = [
 			`<div class="list feedback" onclick="go('groupForm')">
 				<div class="iconCircle"><div><i class="fas fa-plus"></i></div></div>
-				<div class="content"><h3>Buat Ruang Kelas baru</h3></div>
+				<div class="content"><h3>Buat Grup Kelas baru</h3></div>
 			</div>`
 		];
 		for (i in groups) {
@@ -56,7 +56,7 @@ var embeddedHome = {
 			<div class="vSpace-30"></div>
 			<img src="illustrations/undraw_welcome_3gvl.svg" width="200px" />
 			<div class="vSpace-30"></div>
-			<button class="primary" onclick="go('groupForm')">Buat Ruang Kelas baru</button>
+			<button class="primary" onclick="go('groupForm')">Buat Grup Kelas baru</button>
 		</div>
 
 		<div class="activable" id="embeddedHomeGroups"></div>`,

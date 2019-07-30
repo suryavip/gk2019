@@ -85,9 +85,9 @@ var app = {
 			i.className = 'fas fa-eye';
 		}
 	},
-	baseAPIAddress: 'https://boostedcode.com/project/rk2019/api/1',
+	baseAPIAddress: 'https://boostedcode.com/project/gk2019/api/1',
 	//baseAPIAddress: 'http://localhost:5000',
-	baseAPPAddress: 'https://ruangkelas.boostedcode.com',
+	baseAPPAddress: 'https://grupkelas.boostedcode.com',
 	comparableDate: i => {
 		var d = moment(i);
 		return parseInt(d.format('YYYYMMDD'));
