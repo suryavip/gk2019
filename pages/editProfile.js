@@ -97,7 +97,7 @@ vipPaging.pageTemplate['editProfile'] = {
 				changes++;
 				nameAndSchool = true;
 			}
-			if (email.value !== currentUser.email) {
+			if (email.value !== email.getAttribute('data-original')) {
 				changes++;
 				try { await reauth.prompt(); } catch { }
 			}
@@ -128,8 +128,8 @@ vipPaging.pageTemplate['editProfile'] = {
 					var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/user`, {
 						method: 'PUT',
 						body: JSON.stringify({
-							name: name,
-							school: school,
+							name: name.value,
+							school: school.value,
 						}),
 					});
 					if (f.status !== 200) {
@@ -142,8 +142,9 @@ vipPaging.pageTemplate['editProfile'] = {
 						}
 						return;
 					}
+					ProfileResolver.resolve([firebaseAuth.userId], () => {}); //make cache updated
 				}
-				if (email.value !== currentUser.email) {
+				if (email.value !== email.getAttribute('data-original')) {
 					await firebase.auth().currentUser.updateEmail(email.value);
 					localJSON.put('userdata', 'email', email.value);
 				}
@@ -156,12 +157,10 @@ vipPaging.pageTemplate['editProfile'] = {
 					});
 				}
 				else firebaseCommonError(error);
+				return;
 			}
 
-			dat.sync.start({
-				immediate: true,
-				forceNewToken: true,
-			});
+			await firebase.auth().currentUser.getIdToken(true);
 
 			ui.float.success(gl('saved'));
 			window.history.go(-1);
