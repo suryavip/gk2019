@@ -2,6 +2,7 @@ var ProfileResolver = {
 	emptyUser: {
 		name: '...',
 		school: null,
+		isEmpty: true,
 	},
 	lastResolveOnline: 0,
 	resolve: async function (userIds, callBack) {

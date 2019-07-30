@@ -99,6 +99,7 @@ vipPaging.pageTemplate['signup-password'] = {
 						await profilePhotoUploader(userCredential.user.uid, photo.small, photo.big);
 					}
 					userCredential.user.sendEmailVerification();
+					localJSON.drop('signupPhoto');
 				}
 				catch { }
 			}

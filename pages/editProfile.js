@@ -65,6 +65,7 @@ vipPaging.pageTemplate['editProfile'] = {
 			go('cropPhoto');
 		},
 		loadData: (u) => {
+			if (u[firebaseAuth.userId].isEmpty) return;
 			vipPaging.bodyState();
 
 			var currentUser = localJSON.get('userdata');
