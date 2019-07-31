@@ -23,7 +23,7 @@ dat.attachListener = function (callBack, channels) {
 		if (i > -1) callBack(e.detail);
 	}
 	pg.thisPage.addEventListener(`dat-change`, internalCB);
-	internalCB(channels[0])
+	callBack(channels[0])
 };
 
 window.addEventListener('firebase-signout', () => {

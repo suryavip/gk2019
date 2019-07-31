@@ -21,7 +21,8 @@ dat.rdb = {
 		if (newVal == null) return;
 
 		var p = snapshot.ref;
-		var channel = '';
+		var channel = p.key;
+		p = p.parent;
 		while (p.key !== this.cacheUserId) {
 			channel = `${p.key}/${channel}`;
 			p = p.parent;
