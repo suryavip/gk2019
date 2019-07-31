@@ -49,10 +49,10 @@ vipPaging.pageTemplate['schedules'] = {
 		},*/
 		load: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var schedule = await dat.db.saved.where(channel).startsWith('schedule/').toArray();
+			var schedule = await dat.db.saved.where('channel').startsWith('schedule/').toArray();
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (notification == null) var notif = [];
+			/*if (notification == null) var notif = [];
 			else var notif = notification['data'];
 
 			notif.sort((a, b) => {
@@ -62,7 +62,7 @@ vipPaging.pageTemplate['schedules'] = {
 			});
 
 			pg.getEl('empty').setAttribute('data-active', notif.length === 0);
-			pg.getEl('content').setAttribute('data-active', notif.length > 0);
+			pg.getEl('content').setAttribute('data-active', notif.length > 0);*/
 		},
 	},
 	lang: {
