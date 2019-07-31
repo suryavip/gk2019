@@ -13,30 +13,30 @@ vipPaging.pageTemplate['home'] = {
 	<div class="body"><div><div class="maxWidthWrap-640">
 		
 		<div class="aPadding-30 activable" style="text-align:center" id="freshStart">
-			<h2>Selamat datang...</h2>
+			<h2>${gl('welcome')}</h2>
 			<div class="vSpace-30"></div>
 			<img src="illustrations/undraw_welcome_3gvl.svg" width="200px" />
 			<div class="vSpace-30"></div>
-			<button class="primary" onclick="go('groupForm')">Buat Grup Kelas baru</button>
+			<button class="primary" onclick="go('groupForm')">${gl('createGroup')}</button>
 			<div class="vSpace-30"></div>
-			<h3>atau minta link bergabung dari grup yang sudah ada</h3>
+			<h3>${gl('joinTips')}</h3>
 		</div>
 
 		<div class="aPadding-30 activable" style="text-align:center" id="empty">
-			<h2>Mulai isi data</h2>
+			<h2>${gl('emptyTips')}</h2>
 			<div class="vSpace-30"></div>
 			<img src="illustrations/undraw_product_teardown_elol.svg" width="200px" />
 			<div class="vSpace-30"></div>
-			<button onclick="">Atur Jadwal</button>
+			<button onclick="">${gl('manageSchedule')}</button>
 			<div class="vSpace-20"></div>
-			<button onclick="">Tambah Tugas</button>
+			<button onclick="">${gl('addAssignment')}</button>
 			<div class="vSpace-20"></div>
-			<button onclick="">Tambah Ujian</button>
+			<button onclick="">${gl('addExam')}</button>
 		</div>
 
 		<div class="container-20 activable" id="quickSchedule">
 			<div class="table">
-				<div style="width:100%"><h3>Jadwal besok:</h3></div>
+				<div style="width:100%"><h3>${gl('tomorrowsSchedule')}</h3></div>
 				<div>
 					<div class="circleButton" onclick=""><i class="fas fa-ellipsis-h"></i></div>
 				</div>
@@ -52,7 +52,7 @@ vipPaging.pageTemplate['home'] = {
 
 		<div class="container-20 activable" id="quickAssignment">
 			<div class="table">
-				<div style="width:100%"><h3>Tugas besok:</h3></div>
+				<div style="width:100%"><h3>${gl('tomorrowsAssignment')}</h3></div>
 				<div>
 					<div class="circleButton" onclick=""><i class="fas fa-ellipsis-h"></i></div>
 				</div>
@@ -63,7 +63,7 @@ vipPaging.pageTemplate['home'] = {
 
 		<div class="container-20 activable" id="quickExam">
 			<div class="table">
-				<div style="width:100%"><h3>Ujian besok:</h3></div>
+				<div style="width:100%"><h3>${gl('tomorrowsExam')}</h3></div>
 				<div>
 					<div class="circleButton" onclick=""><i class="fas fa-ellipsis-h"></i></div>
 				</div>
@@ -81,10 +81,28 @@ vipPaging.pageTemplate['home'] = {
 	},
 	lang: {
 		en: {
-			//
+			welcome: 'Welcome...',
+			createGroup: 'Create new Group',
+			joinTips: 'or join with existing group using link',
+			emptyTips: 'Start filling data...',
+			manageSchedule: 'Manage Schedule',
+			addAssignment: 'Add Assignment',
+			addExam: 'Add Exam',
+			tomorrowsSchedule: `Tomorrow's schedule:`,
+			tomorrowsAssignment: `Tomorrow's assignment:`,
+			tomorrowsExam: `Tomorrow's exam:`,
 		},
 		id: {
-			//
+			welcome: 'Selamat datang...',
+			createGroup: 'Buat Grup Kelas',
+			joinTips: 'atau gunakan link untuk bergabung ke grup yang sudah ada',
+			emptyTips: 'Mulai isi data...',
+			manageSchedule: 'Atur Jadwal',
+			addAssignment: 'Tambah Tugas',
+			addExam: 'Tambah Ujian',
+			tomorrowsSchedule: `Jadwal besok:`,
+			tomorrowsAssignment: `Tugas besok:`,
+			tomorrowsExam: `Ujian besok:`,
 		},
 	},
 };
