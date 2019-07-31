@@ -1,6 +1,7 @@
 vipPaging.pageTemplate['home'] = {
 	import: [
-		'scripts/GroundLevel.js'
+		'scripts/GroundLevel.js',
+		'scripts/ProfileResolver.js',
 	],
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {

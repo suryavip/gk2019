@@ -11,7 +11,7 @@ var GroundLevel = {
 		return `<div class="actionBar aPadding-10">
 			<div class="button" onclick="go('groups')" title="${this.gl('groups')}"><i class="fas fa-users"></i></div>
 			<div class="title center">${this.gl(pageId)}</div>
-			<div class="profilePhoto" id="groundLevelProfilePhoto" onclick="groundLevel.profilePopUp()" title="${this.gl('profile')}"><i class="fas fa-user"></i></div>
+			<div class="profilePhoto" id="groundLevelProfilePhoto" onclick="GroundLevel.profilePopUp()" title="${this.gl('profile')}"><i class="fas fa-user"></i></div>
 		</div>`;
 	},
 
@@ -30,6 +30,32 @@ var GroundLevel = {
 		go(t);
 	},
 
+	profilePopUp: function () {
+		//show popup of own profile, with 2 button: one for edit, one for signout
+		var popUpBuild = (id) => `<div data-profile="${firebaseAuth.userId}">
+				<div class="vSpace-10"></div>
+				<div class="profilePhoto circleCenter-120"><i class="fas fa-user"></i></div>
+				<div class="vSpace-20"></div>
+				<h1 data-profileData="name">...</h1>
+				<h5 data-profileData="school"></h5>
+				<div class="table dual-10 vSpace-30">
+					<div><button class="primary" onclick="go('settings')">${this.gl('settings')}</button></div>
+					<div><button class="negative" onclick="GroundLevel.signOut()">${this.gl('signOut')}</button></div>
+				</div>
+				<div class="vSpace-20"></div>
+				<button onclick="window.history.go(-1)">${this.gl('close')}</button>
+			</div>`;
+		var id = vipPaging.popUp.show('profile', popUpBuild);
+		photoLoader.load(document.querySelector(`#vipPaging-popUp-${id} .profilePhoto`), `profile_pic/${firebaseAuth.userId}_small.jpg`, `profile_pic/${firebaseAuth.userId}.jpg`);
+		ProfileResolver.fillData(document.querySelector(`#vipPaging-popUp-${id}`));
+	},
+
+	signOut: function () {
+		ui.popUp.confirm(this.gl('signOutConfirm'), a => {
+			if (a) firebase.auth().signOut();
+		});
+	},
+
 };
 
 vipLanguage.lang['GroundLevel'] = {
@@ -40,6 +66,11 @@ vipLanguage.lang['GroundLevel'] = {
 		assignmnetsAndExams: 'Assignment &amp; Exam',
 		groups: 'Groups',
 		profile: 'Profile',
+
+		settings: 'Settings',
+		signOut: 'Sign out',
+		signOutConfirm: 'Sign out from this device?',
+		close: 'Close',
 	},
 	id: {
 		home: 'Beranda',
@@ -48,5 +79,10 @@ vipLanguage.lang['GroundLevel'] = {
 		assignmnetsAndExams: 'Tugas &amp; Ujian',
 		groups: 'Grup-grup',
 		profile: 'Profil',
+
+		settings: 'Pengaturan',
+		signOut: 'Keluar',
+		signOutConfirm: 'Keluar dari perangkat ini?',
+		close: 'Tutup',
 	},
 };
