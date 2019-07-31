@@ -12,6 +12,7 @@ dat.rdb = {
 	remove: function (channel) {
 		var ref = firebase.database().ref(`poke/${this.cacheUserId}/${channel}`);
 		ref.off('value', dat.rdb.onChange);
+		//TODO: remove from this.channels
 	},
 	removeAll: function () {
 		for (i in this.channels) this.remove(this.channels[i]);
@@ -71,7 +72,10 @@ dat.rdb = {
 		//remove unused listener
 		for (i in removed) {
 			var ep = this.endpoints(removed[i]);
-			for (j in ep) this.remove(ep[j]);
+			for (j in ep) {
+				this.remove(ep[j]);
+				//TODO: remove data from saved
+			}
 			console.log(`remove listener for group ${removed[i]}`);
 		}
 
