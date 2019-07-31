@@ -6,7 +6,8 @@ vipPaging.pageTemplate['schedules'] = {
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
 		GroundLevel.init();
-		dat.attachListener(pg.loadGroup, ['group']);
+		//dat.attachListener(pg.loadGroup, ['group']);
+		dat.attachListener(pg.load, ['schedule']);
 	},
 	innerHTML: d => `
 <div class="vipPaging-vLayout">
@@ -48,7 +49,7 @@ vipPaging.pageTemplate['schedules'] = {
 		},*/
 		load: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var schedule = await dat.db.saved.where(channel).first();
+			var schedule = await dat.db.saved.where(channel).startsWith('schedule/').toArray();
 			if (pg.thisPage.id !== currentPage) return;
 
 			if (notification == null) var notif = [];
