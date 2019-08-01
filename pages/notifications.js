@@ -30,17 +30,17 @@ vipPaging.pageTemplate['notifications'] = {
 			var notification = await dat.db.saved.where({ channel: 'notification' }).first();
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (notification == null) var notif = [];
-			else var notif = notification['data'];
+			if (notification == null) notification = [];
+			else notification = notification['data'];
 
-			notif.sort((a, b) => {
+			notification.sort((a, b) => {
 				if (a.time < b.time) return 1;
 				if (a.time > b.time) return -1;
 				return 0;
 			});
 
-			pg.getEl('empty').setAttribute('data-active', notif.length === 0);
-			pg.getEl('content').setAttribute('data-active', notif.length > 0);
+			pg.getEl('empty').setAttribute('data-active', notification.length === 0);
+			pg.getEl('content').setAttribute('data-active', notification.length > 0);
 		},
 	},
 	lang: {

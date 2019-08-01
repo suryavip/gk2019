@@ -74,30 +74,76 @@ vipPaging.pageTemplate['schedules'] = {
 		},
 		load: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var schedule = await dat.db.saved.where({channel: `schedule/${pg.selectedGroup}`}).first();
+			var schedules = await dat.db.saved.where({channel: `schedule/${pg.selectedGroup}`}).first();
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (schedule == null) var sch = [];
-			else var sch = schedule['data'];
+			if (schedules == null) schedules = [];
+			else schedules = schedules['data'];
 
-			sch.sort((a, b) => {
-				if (a.time < b.time) return 1;
-				if (a.time > b.time) return -1;
-				return 0;
-			});
+			var byDay = {};
+			for (sid in schedules) {
+				var s = schedules[sid];
+				byDay[sid[sid.length - 1]] = s;
+			}
 
-			pg.getEl('empty').setAttribute('data-active', notif.length === 0);
-			pg.getEl('content').setAttribute('data-active', notif.length > 0);
+			var day = moment();
+			var out = [];
+			while (out.length < 7) {
+				var schedule = byDay[day.format('d')];
+				var sid = `${pg.selectedGroup}schedule${day.format('d')}`;
+				
+				if (schedule == null || schedule.length < 1) {
+					out.push(`<div class="container-20 highlightable" id="a${sid}">
+						<h1>${day.format('dddd')}</h1>
+						<div class="vSpace-20"></div>
+						<p>${gl('empty')}</p>
+						<div class="vSpace-20"></div>
+						<div class="bottomAction">
+							<div class="space"></div>
+							<div onclick="go('scheduleForm', '${sid}')"><i class="fas fa-pen"></i><p>${gl('edit')}</p></div>
+						</div>
+					</div>`);
+					day.add(1, 'days');
+					continue;
+				}
+
+				var subjects = [];
+				var times = [];
+				for (i in schedule) {
+					var d = schedule[i];
+					subjects.push(`<h4>${app.escapeHTML(d.subject)}</h4>`);
+					var endTime = moment(d.time, 'HH:mm').add(d.length, 'minutes');
+					times.push(`<p>${d.time} - ${endTime.format('HH:mm')}</p>`);
+				}
+
+				out.push(`<div class="container-20 highlightable" id="a${sid}">
+					<h1>${day.format('dddd')}</h1>
+					<div class="vSpace-20"></div>
+					<div class="table">
+						<div>${subjects.join('')}</div>
+						<div style="width: 80px; text-align: right">${times.join('')}</div>
+					</div>
+					<div class="vSpace-20"></div>
+					<div class="bottomAction">
+						<div class="space"></div>
+						<div onclick="go('scheduleForm', '${sid}')"><i class="fas fa-pen"></i><p>${gl('edit')}</p></div>
+					</div>
+				</div>`);
+				day.add(1, 'days');
+			}
+			pg.getEl('content').innerHTML = out.join('');
 		},
 	},
 	lang: {
 		en: {
 			private: 'Private',
 			empty: `You're all caught up!`,
+			edit: 'Edit',
 		},
 		id: {
 			private: 'Pribadi',
 			empty: 'Tidak ada notifikasi',
+			edit: 'Ubah',
 		},
 	},
 };
