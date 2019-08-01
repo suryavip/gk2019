@@ -82,7 +82,7 @@ vipPaging.pageTemplate['home'] = {
 	lang: {
 		en: {
 			welcome: 'Welcome...',
-			createGroup: 'Create new Group',
+			createGroup: `Create new Class's Group`,
 			joinTips: 'or join with existing group using link',
 			emptyTips: 'Start filling data...',
 			manageSchedule: 'Manage Schedule',

@@ -59,13 +59,13 @@ vipPaging.pageTemplate['groups'] = {
 	},
 	lang: {
 		en: {
-			title: 'Groups',
-			createGroup: 'Create new Group',
+			title: `Groups`,
+			createGroup: `Create new Class's Group`,
 			emptyText: 'No group yet',
 			joinTips: 'or join with existing group using link',
 		},
 		id: {
-			title: 'Grup Kelas',
+			title: 'Grup-grup',
 			createGroup: 'Buat Grup Kelas',
 			emptyText: 'Belum ada grup',
 			joinTips: 'atau gunakan link untuk bergabung ke grup yang sudah ada',

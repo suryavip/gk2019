@@ -47,9 +47,9 @@ vipPaging.pageTemplate['editProfile'] = {
 		</div>
 		<div class="vSpace-30"></div>
 		<div class="inputLabel">${gl('name')}</div>
-		<input id="name" type="text" placeholder="${gl('namePlaceholder')}" />
+		<input id="name" maxlength="50" type="text" placeholder="${gl('namePlaceholder')}" />
 		<div class="inputLabel">${gl('schoolName')}</div>
-		<input id="school" type="text" placeholder="${gl('schoolNamePlaceholder')}" />
+		<input id="school" maxlength="50" type="text" placeholder="${gl('schoolNamePlaceholder')}" />
 		<div class="inputLabel">${gl('email')}</div>
 		<input id="email" type="email" placeholder="${gl('emailPlaceholder')}" />
 		<div class="vSpace-30"></div>
