@@ -72,7 +72,7 @@ vipPaging.pageTemplate['groupForm'] = {
 				data['groupId'] = pg.parameter;
 			}
 
-			var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/user`, {
+			var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/group`, {
 				method: method,
 				body: JSON.stringify(data),
 			});
