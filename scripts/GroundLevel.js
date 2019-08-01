@@ -8,7 +8,7 @@ var GroundLevel = {
 	gl: (l, p) => gl(l, p, 'GroundLevel'),
 
 	head: function (pageId) {
-		return `<div class="actionBar aPadding-10">
+		return `<div class="actionBar aPadding-1">
 			<div class="button" onclick="go('groups')" title="${this.gl('groups')}"><i class="fas fa-users"></i></div>
 			<div class="title center">${this.gl(pageId)}</div>
 			<div class="profilePhoto" id="groundLevelProfilePhoto" onclick="GroundLevel.profilePopUp()" title="${this.gl('profile')}"><i class="fas fa-user"></i></div>
