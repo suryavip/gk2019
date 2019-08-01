@@ -18,7 +18,7 @@ vipPaging.pageTemplate['notifications'] = {
 			<div class="vSpace-30"></div>
 			<img src="illustrations/undraw_confirmed_81ex.svg" width="200px" />
 		</div>
-		<div class="activable" id="content"></div>
+		<div id="content"></div>
 
 	</div></div></div>
 	<div class="foot"><div>${GroundLevel.foot(d.pageId)}</div></div>
@@ -39,8 +39,11 @@ vipPaging.pageTemplate['notifications'] = {
 				return 0;
 			});
 
+			var out = '';
+			//TODO
+			pg.getEl('content').innerHTML = out;
+
 			pg.getEl('empty').setAttribute('data-active', notification.length === 0);
-			pg.getEl('content').setAttribute('data-active', notification.length > 0);
 		},
 	},
 	lang: {

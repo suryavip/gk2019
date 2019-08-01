@@ -26,7 +26,7 @@ vipPaging.pageTemplate['groups'] = {
 					<h3>${gl('joinTips')}</h3>
 				</div>
 
-				<div class="activable" id="content"></div>
+				<div id="content"></div>
 
 			</div>
 			<div class="vipPaging-floatingButtonSpace"></div>
@@ -44,8 +44,17 @@ vipPaging.pageTemplate['groups'] = {
 			if (group == null) group = [];
 			else group = group.data;
 
+			var out = '';
+			for (groupId in group) {
+				var g = group[groupId];
+				out += `<div class="container-20 feedback" onclick="go('group', '${groupId}')">
+					<h4>${app.escapeHTML(g.name)}</h4>
+					<h5>${app.escapeHTML(g.school)}</h5>
+				</div>`;
+			}
+			pg.getEl('content').innerHTML = out;
+
 			pg.getEl('empty').setAttribute('data-active', group.length === 0);
-			pg.getEl('content').setAttribute('data-active', group.length > 0);
 		},
 	},
 	lang: {
