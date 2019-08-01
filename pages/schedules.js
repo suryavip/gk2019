@@ -78,7 +78,7 @@ vipPaging.pageTemplate['schedules'] = {
 			if (pg.thisPage.id !== currentPage) return;
 
 			if (schedules == null) schedules = [];
-			else schedules = schedules['data'];
+			else schedules = schedules.data;
 
 			var byDay = {};
 			for (sid in schedules) {

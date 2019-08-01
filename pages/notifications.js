@@ -31,7 +31,7 @@ vipPaging.pageTemplate['notifications'] = {
 			if (pg.thisPage.id !== currentPage) return;
 
 			if (notification == null) notification = [];
-			else notification = notification['data'];
+			else notification = notification.data;
 
 			notification.sort((a, b) => {
 				if (a.time < b.time) return 1;
