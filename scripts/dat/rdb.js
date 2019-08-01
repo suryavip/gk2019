@@ -12,7 +12,8 @@ dat.rdb = {
 	remove: function (channel) {
 		var ref = firebase.database().ref(`poke/${this.cacheUserId}/${channel}`);
 		ref.off('value', dat.rdb.onChange);
-		//TODO: remove from this.channels
+		var i = this.channels.indexOf(channel);
+		if (i > -1) this.channels.splice(i, 1);
 	},
 	removeAll: function () {
 		for (i in this.channels) this.remove(this.channels[i]);
@@ -48,7 +49,7 @@ dat.rdb = {
 		`assignment/${groupId}`,
 		`exam/${groupId}`,
 	],
-	updateGroups: function (g) {
+	updateGroups: async function (g) {
 		var newGroups = Object.keys(g);
 
 		//compare this.groups vs newGroups
@@ -72,10 +73,8 @@ dat.rdb = {
 		//remove unused listener
 		for (i in removed) {
 			var ep = this.endpoints(removed[i]);
-			for (j in ep) {
-				this.remove(ep[j]);
-				//TODO: remove data from saved
-			}
+			for (j in ep) this.remove(ep[j]);
+			await dat.db.saved.bulkDelete(ep) //cleanup child channels for this group
 			console.log(`remove listener for group ${removed[i]}`);
 		}
 
