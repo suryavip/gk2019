@@ -4,6 +4,7 @@ dat.rdb = {
 	cacheUserId: '0',
 	channels: [],
 	groups: [],
+	ignore: {},
 	add: function (channel) {
 		var ref = firebase.database().ref(`poke/${this.cacheUserId}/${channel}`);
 		ref.on('value', dat.rdb.onChange);
@@ -28,6 +29,14 @@ dat.rdb = {
 		while (p.key !== this.cacheUserId) {
 			channel = `${p.key}/${channel}`;
 			p = p.parent;
+		}
+
+		if (this.ignore[channel] != null && this.ignore[channel] === newVal) {
+			// wait until ignore removed
+			setTimeout(() => {
+				this.onChange(snapshot);
+			}, 500);
+			return;
 		}
 
 		var curVal = await dat.db.saved.where({ channel: channel }).first();

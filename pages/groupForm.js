@@ -67,29 +67,22 @@ vipPaging.pageTemplate['groupForm'] = {
 				name: name.value,
 				school: school.value,
 			};
+			var success = gl('groupCreated');
+			
 			if (typeof pg.parameter === 'string') {
 				method = 'PUT';
 				data['groupId'] = pg.parameter;
+				success = gl('saved');
 			}
 
-			var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/group`, {
-				method: method,
-				body: JSON.stringify(data),
-			});
-
-			if (f.status === 201) {
-				ui.float.success(gl('groupCreated'));
+			dat.request(method, 'group', data, () => {
+				ui.float.success(success);
 				window.history.go(-1);
-			}
-			else if (f.status === 200) {
-				ui.float.success(gl('saved'));
-				window.history.go(-1);
-			}
-			else {
+			}, (connectionError) => {
 				ui.btnLoading.off(pg.getEl('btn'));
-				if (f.status === 'connectionError') ui.float.error(gl('connectionError', null, 'app'));
+				if (connectionError) ui.float.error(gl('connectionError', null, 'app'));
 				else ui.float.error(gl('unexpectedError', `${f.status}: ${f.b.code}`, 'app'));
-			}
+			});
 		},
 	},
 	lang: {

@@ -27,6 +27,34 @@ dat.attachListener = function (callBack, channels) {
 	return internalCB;
 };
 
+dat.request = function (method, channel, body, callBack, failedCallBack) {
+	var timestamp = parseInt(new Date().getTime() / 1000);
+
+	//add channel and timestamp to ignore list
+	dat.rdb.ignore[channel] = timestamp;
+
+	var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/${channel}`, {
+		method: method,
+		body: JSON.stringify(body),
+		headers: {
+			'X-timestamp': timestamp,
+		}
+	});
+
+	if (f.status === 201 || f.status === 200) {
+		//store data and lastTimestamp
+		await dat.db.saved.put({
+			channel: channel,
+			lastTimestamp: timestamp,
+			data: f.body,
+		});
+		callBack(f);
+	}
+	else failedCallBack(f.status === 'connectionError');
+
+	delete dat.rdb.ignore[channel];
+};
+
 window.addEventListener('firebase-signout', () => {
 	dat.db.delete().then(() => {
 		dat.init();
