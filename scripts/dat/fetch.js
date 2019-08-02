@@ -50,14 +50,14 @@ dat.fetch = {
 	do: async function (channel, lastTimestamp) {
 		//fetch data
 		this.status.add(channel);
-		var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/channel`);
+		var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/${channel}`);
 		if (f.status === 200) {
 
 			//store data and lastTimestamp
 			await dat.db.saved.put({
 				channel: channel,
 				lastTimestamp: lastTimestamp,
-				data: f.body,
+				data: f.b,
 			});
 
 			this.status.remove(channel);

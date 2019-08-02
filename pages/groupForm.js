@@ -68,7 +68,7 @@ vipPaging.pageTemplate['groupForm'] = {
 				school: school.value,
 			};
 			var success = gl('groupCreated');
-			
+
 			if (typeof pg.parameter === 'string') {
 				method = 'PUT';
 				data['groupId'] = pg.parameter;
@@ -81,7 +81,7 @@ vipPaging.pageTemplate['groupForm'] = {
 			}, (connectionError) => {
 				ui.btnLoading.off(pg.getEl('btn'));
 				if (connectionError) ui.float.error(gl('connectionError', null, 'app'));
-				else ui.float.error(gl('unexpectedError', `${f.status}: ${f.b.code}`, 'app'));
+				else ui.float.error(gl('unexpectedError', `${method}: group`, 'app'));
 			});
 		},
 	},

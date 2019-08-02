@@ -27,7 +27,7 @@ dat.attachListener = function (callBack, channels) {
 	return internalCB;
 };
 
-dat.request = function (method, channel, body, callBack, failedCallBack) {
+dat.request = async function (method, channel, body, callBack, failedCallBack) {
 	var timestamp = parseInt(new Date().getTime() / 1000);
 
 	//add channel and timestamp to ignore list
@@ -46,7 +46,7 @@ dat.request = function (method, channel, body, callBack, failedCallBack) {
 		await dat.db.saved.put({
 			channel: channel,
 			lastTimestamp: timestamp,
-			data: f.body,
+			data: f.b,
 		});
 		callBack(f);
 	}

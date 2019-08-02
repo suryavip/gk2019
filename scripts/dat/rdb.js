@@ -6,12 +6,12 @@ dat.rdb = {
 	groups: [],
 	ignore: {},
 	add: function (channel) {
-		var ref = firebase.database().ref(`poke/${this.cacheUserId}/${channel}`);
+		var ref = firebase.database().ref(`poke/${firebaseAuth.userId}/${channel}`);
 		ref.on('value', dat.rdb.onChange);
 		this.channels.push(channel);
 	},
 	remove: function (channel) {
-		var ref = firebase.database().ref(`poke/${this.cacheUserId}/${channel}`);
+		var ref = firebase.database().ref(`poke/${firebaseAuth.userId}/${channel}`);
 		ref.off('value', dat.rdb.onChange);
 		var i = this.channels.indexOf(channel);
 		if (i > -1) this.channels.splice(i, 1);
@@ -23,34 +23,36 @@ dat.rdb = {
 		var newVal = snapshot.val();
 		if (newVal == null) return;
 
-		var p = snapshot.ref;
-		var channel = p.key;
-		p = p.parent;
-		while (p.key !== this.cacheUserId) {
+		var channel = snapshot.ref.key;
+		var p = snapshot.ref.parent;
+		while (p != null && p.key !== firebaseAuth.userId) {
 			channel = `${p.key}/${channel}`;
 			p = p.parent;
 		}
 
-		if (this.ignore[channel] != null && this.ignore[channel] === newVal) {
+		console.log(`onchange triggered on ${channel}`);
+
+		if (dat.rdb.ignore[channel] != null && dat.rdb.ignore[channel] === newVal) {
 			// wait until ignore removed
 			setTimeout(() => {
-				this.onChange(snapshot);
+				dat.rdb.onChange(snapshot);
 			}, 500);
 			return;
 		}
 
-		var curVal = await dat.db.saved.where({ channel: channel }).first();
-		if (curVal != null) curVal = curVal['lastTimestamp'];
+		var curData = await dat.db.saved.where({ channel: channel }).first();
+		if (curData == null) curData = {};
 
-		if (newVal !== curVal) {
+		if (newVal !== curData['lastTimestamp']) {
+			console.log(`changes on ${channel}`);
 			var f = await dat.fetch.do(channel, newVal);
-			var groups = f.body;
+			var groups = f.b;
 		}
 		else {
-			var groups = curVal['data'];
+			var groups = curData['data'];
 		}
 
-		if (channel === 'group') this.updateGroups(groups);
+		if (channel === 'group') dat.rdb.updateGroups(groups);
 	},
 	endpoints: (groupId) => [
 		`member/${groupId}`,
