@@ -186,9 +186,9 @@ vipPaging.pageTemplate['group'] = {
 						lastLevel = m.level;
 					}
 
-					out += `<div class="list feedback" onclick="pg.showProfile('${m.userId}')">
+					out += `<div class="list feedback">
 						<div class="photo"><div data-photoRefPath="profile_pic/${m.userId}_small.jpg" data-fullPhotoRefPath="profile_pic/${m.userId}.jpg"><i class="fas fa-user"></i></div></div>
-						<div class="content">
+						<div class="content" onclick="pg.showProfile('${m.userId}')">
 							<h4>${app.escapeHTML(m.name)}</h4>
 							<h5>${gl(m.level)}</h5>
 						</div>`;
