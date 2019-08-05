@@ -2,11 +2,20 @@ var MembersOfGroup = {
 	doManage: function (successMsg) {
 		var param = this.param;
 		vipLoading.add('manage');
-		dat.sync.groupRequest({
-			type: param.type,
-			groupId: param.groupId,
-			userId: param.userId,
-		}, () => {
+
+		var method = {
+			'pending-new': 'POST',
+			'pending-delete': 'DELETE',
+			'member-new': 'PUT',
+			'member-delete': 'DELETE',
+			'admin-new': 'PUT',
+			'admin-stop': 'PUT',
+			'admin-delete': 'DELETE',
+		}[param.type];
+
+		var data = param.userId == null ? {} : { userId: param.userId };
+
+		dat.request(method, `member/${param.groupId}`, data, () => {
 			vipLoading.remove('manage');
 			ui.float.success(successMsg);
 			if (param.callBack != null) param.callBack();
@@ -17,12 +26,12 @@ var MembersOfGroup = {
 		});
 	},
 	manage: function (param) {
-		//param: userId, type, callBack, name, byLevel (if admin-delete)
+		//param: userId, type, callBack, name, adminCount, memberCount (if admin-delete)
 		this.param = param;
 		var confirmMsg = gl(`${param.type}-confirm`, param.name, 'MembersOfGroup');
 		var successMsg = gl(`${param.type}-success`, param.name, 'MembersOfGroup');
 
-		if (param.userId === firebaseAuth.userId) {
+		if (param.userId == null || param.userId === firebaseAuth.userId) {
 			if (param.type === 'pending-delete') {
 				confirmMsg = gl(`${param.type}-self-confirm`, null, 'MembersOfGroup');
 				successMsg = gl(`${param.type}-self-success`, null, 'MembersOfGroup');
@@ -34,7 +43,7 @@ var MembersOfGroup = {
 		}
 
 		if (param.type === 'admin-delete') {
-			if (param.byLevel['admin'].length === 1 && param.byLevel['member'].length > 0) {
+			if (param.adminCount === 1 && param.memberCount > 0) {
 				//need to set other member as admin first
 				ui.popUp.alert(gl(`${param.type}-reject`, null, 'MembersOfGroup'));
 				return;

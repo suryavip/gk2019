@@ -1,6 +1,7 @@
 vipPaging.pageTemplate['group'] = {
 	import: [
 		'scripts/ProfileResolver.js',
+		'scripts/MembersOfGroup.js',
 	],
 	opening: () => {
 		enableAllTippy();
@@ -12,6 +13,7 @@ vipPaging.pageTemplate['group'] = {
 		<div class="actionBar">
 			${app.dynamicBackButton()}
 			<div class="title">${gl('title')}</div>
+			<div class="button" id="leaveBtn" title="${gl('leaveBtn')}"><i class="fas fa-sign-out-alt"></i></div>
 		</div>
 	</div></div>
 	<div class="body"><div>
@@ -121,6 +123,9 @@ vipPaging.pageTemplate['group'] = {
 			for (i in groupSchools) groupSchools[i].textContent = group.school;
 
 			pg.rLevel = group.level;
+			//manage self btn
+			var leaveBtnType = pg.rLevel === 'admin' ? 'admin-delete' : 'member-delete';
+			pg.getEl('leaveBtn').setAttribute('onclick', `pg.leave('${leaveBtnType}')`);
 
 			pg.getEl('stranger').setAttribute('data-active', 'false');
 			pg.getEl('pending').setAttribute('data-active', group.level === 'pending');
@@ -144,6 +149,7 @@ vipPaging.pageTemplate['group'] = {
 				var members = [];
 				pg.byUserId = {};
 				pg.adminCount = 0;
+				pg.memberCount = 0;
 				for (userId in levels) {
 					var thisUser = {
 						userId: userId,
@@ -154,6 +160,7 @@ vipPaging.pageTemplate['group'] = {
 					members.push(thisUser);
 					pg.byUserId[userId] = thisUser;
 					if (levels[userId] === 'admin') pg.adminCount++;
+					else if (levels[userId] === 'member') pg.memberCount++;
 				}
 
 				//sort by name then by level
@@ -233,15 +240,52 @@ vipPaging.pageTemplate['group'] = {
 			};
 			var popUpCallBack = type => {
 				if (type == null) return;
-				//
+				MembersOfGroup.manage({
+					type: type,
+					groupId: pg.parameter,
+					userId: uid,
+					adminCount: pg.adminCount,
+					memberCount: pg.memberCount,
+				});
 			};
 			var id = vipPaging.popUp.show('profile', popUpBuild, u, popUpCallBack);
 			photoLoader.load(document.querySelector(`#vipPaging-popUp-${id} .profilePhoto`), `profile_pic/${uid}_small.jpg`, `profile_pic/${uid}.jpg`);
+		},
+
+		ask: () => {
+			if (!firebaseAuth.isSignedIn()) {
+				//remember where to go after signed in
+				sessionStorage.setItem('dynamicLinkPageId', pg.thisPage.id);
+				go('index');
+				return;
+			}
+			MembersOfGroup.manage({
+				type: 'pending-new',
+				groupId: pg.parameter,
+			});
+		},
+		cancel: () => {
+			MembersOfGroup.manage({
+				type: 'pending-delete',
+				groupId: pg.parameter,
+			});
+		},
+		leave: (type) => {
+			MembersOfGroup.manage({
+				type: type,
+				groupId: pg.parameter,
+				adminCount: pg.adminCount,
+				memberCount: pg.memberCount,
+				callBack: () => {
+					window.history.go(-1);
+				},
+			});
 		},
 	},
 	lang: {
 		en: {
 			title: 'Group',
+			leaveBtn: 'Leave from this group',
 			pending: 'Waiting for approval...',
 			askToJoin: 'Ask to join',
 			cancelRequest: 'Cancel join request',
@@ -261,6 +305,7 @@ vipPaging.pageTemplate['group'] = {
 		},
 		id: {
 			title: 'Grup',
+			leaveBtn: 'Keluar dari grup',
 			pending: 'Sedang menunggu persetujuan...',
 			askToJoin: 'Minta Bergabung',
 			cancelRequest: 'Batalkan',
