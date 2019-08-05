@@ -60,7 +60,7 @@ vipPaging.pageTemplate['groups'] = {
 			for (i in group) {
 				var g = group[i];
 				out += `<div class="container-20 feedback" onclick="go('group', '${g.groupId}')">
-					<h4>${app.escapeHTML(g.name)}</h4>
+					<h3>${app.escapeHTML(g.name)}</h3>
 					<h5>${app.escapeHTML(g.school)}</h5>
 				</div>`;
 			}
