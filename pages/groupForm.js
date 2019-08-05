@@ -64,11 +64,19 @@ vipPaging.pageTemplate['groupForm'] = {
 			}
 
 			pg.getEl('name').value = group.name;
+			pg.getEl('name').setAttribute('data-original', group.name);
 			pg.getEl('school').value = group.school;
+			pg.getEl('school').setAttribute('data-original', group.school);
 		},
 		done: async () => {
 			var name = pg.getEl('name');
 			var school = pg.getEl('school');
+
+			if (name.value === name.getAttribute('data-original') && school.value === school.getAttribute('data-original')) {
+				ui.float.success(gl('nothingChanged'));
+				window.history.go(-1);
+				return;
+			}
 
 			ui.btnLoading.on(pg.getEl('btn'));
 
@@ -106,6 +114,7 @@ vipPaging.pageTemplate['groupForm'] = {
 			done: 'Save',
 			groupCreated: 'New group created',
 			saved: 'Changes are saved',
+			nothingChanged: 'Nothing changed',
 		},
 		id: {
 			createTitle: 'Buat Grup',
@@ -119,6 +128,7 @@ vipPaging.pageTemplate['groupForm'] = {
 			saved: 'Berhasil disimpan',
 			groupCreated: 'Grup Kelas berhasil dibuat',
 			saved: 'Perubahan tersimpan',
+			nothingChanged: 'Tidak ada perubahan',
 		},
 	},
 };
