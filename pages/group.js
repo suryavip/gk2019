@@ -54,7 +54,7 @@ vipPaging.pageTemplate['group'] = {
 					<div class="vSpace-10"></div>
 				</div>
 				<div class="vSpace-20"></div>
-				<button class="primary">${gl('inviteFriend')}</button>
+				<button class="primary" onclick="pg.share()">${gl('inviteFriend')}</button>
 			</div>
 
 			<div class="activable" id="members"></div>
@@ -281,6 +281,59 @@ vipPaging.pageTemplate['group'] = {
 				},
 			});
 		},
+
+		share: async () => {
+			vipLoading.add('share');
+
+			//building long link
+			var targetLink = encodeURIComponent(`${app.baseAPPAddress}/?group=${pg.parameter}`);
+			var link = `https://grupkelas.page.link/?link=${targetLink}&apn=com.boostedcode.gk2019`;
+
+			var options = {
+				method: 'POST',
+				body: JSON.stringify({
+					longDynamicLink: link,
+					suffix: { option: 'SHORT', },
+				}),
+			}
+			var f = await jsonFetch.do(`https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${firebase.app().options.apiKey}`, options);
+			vipLoading.remove('share');
+			if (f.status === 200) link = f.b.shortLink;
+			pg.share2(link);
+		},
+		share2: link => {
+			if (isCordova) {
+				var options = { url: link, };
+				window.plugins.socialsharing.shareWithOptions(options, () => { }, (msg) => {
+					console.error(`failed to share: ${msg}`);
+				});
+			}
+			else {
+				//show popUp
+				var id = vipPaging.popUp.show('share', (id, b) => {
+					return `<div style="padding: 20px;">
+					<div class="vSpace-10"></div>
+					<h4 style="text-align:center">${gl('shareLinkTips')}</h4>
+					<div class="vSpace-10"></div>
+					<input type="text" value="${app.escapeHTML(b)}" readonly onclick="pg.copyLinkToClipboard('${id}')">
+					<div class="vSpace-20"></div>
+					<div class="table dual-10">
+						<div><button onclick="window.history.go(-1)">${gl('close')}</button></div>
+						<div><button onclick="pg.copyLinkToClipboard('${id}')" class="primary">${gl('copyToClipboard')}</button></div>
+					</div>
+				</div>`;
+				}, link, val => {
+					//
+				});
+				pg.copyLinkToClipboard(id); //copy to clipboard automatically
+			}
+		},
+		copyLinkToClipboard: id => {
+			var el = document.querySelector(`#vipPaging-popUp-${id} input`);
+			el.select();
+			document.execCommand("copy");
+			ui.float.success(gl('copiedToClipboard'));
+		},
 	},
 	lang: {
 		en: {
@@ -302,6 +355,10 @@ vipPaging.pageTemplate['group'] = {
 			'pending-delete': 'Deny',
 			'admin-new': 'Set as admin',
 			close: 'Close',
+
+			shareLinkTips: 'Use this link to invite your friends to this group',
+			copyToClipboard: 'Copy',
+			copiedToClipboard: 'Copied to clipboard',
 		},
 		id: {
 			title: 'Grup',
@@ -322,6 +379,10 @@ vipPaging.pageTemplate['group'] = {
 			'pending-delete': 'Tolak',
 			'admin-new': 'Jadikan admin',
 			close: 'Tutup',
+
+			shareLinkTips: 'Gunakan link ini untuk mengajak teman kamu bergabung',
+			copyToClipboard: 'Salin',
+			copiedToClipboard: 'Link sudah disalin',
 		},
 	},
 };
