@@ -1,4 +1,7 @@
 vipPaging.pageTemplate['groupForm'] = {
+	import: [
+		'scripts/ProfileResolver.js',
+	],
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
 		ui.btnLoading.install();
@@ -11,8 +14,8 @@ vipPaging.pageTemplate['groupForm'] = {
 			//load data
 			pg.loadGroup();
 		}
-		else {
-			//new
+		else {//new
+			ProfileResolver.resolve([firebaseAuth.userId], pg.autoFillSchool);
 			pg.getEl('name').focus();
 		}
 	},
@@ -37,6 +40,13 @@ vipPaging.pageTemplate['groupForm'] = {
 </div>
 `,
 	functions: {
+		autoFillSchool: (u) => {
+			if (u[firebaseAuth.userId].isEmpty) return;
+			
+			var school = u[firebaseAuth.userId].school;
+			if (school == null) school = '';
+			pg.getEl('school').value = school;
+		},
 		loadGroup: async () => {
 			var currentPage = `${pg.thisPage.id}`;
 			var group = await dat.db.saved.where({ channel: 'group' }).first();
