@@ -50,7 +50,7 @@ dat.request = async function (method, channel, body, callBack, failedCallBack) {
 		});
 		callBack(f);
 	}
-	else failedCallBack(f.status === 'connectionError');
+	else failedCallBack(f.status === 'connectionError', f);
 
 	delete dat.rdb.ignore[channel];
 };

@@ -19,9 +19,14 @@ var MembersOfGroup = {
 			vipLoading.remove('manage');
 			ui.float.success(successMsg);
 			if (param.callBack != null) param.callBack();
-		}, (connectionError) => {
+		}, (connectionError, f) => {
 			vipLoading.remove('manage');
 			if (connectionError) ui.float.error(gl('connectionError', null, 'app'));
+			else if (method === 'DELETE' && f.status === 404) {
+				//show success rather than failed
+				ui.float.success(successMsg);
+				if (param.callBack != null) param.callBack();
+			}
 			else ui.float.error(gl('unexpectedError', param.type, 'app'));
 		});
 	},
