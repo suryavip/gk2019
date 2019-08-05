@@ -64,13 +64,52 @@ vipPaging.pageTemplate['group'] = {
 			var g = await dat.db.saved.where({ channel: 'group' }).first();
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (g == null || g[pg.parameter] == null) {
-				//get it using fetch
-			}
-			else var group = g[pg.parameter];
-
-			//load into spaces...
+			if (g == null || g[pg.parameter] == null) pg.loadAnonymous();
+			else pg.loadFromDB(g[pg.parameter]);
 		},
+		loadAnonymous: async () => {
+			vipPaging.bodyState('loading');
+
+			var stranger = pg.getEl('stranger');
+			stranger.setAttribute('data-active', 'true');
+			pg.getEl('pending').setAttribute('data-active', 'false');
+			pg.getEl('head').setAttribute('data-active', 'false');
+			pg.getEl('members').setAttribute('data-active', 'false');
+
+			var currentPage = `${pg.thisPage.id}`;
+			var f = await jsonFetch.do(`${app.baseAPIAddress}/groupInfo/${pg.parameter}`);
+			if (pg.thisPage.id !== currentPage) return;
+
+			if (f.status === 200) {
+				stranger.querySelector('.groupName').textContent = f.b.name;
+				stranger.querySelector('.groupSchool').textContent = f.b.school;
+				vipPaging.bodyState();
+			}
+			else if (f.status === 404) {
+				ui.popUp.alert(gl('groupNotFound'), () => {
+					//go to home or index
+					if (vipHistory.isFirstPage.get()) {
+						if (firebaseAuth.isSignedIn()) go('home', null, true);
+						else go('index', null, true);
+					}
+					else window.history.go(-1);
+				});
+			}
+			else {
+				vipPaging.bodyState('retryable', `vipPaging.bodyState('loading'); pg.load()`);
+				if (f.status === 'connectionError') {
+					ui.float.error(gl('connectionError', null, 'app'));
+				}
+				else {
+					ui.float.error(gl('unexpectedError', `${f.status}: ${f.b.code}`, 'app'));
+				}
+			}
+		},
+		loadFromDB: async () => {
+			//
+		},
+
+
 		loadData: async () => {
 			//load data using jsonFetch
 			var fetchMode = firebaseAuth.isSignedIn() ? 'doWithIdToken' : 'do';
