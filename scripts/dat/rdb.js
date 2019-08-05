@@ -44,11 +44,12 @@ dat.rdb = {
 		if (curData == null) curData = {};
 
 		if (newVal !== curData['lastTimestamp']) {
-			console.log(`changes on ${channel}`);
+			console.log(`changes on ${channel}: ${newVal} vs ${curData['lastTimestamp']}`);
 			var f = await dat.fetch.do(channel, newVal);
 			var groups = f.b;
 		}
 		else {
+			console.log(`ignoring changes on ${channel} because same timestamp`);
 			var groups = curData['data'];
 		}
 
