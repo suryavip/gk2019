@@ -142,11 +142,19 @@ vipPaging.pageTemplate['group'] = {
 			var levels = m.data;
 			ProfileResolver.resolve(Object.keys(m.data), users => {
 				var members = [];
-				for (userId in levels) members.push({
-					userId: userId,
-					name: users[userId].name,
-					level: levels[userId],
-				});
+				pg.byUserId = {};
+				pg.adminCount = 0;
+				for (userId in levels) {
+					var thisUser = {
+						userId: userId,
+						name: users[userId].name,
+						school: users[userId].school,
+						level: levels[userId],
+					};
+					members.push(thisUser);
+					pg.byUserId[userId] = thisUser;
+					if (levels[userId] === 'admin') pg.adminCount++;
+				}
 
 				//sort by name then by level
 				members.sort((a, b) => {
@@ -192,8 +200,43 @@ vipPaging.pageTemplate['group'] = {
 			});
 		},
 
-		showProfile: async () => {
-			//
+		showProfile: (uid) => {
+			//show popUp
+			var u = pg.byUserId[uid];
+			var popUpBuild = (id, u) => {
+				var level = u.level;
+				var out = `<div>
+					<div class="vSpace-10"></div>
+					<div class="profilePhoto circleCenter-120"><i class="fas fa-user"></i></div>
+					<div class="vSpace-20"></div>
+					<h1>${app.escapeHTML(u.name)}</h1>
+					<h5>${app.escapeHTML(u.school)}</h5>
+					<div class="vSpace-30"></div>`;
+
+				if (pg.rLevel === 'admin') {
+					if (uid === firebaseAuth.userId && pg.adminCount > 1) out += `<button onclick="vipPaging.popUp.close('admin-stop')" class="negative">${gl('admin-stop')}</button>
+					<div class="vSpace-20"></div>`;
+
+					if (level === 'member') out += `<button onclick="vipPaging.popUp.close('admin-new')" class="primary">${gl('admin-new')}</button>
+					<div class="vSpace-20"></div>
+					<button onclick="vipPaging.popUp.close('member-delete')" class="negative">${gl('member-delete')}</button>
+					<div class="vSpace-20"></div>`;
+
+					if (level === 'pending') out += `<button onclick="vipPaging.popUp.close('member-new')" class="primary">${gl('member-new')}</button>
+					<div class="vSpace-20"></div>
+					<button onclick="vipPaging.popUp.close('pending-delete')" class="negative">${gl('pending-delete')}</button>
+					<div class="vSpace-20"></div>`;
+				}
+
+				out += `<button onclick="window.history.go(-1)">${gl('close')}</button></div>`;
+				return out;
+			};
+			var popUpCallBack = type => {
+				if (type == null) return;
+				//
+			};
+			var id = vipPaging.popUp.show('profile', popUpBuild, u, popUpCallBack);
+			photoLoader.load(document.querySelector(`#vipPaging-popUp-${id} .profilePhoto`), `profile_pic/${uid}_small.jpg`, `profile_pic/${uid}.jpg`);
 		},
 	},
 	lang: {
@@ -207,6 +250,14 @@ vipPaging.pageTemplate['group'] = {
 			groupNotFound: 'Group not found',
 			admin: 'Administrator',
 			member: 'Member',
+
+			//action on profile popup
+			'admin-stop': 'Stop being admin',
+			'member-delete': 'Remove from this group',
+			'member-new': 'Accept',
+			'pending-delete': 'Deny',
+			'admin-new': 'Set as admin',
+			close: 'Close',
 		},
 		id: {
 			title: 'Grup',
@@ -218,6 +269,14 @@ vipPaging.pageTemplate['group'] = {
 			groupNotFound: 'Grup tidak ditemukan',
 			admin: 'Admin',
 			member: 'Anggota',
+
+			//action on profile popup
+			'admin-stop': 'Berhenti menjadi admin',
+			'member-delete': 'Keluarkan dari grup',
+			'member-new': 'Terima',
+			'pending-delete': 'Tolak',
+			'admin-new': 'Jadikan admin',
+			close: 'Tutup',
 		},
 	},
 };
