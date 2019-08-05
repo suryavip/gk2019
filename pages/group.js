@@ -1,4 +1,7 @@
 vipPaging.pageTemplate['group'] = {
+	import: [
+		'scripts/ProfileResolver.js',
+	],
 	opening: () => {
 		enableAllTippy();
 		dat.attachListener(pg.load, ['group', `member/${pg.parameter}`]);
@@ -34,7 +37,7 @@ vipPaging.pageTemplate['group'] = {
 				<button onclick="pg.cancel()">${gl('cancelRequest')}</button>
 			</div>
 
-			<div class="container-20" id="head">
+			<div class="container-20 activable" id="head">
 				<div class="table">
 					<div style="width:100%">
 						<h1 class="groupName">...</h1>
@@ -49,10 +52,10 @@ vipPaging.pageTemplate['group'] = {
 					<div class="vSpace-10"></div>
 				</div>
 				<div class="vSpace-20"></div>
-				<button class="primary">${pg.home.gl('inviteFriend')}</button>
+				<button class="primary">${gl('inviteFriend')}</button>
 			</div>
 
-			<div id="members"></div>
+			<div class="activable" id="members"></div>
 			
 		</div>
 	</div></div>
@@ -64,8 +67,8 @@ vipPaging.pageTemplate['group'] = {
 			var g = await dat.db.saved.where({ channel: 'group' }).first();
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (g == null || g[pg.parameter] == null) pg.loadAnonymous();
-			else pg.loadFromDB(g[pg.parameter]);
+			if (g == null || g.data[pg.parameter] == null) pg.loadAnonymous();
+			else pg.loadFromDB(g.data[pg.parameter]);
 		},
 		loadAnonymous: async () => {
 			vipPaging.bodyState('loading');
@@ -105,81 +108,109 @@ vipPaging.pageTemplate['group'] = {
 				}
 			}
 		},
-		loadFromDB: async () => {
-			//
+		loadFromDB: async (group) => {
+			vipPaging.bodyState();
+			var groupNames = pg.thisPage.querySelectorAll('.groupName');
+			for (i in groupNames) groupNames[i].textContent = group.name;
+			var groupSchools = pg.thisPage.querySelectorAll('.groupSchool');
+			for (i in groupSchools) groupSchools[i].textContent = group.school;
+
+			pg.rLevel = group.level;
+
+			pg.getEl('stranger').setAttribute('data-active', 'false');
+			pg.getEl('pending').setAttribute('data-active', group.level === 'pending');
+			pg.getEl('head').setAttribute('data-active', group.level !== 'pending');
+			pg.getEl('members').setAttribute('data-active', group.level !== 'pending');
+
+			if (group.level !== 'pending') pg.loadMembers();
 		},
-
-
-		loadData: async () => {
-			//load data using jsonFetch
-			var fetchMode = firebaseAuth.isSignedIn() ? 'doWithIdToken' : 'do';
+		loadMembers: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var f = await jsonFetch[fetchMode](`${app.baseAPIAddress}/group/${pg.parameter}`);
+			var m = await dat.db.saved.where({ channel: `member/${pg.parameter}` }).first();
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (f.status === 200) {
-				if (f.b['level'] === 'admin' || f.b['level'] === 'member') {
-					go('home', null, true);
-				}
+			if (m == null) {
+				window.history.go(-1);
+				return;
+			}
 
-				pg.getEl('title').textContent = f.b.name;
-				pg.getEl('groupName').textContent = f.b.name;
-				pg.getEl('stranger').setAttribute('data-active', f.b['level'] == null);
-				pg.getEl('pending').setAttribute('data-active', f.b['level'] === 'pending');
+			var levels = m.data;
+			ProfileResolver.resolve(Object.keys(m.data), users => {
+				var members = [];
+				for (userId in levels) members.push({
+					userId: userId,
+					name: users[userId].name,
+					level: levels[userId],
+				});
 
-				vipPaging.bodyState();
-			}
-			else if (f.status === 404) {
-				ui.popUp.alert(gl('groupNotFound'), () => {
-					go('home', null, true);
+				//sort by name then by level
+				members.sort((a, b) => {
+					if (a.name < b.name) return -1;
+					if (a.name > b.name) return 1;
+					return 0;
 				});
-			}
-			else {
-				vipPaging.bodyState('retryable', `vipPaging.bodyState('loading'); pg.loadData()`);
-				if (f.status === 'connectionError') {
-					ui.float.error(gl('connectionError', null, 'app'));
-				}
-				else {
-					ui.float.error(gl('unexpectedError', `${f.status}: ${f.b.code}`, 'app'));
-				}
-			}
-		},
-		ask: () => {
-			if (firebaseAuth.isSignedIn()) {
-				MembersOfGroup.manage({
-					type: 'pending-new',
-					groupId: pg.parameter,
-					callBack: () => { pg.loadData(); },
+				members.sort((a, b) => {
+					var l = ['pending', 'admin', 'member'];
+					var ia = l.indexOf(a.level);
+					var ib = l.indexOf(b.level);
+					if (ia < ib) return -1;
+					if (ia > ib) return 1;
+					return 0;
 				});
-			}
-			else {
-				//remember where to go after signed in
-				sessionStorage.setItem('dynamicLinkPageId', pg.thisPage.id);
-				go('index');
-			}
-			
-		},
-		cancel: () => {
-			MembersOfGroup.manage({
-				type: 'pending-delete',
-				groupId: pg.parameter,
-				userId: firebaseAuth.userId,
-				callBack: () => { pg.loadData(); },
+
+				//outputing
+				var out = '';
+				var lastLevel = '';
+				for (i in members) {
+					var m = members[i];
+					if (pg.rLevel !== 'admin' && m.level === 'pending') {
+						//only admin can see pendings list
+						continue;
+					}
+					if (lastLevel !== m.level) {
+						if (out !== '') out += `</div>`;
+						out += `<div class="container">`;
+						lastLevel = m.level;
+					}
+
+					out += `<div class="list feedback" onclick="pg.showProfile('${m.userId}')">
+						<div class="photo"><div data-photoRefPath="profile_pic/${m.userId}_small.jpg" data-fullPhotoRefPath="profile_pic/${m.userId}.jpg"><i class="fas fa-user"></i></div></div>
+						<div class="content">
+							<h4>${app.escapeHTML(m.name)}</h4>
+							<h5>${gl(m.level)}</h5>
+						</div>`;
+				}
+				if (out !== '') out += `</div>`;
+
+				pg.getEl('members').innerHTML = out;
+				photoLoader.autoLoad(pg.getEl('members'));
 			});
+		},
+
+		showProfile: async () => {
+			//
 		},
 	},
 	lang: {
 		en: {
 			pending: 'Waiting for approval...',
-			'pending-new': 'Ask to join',
-			'pending-delete': 'Cancel join request',
+			askToJoin: 'Ask to join',
+			cancelRequest: 'Cancel join request',
+			edit: 'Edit',
+			inviteFriend: 'Invite Friends',
 			groupNotFound: 'Group not found',
+			admin: 'Administrator',
+			member: 'Member',
 		},
 		id: {
 			pending: 'Sedang menunggu persetujuan...',
-			'pending-new': 'Minta bergabung',
-			'pending-delete': 'Batalkan',
+			askToJoin: 'Minta Bergabung',
+			cancelRequest: 'Batalkan',
+			edit: 'Ubah',
+			inviteFriend: 'Ajak Teman Bergabung',
 			groupNotFound: 'Grup tidak ditemukan',
+			admin: 'Admin',
+			member: 'Anggota',
 		},
 	},
 };
