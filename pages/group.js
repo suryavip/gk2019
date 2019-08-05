@@ -11,13 +11,13 @@ vipPaging.pageTemplate['group'] = {
 	<div class="head"><div>
 		<div class="actionBar">
 			${app.dynamicBackButton()}
-			<div class="title" id="title"></div>
+			<div class="title">${gl('title')}</div>
 		</div>
 	</div></div>
 	<div class="body"><div>
 		<div class="maxWidthWrap-640">
 
-			<div class="aPadding-30 activable" id="stranger">
+			<div class="aPadding-30 activable" id="stranger" style="text-align:center">
 				<h1 class="groupName">...</h1>
 				<h5 class="groupSchool">...</h5>
 				<div class="vSpace-30"></div>
@@ -26,7 +26,7 @@ vipPaging.pageTemplate['group'] = {
 				<button class="primary" onclick="pg.ask()">${gl('askToJoin')}</button>
 			</div>
 		
-			<div class="aPadding-30 activable" id="pending">
+			<div class="aPadding-30 activable" id="pending" style="text-align:center">
 				<h1 class="groupName">...</h1>
 				<h5 class="groupSchool">...</h5>
 				<div class="vSpace-30"></div>
@@ -73,6 +73,8 @@ vipPaging.pageTemplate['group'] = {
 		loadAnonymous: async () => {
 			vipPaging.bodyState('loading');
 
+			pg.thisPage.querySelector('.body').classList.add('body-center');
+
 			var stranger = pg.getEl('stranger');
 			stranger.setAttribute('data-active', 'true');
 			pg.getEl('pending').setAttribute('data-active', 'false');
@@ -110,6 +112,9 @@ vipPaging.pageTemplate['group'] = {
 		},
 		loadFromDB: async (group) => {
 			vipPaging.bodyState();
+
+			pg.thisPage.querySelector('.body').classList.remove('body-center');
+
 			var groupNames = pg.thisPage.querySelectorAll('.groupName');
 			for (i in groupNames) groupNames[i].textContent = group.name;
 			var groupSchools = pg.thisPage.querySelectorAll('.groupSchool');
@@ -193,6 +198,7 @@ vipPaging.pageTemplate['group'] = {
 	},
 	lang: {
 		en: {
+			title: 'Group',
 			pending: 'Waiting for approval...',
 			askToJoin: 'Ask to join',
 			cancelRequest: 'Cancel join request',
@@ -203,6 +209,7 @@ vipPaging.pageTemplate['group'] = {
 			member: 'Member',
 		},
 		id: {
+			title: 'Grup',
 			pending: 'Sedang menunggu persetujuan...',
 			askToJoin: 'Minta Bergabung',
 			cancelRequest: 'Batalkan',
