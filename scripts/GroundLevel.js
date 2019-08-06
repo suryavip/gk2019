@@ -19,7 +19,7 @@ var GroundLevel = {
 		return `<div class="tabBar five">
 			<div data-active="${pageId === 'home'}" onclick="GroundLevel.go('home')" title="${this.gl('home')}"><i class="fas fa-home"></i></div>
 			<div data-active="${pageId === 'notifications'}" onclick="GroundLevel.go('notifications')" title="${this.gl('notifications')}"><i class="fas fa-bell"></i></div>
-			<div onclick="" class="theme-primary"><i class="fas fa-plus"></i></div>
+			<div onclick="GroundLevel.add()" class="theme-primary"><i class="fas fa-plus"></i></div>
 			<div data-active="${pageId === 'schedules'}" onclick="GroundLevel.go('schedules')" title="${this.gl('schedules')}"><i class="fas fa-clock"></i></div>
 			<div data-active="${pageId === 'assignmnetsAndExams'}" onclick="GroundLevel.go('assignmnetsAndExams')" title="${this.gl('assignmnetsAndExams')}"><i class="fas fa-tasks"></i></div>
 		</div>`;
@@ -56,6 +56,17 @@ var GroundLevel = {
 		});
 	},
 
+	add: function () {
+		ui.popUp.option([
+			{ callBackParam: 'assignmentForm', title: this.gl('addAssignment'), icon: 'fas fa-plus' },
+			{ callBackParam: 'examForm', title: this.gl('addExam'), icon: 'fas fa-plus' },
+			{ callBackParam: 'schedules', title: this.gl('manageSchedule'), icon: 'fas fa-plus' },
+		], goto => {
+			if (goto == null) return;
+			this.go(goto);
+		});
+	},
+
 };
 
 vipLanguage.lang['GroundLevel'] = {
@@ -71,6 +82,10 @@ vipLanguage.lang['GroundLevel'] = {
 		signOut: 'Sign out',
 		signOutConfirm: 'Sign out from this device?',
 		close: 'Close',
+
+		manageSchedule: 'Manage Schedule',
+		addAssignment: 'Add Assignment',
+		addExam: 'Add Exam',
 	},
 	id: {
 		home: 'Beranda',
@@ -84,5 +99,9 @@ vipLanguage.lang['GroundLevel'] = {
 		signOut: 'Keluar',
 		signOutConfirm: 'Keluar dari perangkat ini?',
 		close: 'Tutup',
+
+		manageSchedule: 'Atur Jadwal',
+		addAssignment: 'Tambah Tugas',
+		addExam: 'Tambah Ujian',
 	},
 };

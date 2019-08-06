@@ -88,8 +88,11 @@ dat.rdb = {
 		//remove unused listener
 		for (gid in removed) {
 			var ep = this.endpoints(gid);
-			for (j in ep) this.remove(ep[j]);
 			await dat.db.saved.bulkDelete(ep) //cleanup child channels for this group
+			for (j in ep) {
+				this.remove(ep[j]);
+				if (dat.fetch.status.ongoing.indexOf(ep[j]) < 0) dat.triggerChange(ep[j]); //trigger change when the data of these channels deleted
+			}
 			console.log(`remove listener for group ${gid}`);
 		}
 
