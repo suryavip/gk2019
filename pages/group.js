@@ -13,7 +13,7 @@ vipPaging.pageTemplate['group'] = {
 		<div class="actionBar">
 			${app.dynamicBackButton()}
 			<div class="title">${gl('title')}</div>
-			<div class="button" id="leaveBtn" title="${gl('leaveBtn')}"><i class="fas fa-sign-out-alt"></i></div>
+			<div class="button activable" id="leaveBtn" title="${gl('leaveBtn')}"><i class="fas fa-sign-out-alt"></i></div>
 		</div>
 	</div></div>
 	<div class="body"><div>
@@ -82,6 +82,7 @@ vipPaging.pageTemplate['group'] = {
 			pg.getEl('pending').setAttribute('data-active', 'false');
 			pg.getEl('head').setAttribute('data-active', 'false');
 			pg.getEl('members').setAttribute('data-active', 'false');
+			pg.getEl('leaveBtn').setAttribute('data-active', 'false');
 
 			var currentPage = `${pg.thisPage.id}`;
 			var f = await jsonFetch.do(`${app.baseAPIAddress}/groupInfo/${pg.parameter}`);
@@ -131,6 +132,7 @@ vipPaging.pageTemplate['group'] = {
 			pg.getEl('pending').setAttribute('data-active', group.level === 'pending');
 			pg.getEl('head').setAttribute('data-active', group.level !== 'pending');
 			pg.getEl('members').setAttribute('data-active', group.level !== 'pending');
+			pg.getEl('leaveBtn').setAttribute('data-active', 'true');
 
 			if (group.level !== 'pending') pg.loadMembers();
 		},
