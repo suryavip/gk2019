@@ -76,17 +76,59 @@ vipPaging.pageTemplate['assignmnetsAndExams'] = {
 			});
 
 			//print
+			var out = '';
+			for (i in all) {
+				var a = all[i];
+
+				var attachment = [];
+				for (at in a.attachment) {
+					attachment.push(`<div class="attachment">
+						<i class="fas fa-image"></i>
+					</div>`);
+				}
+				if (a.attachment.length > 0) attachment = `<div class="aPadding-20-tandem">
+					<div class="horizontalOverflow vipGesture-prevent">${attachment.join('')}</div>
+				</div>`;
+				else attachment = '';
+
+				var note = ''
+				if (a.note !== '') note = `<div class="aPadding-20-tandem">
+					<p>${app.escapeHTML(a.note)}</p>
+				</div>`;
+
+				var aTime = moment(`${a.date}${a.examTime != null ? ` ${a.examTime}` : ''}`);
+				out += `<div class="container highlightable" id="${a.type}-${a.rowId}">
+					<div class="list">
+						<div class="iconCircle"><div><i class="fas fa-minus"></i></div></div>
+						<!--div class="iconCircle"><div class="theme-positive"><i class="fas fa-check"></i></div></div-->
+						<div class="content">
+							<h3>${app.escapeHTML(a.subject)}</h3>
+							<h5>${app.displayDate(aTime, false, a.data.time != null)}</h5>
+						</div>
+					</div>
+					${note}
+					${attachment}
+					<div class="bottomAction aPadding-20-tandem">
+						<div class="space"></div>
+						<div onclick="pg.exam.delete('${a.rowId}')"><i class="fas fa-trash"></i><p>${pg.exam.gl('deleteBtn')}</p></div>
+						<div onclick="go('examForm', '${a.rowId}')"><i class="fas fa-pen"></i><p>${pg.exam.gl('editBtn')}</p></div>
+					</div>
+				</div>`;
+			}
+			pg.getEl('content').innerHTML = out;
+
+			pg.getEl('empty').setAttribute('data-active', all.length === 0);
 		},
 	},
 	lang: {
 		en: {
 			private: 'Private',
-			empty: `You're all caught up!`,
+			empty: `There is no assignment or exam`,
 			edit: 'Edit',
 		},
 		id: {
 			private: 'Pribadi',
-			empty: 'Tidak ada notifikasi',
+			empty: 'Tidak ada tugas ataupun ujian',
 			edit: 'Ubah',
 		},
 	},
