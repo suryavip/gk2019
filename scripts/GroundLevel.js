@@ -60,7 +60,7 @@ var GroundLevel = {
 		ui.popUp.option([
 			{ callBackParam: 'assignmentForm', title: this.gl('addAssignment'), icon: 'fas fa-plus' },
 			{ callBackParam: 'examForm', title: this.gl('addExam'), icon: 'fas fa-plus' },
-			{ callBackParam: 'schedules', title: this.gl('manageSchedule'), icon: 'fas fa-plus' },
+			{ callBackParam: 'schedules', title: this.gl('manageSchedule'), icon: 'fas fa-cog' },
 		], goto => {
 			if (goto == null) return;
 			this.go(goto);
