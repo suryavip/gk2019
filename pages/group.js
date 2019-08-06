@@ -132,10 +132,11 @@ vipPaging.pageTemplate['group'] = {
 			pg.getEl('members').setAttribute('data-active', group.level !== 'pending');
 			pg.getEl('leaveBtn').setAttribute('data-active', group.level !== 'pending');
 
-			if (pg.rLevel === 'pending') pg.thisPage.querySelector('.body').classList.add('body-center');
-			else pg.thisPage.querySelector('.body').classList.remove('body-center');
-
-			if (group.level !== 'pending') pg.loadMembers();
+			if (group.level !== 'pending') {
+				pg.thisPage.querySelector('.body').classList.remove('body-center');
+				pg.loadMembers();
+			}
+			else pg.thisPage.querySelector('.body').classList.add('body-center');
 		},
 		loadMembers: async () => {
 			var currentPage = `${pg.thisPage.id}`;
@@ -201,7 +202,8 @@ vipPaging.pageTemplate['group'] = {
 						<div class="content" onclick="pg.showProfile('${m.userId}')">
 							<h4>${app.escapeHTML(m.name)}</h4>
 							<h5>${gl(m.level)}</h5>
-						</div>`;
+						</div>
+					</div>`;
 				}
 				if (out !== '') out += `</div>`;
 
@@ -249,6 +251,7 @@ vipPaging.pageTemplate['group'] = {
 					userId: uid,
 					adminCount: pg.adminCount,
 					memberCount: pg.memberCount,
+					name: u.name,
 				});
 			};
 			var id = vipPaging.popUp.show('profile', popUpBuild, u, popUpCallBack);

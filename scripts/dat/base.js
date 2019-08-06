@@ -50,6 +50,7 @@ dat.request = async function (method, channel, body, callBack, failedCallBack) {
 			lastTimestamp: timestamp,
 			data: f.b,
 		});
+		dat.triggerChange(channel);
 		callBack(f);
 	}
 	else failedCallBack(f.status === 'connectionError', f);
