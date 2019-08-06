@@ -116,8 +116,6 @@ vipPaging.pageTemplate['group'] = {
 		loadFromDB: async (group) => {
 			vipPaging.bodyState();
 
-			pg.thisPage.querySelector('.body').classList.remove('body-center');
-
 			var groupNames = pg.thisPage.querySelectorAll('.groupName');
 			for (i in groupNames) groupNames[i].textContent = group.name;
 			var groupSchools = pg.thisPage.querySelectorAll('.groupSchool');
@@ -132,7 +130,10 @@ vipPaging.pageTemplate['group'] = {
 			pg.getEl('pending').setAttribute('data-active', group.level === 'pending');
 			pg.getEl('head').setAttribute('data-active', group.level !== 'pending');
 			pg.getEl('members').setAttribute('data-active', group.level !== 'pending');
-			pg.getEl('leaveBtn').setAttribute('data-active', 'true');
+			pg.getEl('leaveBtn').setAttribute('data-active', group.level !== 'pending');
+
+			if (pg.rLevel === 'pending') pg.thisPage.querySelector('.body').classList.add('body-center');
+			else pg.thisPage.querySelector('.body').classList.remove('body-center');
 
 			if (group.level !== 'pending') pg.loadMembers();
 		},
