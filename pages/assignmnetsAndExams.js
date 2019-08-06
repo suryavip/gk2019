@@ -28,11 +28,16 @@ vipPaging.pageTemplate['assignmnetsAndExams'] = {
 		loadGroup: async () => {
 			//getting what assignment and exam to listen to
 			var currentPage = `${pg.thisPage.id}`;
-			var groups = await dat.db.saved.where({ channel: 'group' }).first();
+			pg.groups = await dat.db.saved.where({ channel: 'group' }).first();
 			if (pg.thisPage.id !== currentPage) return;
 
+			if (pg.groups == null) pg.groups = {};
+			else pg.groups = pg.groups.data;
+
+			pg.groups[firebaseAuth.userId] = { name: gl('private') };
+
 			var endpoints = [];
-			for (gid in groups) {
+			for (gid in pg.groups) {
 				endpoints.push(`assignment/${gid}`);
 				endpoints.push(`exam/${gid}`);
 			}
@@ -103,19 +108,21 @@ vipPaging.pageTemplate['assignmnetsAndExams'] = {
 						<!--div class="iconCircle"><div class="theme-positive"><i class="fas fa-check"></i></div></div-->
 						<div class="content">
 							<h3>${app.escapeHTML(a.subject)}</h3>
-							<h5>${app.displayDate(aTime, false, a.data.time != null)}</h5>
+							<h5>${app.displayDate(aTime, false, a.examTime != null)}</h5>
 						</div>
 					</div>
 					${note}
 					${attachment}
 					<div class="bottomAction aPadding-20-tandem">
+						<div onclick="go('group', '${a.groupId}')"><i class="${a.groupId === firebaseAuth.userId ? 'fas fa-user' : 'fas fa-users'}"></i><p>${app.escapeHTML(pg.groups[a.groupId].name)}</p></div>
 						<div class="space"></div>
-						<div onclick="pg.exam.delete('${a.rowId}')"><i class="fas fa-trash"></i><p>${pg.exam.gl('deleteBtn')}</p></div>
-						<div onclick="go('examForm', '${a.rowId}')"><i class="fas fa-pen"></i><p>${pg.exam.gl('editBtn')}</p></div>
+						<div title="${gl('delete')}" onclick="pg.delete('${a.type}', '${a.rowId}')"><i class="fas fa-trash"></i></div>
+						<div title="${gl('edit')}" onclick="go('${a.type}Form', '${a.rowId}')"><i class="fas fa-pen"></i></div>
 					</div>
 				</div>`;
 			}
 			pg.getEl('content').innerHTML = out;
+			enableAllTippy();
 
 			pg.getEl('empty').setAttribute('data-active', all.length === 0);
 		},
@@ -125,11 +132,13 @@ vipPaging.pageTemplate['assignmnetsAndExams'] = {
 			private: 'Private',
 			empty: `There is no assignment or exam`,
 			edit: 'Edit',
+			delete: 'Delete',
 		},
 		id: {
 			private: 'Pribadi',
 			empty: 'Tidak ada tugas ataupun ujian',
 			edit: 'Ubah',
+			delete: 'Hapus',
 		},
 	},
 };

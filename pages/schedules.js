@@ -32,31 +32,26 @@ vipPaging.pageTemplate['schedules'] = {
 			pg.groups = await dat.db.saved.where({ channel: 'group' }).first();
 			if (pg.thisPage.id !== currentPage) return;
 
+			if (pg.groups == null) pg.groups = {};
+			else pg.groups = pg.groups.data;
+
+			pg.groups[firebaseAuth.userId] = { name: gl('private') };
+
 			if (pg.lastListener != null) pg.thisPage.removeEventListener('dat-change', pg.lastListener);
 
-			if (pg.selectedGroup === firebaseAuth.userId) {
-				pg.getEl('selectedGroupName').textContent = gl('private');
-			}
-			else if (pg.groups[pg.selectedGroup] == null) {
+			if (pg.groups[pg.selectedGroup] == null) {
 				//group not found, revert to private
 				pg.selectedGroup = firebaseAuth.userId;
-				pg.getEl('selectedGroupName').textContent = gl('private');
 			}
-			else {
-				pg.getEl('selectedGroupName').textContent = pg.groups[pg.selectedGroup].name;
-			}
+			pg.getEl('selectedGroupName').textContent = pg.groups[pg.selectedGroup].name;
 			pg.lastListener = dat.attachListener(pg.load, [`schedule/${pg.selectedGroup}`]);
 		},
 		chooseGroup: async () => {
-			var options = [{
-				callBackParam: firebaseAuth.userId,
-				title: gl('private'),
-				icon: 'fas fa-user',
-			}];
+			var options = [];
 			for (gid in pg.groups) options.push({
 				callBackParam: gid,
 				title: app.escapeHTML(pg.groups[gid].name),
-				icon: 'fas fa-users',
+				icon: gid === firebaseAuth.userId ? 'fas fa-user' : 'fas fa-users',
 			});
 			options.sort((a, b) => {
 				if (a.callBackParam === firebaseAuth.userId) return -1;
