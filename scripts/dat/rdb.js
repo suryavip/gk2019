@@ -3,7 +3,7 @@ if (typeof dat === 'undefined') var dat = {};
 dat.rdb = {
 	cacheUserId: '0',
 	channels: [],
-	groups: [],
+	groups: {},
 	ignore: {},
 	add: function (channel) {
 		var ref = firebase.database().ref(`poke/${firebaseAuth.userId}/${channel}`);
@@ -61,33 +61,36 @@ dat.rdb = {
 		`assignment/${groupId}`,
 		`exam/${groupId}`,
 	],
-	updateGroups: async function (g) {
-		var newGroups = Object.keys(g);
-
+	updateGroups: async function (newGroups) {
 		//compare this.groups vs newGroups
-		var added = [];
-		for (i in newGroups) {
-			if (this.groups.indexOf(newGroups[i]) < 0) added.push(newGroups[i]);
+		var added = {};
+		for (gid in newGroups) {
+			if (this.groups[gid] == null) added[gid] = newGroups[gid].level;
 		}
-		var removed = [];
-		for (i in this.groups) {
-			if (newGroups.indexOf(this.groups[i]) < 0) removed.push(this.groups[i]);
+		var removed = {};
+		for (gid in this.groups) {
+			if (newGroups[gid] == null) removed[gid] = this.groups[gid].level;
 		}
 
-		if (added.length == 0 && removed.length == 0) console.log('no change in group list');
+		if (Object.keys(added).length == 0 && Object.keys(removed).length == 0) console.log('no change in group list');
 
 		//add new listener
-		for (i in added) {
-			var ep = this.endpoints(added[i]);
+		for (gid in added) {
+			if (added[gid] === 'pending') {
+				delete newGroups[gid];
+				console.log(`skip adding listener for group ${gid} (still pending)`);
+				continue;
+			}
+			var ep = this.endpoints(gid);
 			for (j in ep) this.add(ep[j]);
-			console.log(`add listener for group ${added[i]}`);
+			console.log(`add listener for group ${gid}`);
 		}
 		//remove unused listener
-		for (i in removed) {
-			var ep = this.endpoints(removed[i]);
+		for (gid in removed) {
+			var ep = this.endpoints(gid);
 			for (j in ep) this.remove(ep[j]);
 			await dat.db.saved.bulkDelete(ep) //cleanup child channels for this group
-			console.log(`remove listener for group ${removed[i]}`);
+			console.log(`remove listener for group ${gid}`);
 		}
 
 		this.groups = newGroups;

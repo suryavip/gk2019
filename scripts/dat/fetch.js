@@ -63,7 +63,7 @@ dat.fetch = {
 			this.status.remove(channel);
 
 			//trigger changes
-			dat.triggerChange(channel);
+			if (this.status.ongoing.indexOf(channel) < 0) dat.triggerChange(channel);
 			return f;
 		}
 		else {
