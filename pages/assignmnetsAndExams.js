@@ -17,6 +17,10 @@ vipPaging.pageTemplate['assignmnetsAndExams'] = {
 			<h2>${gl('empty')}</h2>
 			<div class="vSpace-30"></div>
 			<img src="illustrations/undraw_relaxation_1_wbr7.svg" width="200px" />
+			<div class="vSpace-30"></div>
+			<button onclick="go('assignmentForm')">${gl('addAssignment')}</button>
+			<div class="vSpace-20"></div>
+			<button onclick="go('examForm')">${gl('addExam')}</button>
 		</div>
 		<div id="content"></div>
 
@@ -133,12 +137,16 @@ vipPaging.pageTemplate['assignmnetsAndExams'] = {
 			empty: `There is no assignment or exam`,
 			edit: 'Edit',
 			delete: 'Delete',
+			addAssignment: 'Add Assignment',
+			addExam: 'Add Exam',
 		},
 		id: {
 			private: 'Pribadi',
 			empty: 'Tidak ada tugas ataupun ujian',
 			edit: 'Ubah',
 			delete: 'Hapus',
+			addAssignment: 'Tambah Tugas',
+			addExam: 'Tambah Ujian',
 		},
 	},
 };
