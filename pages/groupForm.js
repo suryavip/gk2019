@@ -57,22 +57,20 @@ vipPaging.pageTemplate['groupForm'] = {
 				return;
 			}
 
-			group = group.data[pg.parameter];
-			if (group == null) {
+			pg.group = group.data[pg.parameter];
+			if (pg.group == null) {
 				window.history.go(-1);
 				return;
 			}
 
-			pg.getEl('name').value = group.name;
-			pg.getEl('name').setAttribute('data-original', group.name);
-			pg.getEl('school').value = group.school;
-			pg.getEl('school').setAttribute('data-original', group.school);
+			pg.getEl('name').value = pg.group.name;
+			pg.getEl('school').value = pg.group.school;
 		},
 		done: async () => {
 			var name = pg.getEl('name');
 			var school = pg.getEl('school');
 
-			if (name.value === name.getAttribute('data-original') && school.value === school.getAttribute('data-original')) {
+			if (name.value === pg.group.name && school.value === pg.group.school) {
 				ui.float.success(gl('nothingChanged'));
 				window.history.go(-1);
 				return;
