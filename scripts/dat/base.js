@@ -5,9 +5,17 @@ dat.init = function () {
 
 	this.db.version(1).stores({
 		saved: 'channel,lastTimestamp',
+/*
+		group: 'groupId',
+		notification: ',time',
+		
+		member: ',groupId',
+		schedule: 'scheduleId,owner',
+		assignment: 'assignmentId,owner',
+		exam: 'examId,owner',*/
 	});
 
-	this.fetch.init();
+	this.talk.init();
 };
 
 dat.triggerChange = function (channel) {

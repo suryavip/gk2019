@@ -45,7 +45,7 @@ dat.rdb = {
 
 		if (newVal !== curData['lastTimestamp']) {
 			console.log(`changes on ${channel}: ${newVal} vs ${curData['lastTimestamp']}`);
-			var f = await dat.talk.do(channel, newVal);
+			var f = await dat.talk.fetch(channel, newVal);
 			var groups = f.b;
 		}
 		else {

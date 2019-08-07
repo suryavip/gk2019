@@ -47,7 +47,7 @@ dat.talk = {
 
 	retryCoolDown: 10 * 1000, //when sync retry after failed
 
-	do: async function (channel, lastTimestamp) {
+	fetch: async function (channel, lastTimestamp) {
 		//fetch data
 		this.status.add(channel);
 		var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/${channel}`);
@@ -70,7 +70,7 @@ dat.talk = {
 			this.status.remove(channel);
 			console.error(`fetch error, retrying after cooldown (${this.retryCoolDown} ms)`);
 			setTimeout(() => {
-				this.do(channel, lastTimestamp);
+				this.fetch(channel, lastTimestamp);
 			}, this.retryCoolDown);
 		}
 	},
