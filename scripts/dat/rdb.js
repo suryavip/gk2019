@@ -46,7 +46,7 @@ dat.rdb = {
 			console.log(`changes on ${channel}: ${newVal} vs ${curData['lastTimestamp']}`);
 			var f = await dat.talk.fetch(channel, newVal);
 			if (f.status !== 200) {
-				console.error(`fetch error, retrying after cooldown (${this.retryCoolDown} ms)`);
+				console.error(`fetch error, retrying after cooldown (${dat.talk.retryCoolDown} ms)`);
 				setTimeout(() => {
 					dat.rdb.onChange(snapshot);
 				}, dat.talk.retryCoolDown);
