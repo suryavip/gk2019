@@ -3,10 +3,6 @@ vipPaging.pageTemplate['examForm'] = {
 	opening: () => {
 		ui.btnLoading.install();
 
-		app.listenForChange(['subject'], () => {
-			pg.getEl('btn').disabled = pg.getEl('subject').value === '';
-		});
-
 		//note auto height
 		var note = pg.getEl('note');
 		var scrollHeightChanged = 0; //ignore if this 0 and 1
@@ -24,20 +20,17 @@ vipPaging.pageTemplate['examForm'] = {
 		});
 		note.setAttribute('style', `height: ${note.scrollHeight}px; overflow-y:hidden;`);
 
-		pg.groupId = app.activeGroup.get();
-		if (pg.groupId === 'empty') {
-			window.history.go(-1);
-			return;
-		}
-
-		pg.loadSubjectAutoFill();
-
 		if (typeof pg.parameter === 'string') {
 			//load data
 			pg.loadData();
 		}
 		else {
 			//new
+			app.listenForChange(['subject'], () => {
+				pg.getEl('btn').disabled = pg.getEl('subject').value === '';
+			});
+
+			pg.loadGroup();
 			pg.getEl('subject').focus();
 		}
 	},
@@ -49,73 +42,127 @@ vipPaging.pageTemplate['examForm'] = {
 			<div class="title">${gl(typeof d.parameter === 'string' ? 'editTitle' : 'createTitle')}</div>
 		</div>
 	</div></div>
-	<div class="body"><div><div class="maxWidthWrap-480 aPadding-30">
+	<div class="body"><div><div class="maxWidthWrap-480">
 
-		<datalist id="subjects"></datalist>
-
-		<div class="inputLabel">${gl('subject')}</div>
-		<input id="subject" type="text" maxlength="100" placeholder="${gl('subjectPlaceholder')}" list="subjects" autocomplete="off" />
-
-		<div class="inputLabel">${gl('date')}</div>
-		<input id="date" type="text" readonly onclick="ui.popUp.date.picker(this.getAttribute('data-date'), pg.datePicked)" data-date="${moment().format('YYYY-MM-DD')}" value="${app.displayDate()}"/>
-		<div class="vSpace-10"></div>
-		<div class="inputWithButton">
-			<div><input id="time" type="text" readonly onclick="ui.popUp.timePicker(this.value, pg.timePicked)" placeholder="${gl('timePlaceholder')}"/></div>
-			<div class="activable" id="clearTimeBtn" onclick="pg.clearTime()"><i class="fas fa-times"></i></div>
+		<div class="container-20">
+			<div class="card list ${typeof d.parameter === 'string' ? '' : 'feedback'}" onclick="${typeof d.parameter === 'string' ? '' : 'pg.chooseGroup()'}">
+				<div class="content"><h2 id="selectedGroupName">${gl('private')}</h2></div>
+				<div class="icon"><i class="fas fa-sort-down"></i></div>
+			</div>
 		</div>
 
-		<div class="inputLabel">${gl('note')}</div>
-		<textarea id="note" maxlength="500" placeholder="${gl('notePlaceholder')}" rows="4"></textarea>
+		<div class="aPadding-30">
+			<datalist id="subjects"></datalist>
 
-		<div class="vSpace-30"></div>
-		<button id="btn" class="primary" onclick="pg.done()">${gl('done')}</button>
+			<div class="inputLabel">${gl('subject')}</div>
+			<input id="subject" type="text" maxlength="100" placeholder="${gl('subjectPlaceholder')}" list="subjects" autocomplete="off" ${typeof d.parameter === 'string' ? 'disabled' : ''}/>
+
+			<div class="inputLabel">${gl('date')}</div>
+			<input id="date" type="text" readonly onclick="ui.popUp.date.picker(this.getAttribute('data-date'), pg.datePicked)" data-date="${moment().format('YYYY-MM-DD')}" value="${app.displayDate()}"/>
+			<div class="vSpace-10"></div>
+			<div class="inputWithButton">
+				<div><input id="time" type="text" readonly onclick="ui.popUp.timePicker(this.value, pg.timePicked)" placeholder="${gl('timePlaceholder')}"/></div>
+				<div class="activable" id="clearTimeBtn" onclick="pg.clearTime()"><i class="fas fa-times"></i></div>
+			</div>
+
+			<div class="inputLabel">${gl('note')}</div>
+			<textarea id="note" maxlength="500" placeholder="${gl('notePlaceholder')}" rows="4"></textarea>
+
+			<div class="vSpace-30"></div>
+			<button id="btn" class="primary" onclick="pg.done()">${gl('done')}</button>
+		</div>
 
 	</div></div></div>
 </div>
 `,
 	functions: {
+		selectedGroup: firebaseAuth.userId,
+		loadGroup: async () => {
+			var currentPage = `${pg.thisPage.id}`;
+			pg.groups = await dat.db.saved.where({ channel: 'group' }).first();
+			if (pg.thisPage.id !== currentPage) return;
+
+			if (pg.groups == null) pg.groups = {};
+			else pg.groups = pg.groups.data;
+
+			pg.groups[firebaseAuth.userId] = { name: gl('private') };
+
+			if (pg.groups[pg.selectedGroup] == null) {
+				//group not found, revert to private
+				pg.selectedGroup = firebaseAuth.userId;
+			}
+			pg.getEl('selectedGroupName').textContent = pg.groups[pg.selectedGroup].name;
+			pg.loadSubjectAutoFill();
+		},
+		chooseGroup: async () => {
+			var options = [];
+			for (gid in pg.groups) options.push({
+				callBackParam: gid,
+				title: app.escapeHTML(pg.groups[gid].name),
+				icon: gid === firebaseAuth.userId ? 'fas fa-user' : 'fas fa-users',
+			});
+			options.sort((a, b) => {
+				if (a.callBackParam === firebaseAuth.userId) return -1;
+				if (b.callBackParam === firebaseAuth.userId) return 1;
+				if (a.title < b.title) return -1;
+				if (a.title > b.title) return 1;
+				return 0;
+			});
+			ui.popUp.option(options, groupId => {
+				if (groupId == null) return;
+				if (groupId === pg.selectedGroup) return;
+				pg.selectedGroup = groupId;
+				pg.loadGroup();
+			});
+		},
+		loadSubjectAutoFill: async () => {
+			var currentPage = `${pg.thisPage.id}`;
+			var schedules = await dat.db.saved.where({channel: `schedule/${pg.selectedGroup}`}).first();
+			if (pg.thisPage.id !== currentPage) return;
+
+			if (schedules == null) schedules = [];
+			else schedules = schedules.data;
+
+			var subjects = [];
+			for (i in schedules) {
+				if (subjects.indexOf(schedules[i].subject) < 0) {
+					subjects.push(schedules[i].subject);
+				}
+			}
+
+			subjects.sort();
+			var out = '';
+			for (i in subjects) out += `<option value="${app.escapeHTML(subjects[i])}">`;
+			pg.getEl('subjects').innerHTML = out;
+		},
+
 		loadData: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var exam = await dat.db.saved.where({ rowId: pg.parameter }).first();
+			var exams = await dat.db.saved.where('channel').startsWith('exam/').toArray();
 			if (pg.thisPage.id !== currentPage) return;
-			if (exam == null) {
+
+			pg.exam = null;
+			var groupId = '';
+			for (i in exams) {
+				if (exams[i].data[pg.parameter] == null) continue;
+				pg.exam = exams[i].data[pg.parameter];
+				groupId = exams[i].channel.replace('exam/', '');
+			}
+
+			if (pg.exam == null) {
 				window.history.go(-1);
 				return;
 			}
 
-			pg.getEl('subject').value = exam.data.subject;
-			pg.getEl('note').value = exam.data.note;
-			pg.getEl('date').setAttribute('data-date', exam.data.date);
-			pg.getEl('date').value = app.displayDate(exam.data.date);
-			if (exam.data.time == null) {
-				pg.getEl('time').value = '';
-				pg.getEl('clearTimeBtn').setAttribute('data-active', false);
-			}
-			else {
-				pg.getEl('time').value = exam.data.time;
-				pg.getEl('clearTimeBtn').setAttribute('data-active', true);
-			}
+			pg.selectedGroup = groupId;
+			pg.loadGroup();
+
+			pg.getEl('subject').value = pg.exam.subject;
+			pg.getEl('note').value = pg.exam.note;
+			pg.getEl('date').setAttribute('data-date', pg.exam.examDate);
+			pg.getEl('date').value = app.displayDate(pg.exam.examDate);
 		},
-		loadSubjectAutoFill: async () => {
-			var currentPage = `${pg.thisPage.id}`;
-			var schedulesPerDay = await dat.db.saved.where({ tableName: 'schedule', owner: pg.groupId }).toArray();
-			if (pg.thisPage.id !== currentPage) return;
 
-			var schedules = [];
-			for (i in schedulesPerDay) schedules = schedules.concat(schedulesPerDay[i].data);
-
-			var subject = [];
-			for (i in schedules) {
-				if (subject.indexOf(schedules[i].subject) < 0) {
-					subject.push(schedules[i].subject);
-				}
-			}
-
-			subject.sort();
-			var out = '';
-			for (i in subject) out += `<option value="${app.escapeHTML(subject[i])}">`;
-			pg.getEl('subjects').innerHTML = out;
-		},
 		done: async () => {
 			var subject = pg.getEl('subject');
 			var note = pg.getEl('note');
@@ -123,33 +170,39 @@ vipPaging.pageTemplate['examForm'] = {
 			if (pg.getEl('time').value === '') var time = null;
 			else var time = pg.getEl('time').value;
 
+			if (typeof pg.parameter === 'string' && note.value === pg.exam.note && date === pg.exam.examDate && time === pg.exam.examTime) {
+				ui.float.success(gl('nothingChanged'));
+				window.history.go(-1);
+				return;
+			}
+
 			ui.btnLoading.on(pg.getEl('btn'));
 
+			var method = 'POST';
 			var data = {
-				groupId: pg.groupId,
-				type: 'exam-new',
 				subject: subject.value,
 				note: note.value,
-				date: date,
-				time: time,
+				examDate: date,
+				examTime: time,
 			};
 			var success = gl('created');
 
 			if (typeof pg.parameter === 'string') {
+				method = 'PUT';
 				data['examId'] = pg.parameter;
-				data['type'] = 'exam-edit';
 				success = gl('saved');
 			}
 
-			dat.sync.groupRequest(data, () => {
+			dat.request(method, `exam/${pg.selectedGroup}`, data, () => {
 				ui.float.success(success);
 				window.history.go(-1);
 			}, (connectionError) => {
 				ui.btnLoading.off(pg.getEl('btn'));
 				if (connectionError) ui.float.error(gl('connectionError', null, 'app'));
-				else ui.float.error(gl('unexpectedError', data['type'], 'app'));
+				else ui.float.error(gl('unexpectedError', `${method}: exam`, 'app'));
 			});
 		},
+
 		datePicked: d => {
 			//apply selected date to form
 			if (d == null) return;
@@ -173,6 +226,8 @@ vipPaging.pageTemplate['examForm'] = {
 			createTitle: 'Add Exam',
 			editTitle: 'Edit Exam',
 
+			private: 'Private',
+
 			subject: 'Subject:',
 			subjectPlaceholder: 'Subject...',
 
@@ -183,12 +238,15 @@ vipPaging.pageTemplate['examForm'] = {
 			timePlaceholder: 'Choose time (optional)',
 
 			done: 'Save',
-			created: 'New exam created',
+			created: 'New exam added',
 			saved: 'Changes are saved',
+			nothingChanged: 'Nothing changed',
 		},
 		id: {
-			createTitle: 'Tambah Ujin',
+			createTitle: 'Tambah Ujian',
 			editTitle: 'Ubah Ujian',
+
+			private: 'Pribadi',
 
 			subject: 'Mata pelajaran:',
 			subjectPlaceholder: 'Mata pelajaran...',
@@ -202,6 +260,7 @@ vipPaging.pageTemplate['examForm'] = {
 			done: 'Simpan',
 			created: 'Ujian berhasil ditambah',
 			saved: 'Perubahan tersimpan',
+			nothingChanged: 'Tidak ada perubahan',
 		},
 	},
 };
