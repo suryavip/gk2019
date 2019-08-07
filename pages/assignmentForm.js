@@ -191,7 +191,7 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			}, (connectionError) => {
 				ui.btnLoading.off(pg.getEl('btn'));
 				if (connectionError) ui.float.error(gl('connectionError', null, 'app'));
-				else ui.float.error(gl('unexpectedError', `${method}: group`, 'app'));
+				else ui.float.error(gl('unexpectedError', `${method}: assignment`, 'app'));
 			});
 		},
 
