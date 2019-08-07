@@ -27,6 +27,10 @@ var GroundLevel = {
 
 	go: t => {
 		if (pg.thisPage.id === t) return;
+		if (vipHistory.getPrevStack() === t) {
+			window.history.go(-1);
+			return;
+		}
 		go(t);
 	},
 
