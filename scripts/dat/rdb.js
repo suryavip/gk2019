@@ -45,7 +45,7 @@ dat.rdb = {
 
 		if (newVal !== curData['lastTimestamp']) {
 			console.log(`changes on ${channel}: ${newVal} vs ${curData['lastTimestamp']}`);
-			var f = await dat.fetch.do(channel, newVal);
+			var f = await dat.talk.do(channel, newVal);
 			var groups = f.b;
 		}
 		else {
@@ -91,7 +91,7 @@ dat.rdb = {
 			await dat.db.saved.bulkDelete(ep) //cleanup child channels for this group
 			for (j in ep) {
 				this.remove(ep[j]);
-				if (dat.fetch.status.ongoing.indexOf(ep[j]) < 0) dat.triggerChange(ep[j]); //trigger change when the data of these channels deleted
+				if (dat.talk.status.ongoing.indexOf(ep[j]) < 0) dat.triggerChange(ep[j]); //trigger change when the data of these channels deleted
 			}
 			console.log(`remove listener for group ${gid}`);
 		}

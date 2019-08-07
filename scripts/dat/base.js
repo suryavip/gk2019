@@ -33,7 +33,7 @@ dat.request = async function (method, channel, body, callBack, failedCallBack) {
 	//add channel and timestamp to ignore list
 	dat.rdb.ignore[channel] = timestamp;
 
-	dat.fetch.status.add(channel);
+	dat.talk.status.add(channel);
 
 	var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/${channel}`, {
 		method: method,
@@ -50,13 +50,13 @@ dat.request = async function (method, channel, body, callBack, failedCallBack) {
 			lastTimestamp: timestamp,
 			data: f.b,
 		});
-		if (dat.fetch.status.ongoing.indexOf(channel) < 0) dat.triggerChange(channel);
+		if (dat.talk.status.ongoing.indexOf(channel) < 0) dat.triggerChange(channel);
 		callBack(f);
 	}
 	else failedCallBack(f.status === 'connectionError', f);
 
 	delete dat.rdb.ignore[channel];
-	dat.fetch.status.remove(channel);
+	dat.talk.status.remove(channel);
 };
 
 window.addEventListener('firebase-signout', () => {

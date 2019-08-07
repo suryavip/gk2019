@@ -24,20 +24,13 @@ vipPaging.pageTemplate['assignmentForm'] = {
 		});
 		note.setAttribute('style', `height: ${note.scrollHeight}px; overflow-y:hidden;`);
 
-		pg.groupId = app.activeGroup.get();
-		if (pg.groupId === 'empty') {
-			window.history.go(-1);
-			return;
-		}
-
-		pg.loadSubjectAutoFill();
-
 		if (typeof pg.parameter === 'string') {
 			//load data
 			pg.loadData();
 		}
 		else {
 			//new
+			pg.loadSubjectAutoFill();
 			pg.getEl('subject').focus();
 		}
 	},
@@ -71,9 +64,13 @@ vipPaging.pageTemplate['assignmentForm'] = {
 	functions: {
 		loadData: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var assignment = await dat.db.saved.where({ rowId: pg.parameter }).first();
+			var assignments = await dat.db.saved.where('channel').startsWith('assignment/').toArray();
 			if (pg.thisPage.id !== currentPage) return;
-			if (assignment == null) {
+
+			pg.assignment = null;
+			for (i in assignments) pg.assignment = assignments[i].data[pg.parameter];
+
+			if (pg.assignment == null) {
 				window.history.go(-1);
 				return;
 			}

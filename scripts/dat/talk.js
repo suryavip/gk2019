@@ -1,6 +1,6 @@
 if (typeof dat === 'undefined') var dat = {};
 
-dat.fetch = {
+dat.talk = {
 	init: function () {
 		this.status.installIndicator();
 	},
@@ -77,5 +77,5 @@ dat.fetch = {
 };
 
 window.addEventListener('firebase-status-signedin', () => {
-	dat.fetch.status.ongoing = [];
+	dat.talk.status.ongoing = [];
 });
