@@ -3,11 +3,7 @@ vipPaging.pageTemplate['scheduleForm'] = {
 	opening: () => {
 		ui.btnLoading.install();
 
-		pg.groupId = app.activeGroup.get();
-		if (pg.groupId === 'empty') {
-			window.history.go(-1);
-			return;
-		}
+		pg.groupId = pg.parameter.split('schedule')[0];
 
 		pg.loadData();
 	},
@@ -101,13 +97,16 @@ vipPaging.pageTemplate['scheduleForm'] = {
 		
 		loadData: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var schedule = await dat.db.saved.where({ rowId: pg.parameter }).first();
+			var schedule = await dat.db.saved.where({ channel: `schedule/${pg.groupId}` }).first();
 			if (pg.thisPage.id !== currentPage) return;
+
+			if (schedule != null) schedule = schedule.data[pg.parameter];
+
 			if (schedule != null) {
 				//load schedule
 				var out = [];
-				for (i in schedule.data) {
-					var d = schedule.data[i];
+				for (i in schedule) {
+					var d = schedule[i];
 					var endAt = moment(d.time, 'HH:mm').add(d.length, 'minutes');
 					out.push(pg.template(d.subject, d.time, endAt.format('HH:mm')));
 				}
@@ -121,10 +120,8 @@ vipPaging.pageTemplate['scheduleForm'] = {
 			ui.btnLoading.on(pg.getEl('btn'));
 
 			var data = {
-				groupId: pg.groupId,
-				type: 'schedule-edit',
-				scheduleId: pg.parameter,
-				scheduleData: [],
+				day: pg.parameter[pg.parameter.length - 1],
+				data: [],
 			};
 
 			var schedules = pg.getEl('schedules').querySelectorAll('.container-20');
@@ -134,20 +131,22 @@ vipPaging.pageTemplate['scheduleForm'] = {
 				var tb = schedules[i].lastElementChild;
 				var startAt = tb.firstElementChild.firstElementChild;
 				var endAt = tb.lastElementChild.firstElementChild;
-				data.scheduleData.push({
+				data.data.push({
 					subject: subjectInput.value,
 					time: startAt.value,
 					length: (moment(endAt.value, 'HH:mm') - moment(startAt.value, 'HH:mm')) / (60 * 1000), //in minutes
 				});
 			}
 
-			dat.sync.groupRequest(data, () => {
+			console.log(data);
+
+			dat.request('PUT', `schedule/${pg.groupId}`, data, () => {
 				ui.float.success(gl('saved'));
 				window.history.go(-1);
 			}, (connectionError) => {
 				ui.btnLoading.off(pg.getEl('btn'));
 				if (connectionError) ui.float.error(gl('connectionError', null, 'app'));
-				else ui.float.error(gl('unexpectedError', data['type'], 'app'));
+				else ui.float.error(gl('unexpectedError', `PUT: schedule`, 'app'));
 			});
 		},
 	},

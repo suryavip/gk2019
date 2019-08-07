@@ -120,13 +120,15 @@ vipPaging.pageTemplate['examForm'] = {
 			var schedules = await dat.db.saved.where({channel: `schedule/${pg.selectedGroup}`}).first();
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (schedules == null) schedules = [];
+			if (schedules == null) schedules = {};
 			else schedules = schedules.data;
 
 			var subjects = [];
 			for (i in schedules) {
-				if (subjects.indexOf(schedules[i].subject) < 0) {
-					subjects.push(schedules[i].subject);
+				for (ii in schedules[i]) {
+					if (subjects.indexOf(schedules[i][ii].subject) < 0) {
+						subjects.push(schedules[i][ii].subject);
+					}
 				}
 			}
 
