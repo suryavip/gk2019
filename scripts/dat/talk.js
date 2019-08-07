@@ -68,10 +68,7 @@ dat.talk = {
 		}
 		else {
 			this.status.remove(channel);
-			console.error(`fetch error, retrying after cooldown (${this.retryCoolDown} ms)`);
-			setTimeout(() => {
-				this.fetch(channel, lastTimestamp);
-			}, this.retryCoolDown);
+			return f;
 		}
 	},
 };

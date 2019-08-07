@@ -1,7 +1,6 @@
 if (typeof dat === 'undefined') var dat = {};
 
 dat.rdb = {
-	cacheUserId: '0',
 	channels: [],
 	groups: {},
 	ignore: {},
@@ -46,6 +45,13 @@ dat.rdb = {
 		if (newVal !== curData['lastTimestamp']) {
 			console.log(`changes on ${channel}: ${newVal} vs ${curData['lastTimestamp']}`);
 			var f = await dat.talk.fetch(channel, newVal);
+			if (f.status !== 200) {
+				console.error(`fetch error, retrying after cooldown (${this.retryCoolDown} ms)`);
+				setTimeout(() => {
+					dat.rdb.onChange(snapshot);
+				}, dat.talk.retryCoolDown);
+				return;
+			}
 			var groups = f.b;
 		}
 		else {
@@ -106,7 +112,6 @@ dat.rdb = {
 };
 
 window.addEventListener('firebase-status-signedin', () => {
-	dat.rdb.cacheUserId = firebaseAuth.userId;
 	dat.rdb.add('group');
 	dat.rdb.add('notification');
 

@@ -299,15 +299,15 @@ body {
 
 .timePickerScroll > div:first-child::before, .timePickerScroll > div:last-child::before {
   top: 0;
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(40%, #1C2938), to(transparent));
-  background-image: linear-gradient(#1C2938 40%, transparent 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(40%, #15202B), to(transparent));
+  background-image: linear-gradient(#15202B 40%, transparent 100%);
   z-index: 1;
 }
 
 .timePickerScroll > div:first-child::after, .timePickerScroll > div:last-child::after {
   bottom: 0;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(60%, #1C2938));
-  background-image: linear-gradient(transparent 0%, #1C2938 60%);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(60%, #15202B));
+  background-image: linear-gradient(transparent 0%, #15202B 60%);
 }
 
 .timePickerScroll > div:first-child > div, .timePickerScroll > div:last-child > div {
