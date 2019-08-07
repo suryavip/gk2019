@@ -118,9 +118,9 @@ vipPaging.pageTemplate['assignmnetsAndExams'] = {
 					${note}
 					${attachment}
 					<div class="bottomAction aPadding-20-tandem">
-						<div onclick="go('group', '${a.groupId}')"><i class="${a.groupId === firebaseAuth.userId ? 'fas fa-user' : 'fas fa-users'}"></i><p>${app.escapeHTML(pg.groups[a.groupId].name)}</p></div>
+						<div onclick="${a.groupId === firebaseAuth.userId ? '' : `go('group', '${a.groupId}')`}"><i class="${a.groupId === firebaseAuth.userId ? 'fas fa-user' : 'fas fa-users'}"></i><p>${app.escapeHTML(pg.groups[a.groupId].name)}</p></div>
 						<div class="space"></div>
-						<div title="${gl('delete')}" onclick="pg.delete('${a.type}', '${a.rowId}')"><i class="fas fa-trash"></i></div>
+						<div title="${gl('delete')}" onclick="pg.delete('${a.type}', '${a.groupId}', '${a.rowId}')"><i class="fas fa-trash"></i></div>
 						<div title="${gl('edit')}" onclick="go('${a.type}Form', '${a.rowId}')"><i class="fas fa-pen"></i></div>
 					</div>
 				</div>`;
@@ -129,6 +129,19 @@ vipPaging.pageTemplate['assignmnetsAndExams'] = {
 			enableAllTippy();
 
 			pg.getEl('empty').setAttribute('data-active', all.length === 0);
+		},
+		delete: async (type, owner, id) => {
+			ui.popUp.confirm(gl('deleteConfirm', type), a => {
+				if (!a) return;
+				var data = {};
+				data[`${type}Id`] = id;
+				dat.request('DELETE', `${type}/${owner}`, data, () => {
+					ui.float.success(gl('deleteSuccess', type));
+				}, (connectionError) => {
+					if (connectionError) ui.float.error(gl('connectionError', null, 'app'));
+					else ui.float.error(gl('unexpectedError', `DELETE: ${type}`, 'app'));
+				});
+			});
 		},
 	},
 	lang: {
@@ -139,6 +152,9 @@ vipPaging.pageTemplate['assignmnetsAndExams'] = {
 			delete: 'Delete',
 			addAssignment: 'Add Assignment',
 			addExam: 'Add Exam',
+
+			deleteConfirm: t => t === 'assignment' ? 'Delete this assignment?' : 'Delete this exam?',
+			deleteSuccess: t => t === 'assignment' ? 'Assignment deleted' : 'Exam deleted',
 		},
 		id: {
 			private: 'Pribadi',
@@ -147,6 +163,9 @@ vipPaging.pageTemplate['assignmnetsAndExams'] = {
 			delete: 'Hapus',
 			addAssignment: 'Tambah Tugas',
 			addExam: 'Tambah Ujian',
+
+			deleteConfirm: t => t === 'assignment' ? 'Hapus tugas ini?' : 'Hapus ujian ini?',
+			deleteSuccess: t => t === 'assignment' ? 'Tugas berhasil dihapus' : 'Ujian berhasil dihapus',
 		},
 	},
 };
