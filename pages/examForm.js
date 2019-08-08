@@ -195,7 +195,7 @@ vipPaging.pageTemplate['examForm'] = {
 				success = gl('saved');
 			}
 
-			dat.request(method, `exam/${pg.selectedGroup}`, data, () => {
+			dat.server.request(method, `exam/${pg.selectedGroup}`, data, () => {
 				ui.float.success(success);
 				window.history.go(-1);
 			}, (connectionError) => {

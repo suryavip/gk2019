@@ -135,7 +135,7 @@ vipPaging.pageTemplate['assignmnetsAndExams'] = {
 				if (!a) return;
 				var data = {};
 				data[`${type}Id`] = id;
-				dat.request('DELETE', `${type}/${owner}`, data, () => {
+				dat.server.request('DELETE', `${type}/${owner}`, data, () => {
 					ui.float.success(gl('deleteSuccess', type));
 				}, (connectionError) => {
 					if (connectionError) ui.float.error(gl('connectionError', null, 'app'));

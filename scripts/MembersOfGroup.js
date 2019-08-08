@@ -15,7 +15,7 @@ var MembersOfGroup = {
 
 		var data = param.userId == null ? {} : { userId: param.userId };
 
-		dat.request(method, `member/${param.groupId}`, data, () => {
+		dat.server.request(method, `member/${param.groupId}`, data, () => {
 			vipLoading.remove('manage');
 			ui.float.success(successMsg);
 			if (param.callBack != null) param.callBack();

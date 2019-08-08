@@ -1,6 +1,6 @@
 if (typeof dat === 'undefined') var dat = {};
 
-dat.talk = {
+dat.server = {
 	init: function () {
 		this.status.installIndicator();
 	},
@@ -51,28 +51,36 @@ dat.talk = {
 		//fetch data
 		this.status.add(channel);
 		var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/${channel}`);
-		if (f.status === 200) {
-
-			//store data and lastTimestamp
-			await dat.db.saved.put({
-				channel: channel,
-				lastTimestamp: lastTimestamp,
-				data: f.b,
-			});
-
-			this.status.remove(channel);
-
-			//trigger changes
-			if (this.status.ongoing.indexOf(channel) < 0) dat.triggerChange(channel);
-			return f;
-		}
-		else {
-			this.status.remove(channel);
-			return f;
-		}
+		if (f.status === 200) await dat.local.update(channel, lastTimestamp, f.b);
+		this.status.remove(channel);
+		return f;
 	},
+
+	request: async function (method, channel, body, callBack, failedCallBack) {
+		var timestamp = parseInt(new Date().getTime() / 1000);
+
+		//add channel and timestamp to ignore list
+		dat.rdb.ignore[channel] = timestamp;
+
+		this.status.add(channel);
+
+		var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/${channel}`, {
+			method: method,
+			body: JSON.stringify(body),
+			headers: { 'X-timestamp': timestamp },
+		});
+
+		if (f.status === 201 || f.status === 200) {
+			await dat.local.update(channel, timestamp, f.b);
+			callBack(f);
+		}
+		else failedCallBack(f.status === 'connectionError', f);
+
+		delete dat.rdb.ignore[channel];
+		this.status.remove(channel);
+	}
 };
 
 window.addEventListener('firebase-status-signedin', () => {
-	dat.talk.status.ongoing = [];
+	dat.server.status.ongoing = [];
 });

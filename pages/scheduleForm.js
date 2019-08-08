@@ -140,7 +140,7 @@ vipPaging.pageTemplate['scheduleForm'] = {
 
 			console.log(data);
 
-			dat.request('PUT', `schedule/${pg.groupId}`, data, () => {
+			dat.server.request('PUT', `schedule/${pg.groupId}`, data, () => {
 				ui.float.success(gl('saved'));
 				window.history.go(-1);
 			}, (connectionError) => {

@@ -6,6 +6,7 @@ vipPaging.pageTemplate['home'] = {
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
 		GroundLevel.init();
+		pg.load();
 	},
 	innerHTML: d => `
 <div class="vipPaging-vLayout">
@@ -77,7 +78,40 @@ vipPaging.pageTemplate['home'] = {
 </div>
 `,
 	functions: {
-		//
+		load: async () => {
+			var currentPage = `${pg.thisPage.id}`;
+			var s = await dat.db.saved.where('channel').startsWith('schedule/').toArray();
+			var a = await dat.db.saved.where('channel').startsWith('assignment/').toArray();
+			var e = await dat.db.saved.where('channel').startsWith('exam/').toArray();
+			if (pg.thisPage.id !== currentPage) return;
+
+			//go into data col
+			var mergeData = function(fromArray) {
+				var r = {};
+				for (i in fromArray) {
+					for (ii in fromArray[i].data) r[ii] = fromArray[i].data[ii];
+				}
+				return r;
+			};
+			var s = mergeData(s);
+			var assignments = mergeData(a);
+			var exams = mergeData(e);
+
+			//filter to only tomorrow's schedule
+			var tomorrow = moment().subtract(1, 'day').format('d');
+			var schedules = [];
+			for (scheduleId in s) {
+				if (scheduleId[scheduleId.length - 1] !== tomorrow) continue;
+				schedules = schedules.concat(s[scheduleId]);
+			}
+			schedules.sort((a, b) => {
+				if (a.time < b.time) return -1;
+				if (a.time > b.time) return 1;
+				return 0;
+			});
+			console.log(schedules);
+
+		},
 	},
 	lang: {
 		en: {

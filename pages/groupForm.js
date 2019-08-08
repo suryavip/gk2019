@@ -70,7 +70,7 @@ vipPaging.pageTemplate['groupForm'] = {
 			var name = pg.getEl('name');
 			var school = pg.getEl('school');
 
-			if (name.value === pg.group.name && school.value === pg.group.school) {
+			if (typeof pg.parameter === 'string' && name.value === pg.group.name && school.value === pg.group.school) {
 				ui.float.success(gl('nothingChanged'));
 				window.history.go(-1);
 				return;
@@ -91,7 +91,7 @@ vipPaging.pageTemplate['groupForm'] = {
 				success = gl('saved');
 			}
 
-			dat.request(method, 'group', data, () => {
+			dat.server.request(method, 'group', data, () => {
 				ui.float.success(success);
 				window.history.go(-1);
 			}, (connectionError) => {

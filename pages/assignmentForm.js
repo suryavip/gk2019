@@ -187,7 +187,7 @@ vipPaging.pageTemplate['assignmentForm'] = {
 				success = gl('saved');
 			}
 
-			dat.request(method, `assignment/${pg.selectedGroup}`, data, () => {
+			dat.server.request(method, `assignment/${pg.selectedGroup}`, data, () => {
 				ui.float.success(success);
 				window.history.go(-1);
 			}, (connectionError) => {

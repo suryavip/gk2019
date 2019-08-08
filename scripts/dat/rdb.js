@@ -44,12 +44,12 @@ dat.rdb = {
 
 		if (newVal !== curData['lastTimestamp']) {
 			console.log(`changes on ${channel}: ${newVal} vs ${curData['lastTimestamp']}`);
-			var f = await dat.talk.fetch(channel, newVal);
+			var f = await dat.server.fetch(channel, newVal);
 			if (f.status !== 200) {
-				console.error(`fetch error, retrying after cooldown (${dat.talk.retryCoolDown} ms)`);
+				console.error(`fetch error, retrying after cooldown (${dat.server.retryCoolDown} ms)`);
 				setTimeout(() => {
 					dat.rdb.onChange(snapshot);
-				}, dat.talk.retryCoolDown);
+				}, dat.server.retryCoolDown);
 				return;
 			}
 			var groups = f.b;
@@ -68,6 +68,8 @@ dat.rdb = {
 		`exam/${groupId}`,
 	],
 	updateGroups: async function (newGroups) {
+		//push private data
+		newGroups[firebaseAuth.userId] = { level: 'admin' };
 		//compare this.groups vs newGroups
 		var added = {};
 		for (gid in newGroups) {
@@ -94,10 +96,10 @@ dat.rdb = {
 		//remove unused listener
 		for (gid in removed) {
 			var ep = this.endpoints(gid);
-			await dat.db.saved.bulkDelete(ep) //cleanup child channels for this group
+			await dat.local.bulkDelete(gid, ep); //cleanup child channels for this group
 			for (j in ep) {
 				this.remove(ep[j]);
-				if (dat.talk.status.ongoing.indexOf(ep[j]) < 0) dat.triggerChange(ep[j]); //trigger change when the data of these channels deleted
+				if (dat.server.status.ongoing.indexOf(ep[j]) < 0) dat.triggerChange(ep[j]); //trigger change when the data of these channels deleted
 			}
 			console.log(`remove listener for group ${gid}`);
 		}
