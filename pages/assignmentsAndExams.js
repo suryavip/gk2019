@@ -1,4 +1,4 @@
-vipPaging.pageTemplate['assignmnetsAndExams'] = {
+vipPaging.pageTemplate['assignmentsAndExams'] = {
 	import: [
 		'scripts/GroundLevel.js',
 		'scripts/ProfileResolver.js',
@@ -106,12 +106,12 @@ vipPaging.pageTemplate['assignmnetsAndExams'] = {
 				</div>`;
 
 				var aTime = moment(`${a.date}${a.examTime != null ? ` ${a.examTime}` : ''}`);
-				out += `<div class="container highlightable" id="${a.type}-${a.rowId}">
+				out += `<div class="container highlightable" id="a${a.rowId}">
 					<div class="list">
 						<div class="iconCircle"><div><i class="fas fa-minus"></i></div></div>
 						<!--div class="iconCircle"><div class="theme-positive"><i class="fas fa-check"></i></div></div-->
 						<div class="content">
-							<h3>${app.escapeHTML(a.subject)}</h3>
+							<h4>${gl(a.type)}: ${app.escapeHTML(a.subject)}</h4>
 							<h5>${app.displayDate(aTime, false, a.examTime != null)}</h5>
 						</div>
 					</div>
@@ -153,6 +153,9 @@ vipPaging.pageTemplate['assignmnetsAndExams'] = {
 			addAssignment: 'Add Assignment',
 			addExam: 'Add Exam',
 
+			assignment: 'Assignment',
+			exam: 'Exam',
+
 			deleteConfirm: t => t === 'assignment' ? 'Delete this assignment?' : 'Delete this exam?',
 			deleteSuccess: t => t === 'assignment' ? 'Assignment deleted' : 'Exam deleted',
 		},
@@ -163,6 +166,9 @@ vipPaging.pageTemplate['assignmnetsAndExams'] = {
 			delete: 'Hapus',
 			addAssignment: 'Tambah Tugas',
 			addExam: 'Tambah Ujian',
+
+			assignment: 'Tugas',
+			exam: 'Ujian',
 
 			deleteConfirm: t => t === 'assignment' ? 'Hapus tugas ini?' : 'Hapus ujian ini?',
 			deleteSuccess: t => t === 'assignment' ? 'Tugas berhasil dihapus' : 'Ujian berhasil dihapus',

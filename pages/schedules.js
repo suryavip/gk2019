@@ -115,8 +115,8 @@ vipPaging.pageTemplate['schedules'] = {
 					<h1>${day.format('dddd')}</h1>
 					<div class="vSpace-20"></div>
 					<div class="table">
-						<div>${subjects.join('')}</div>
-						<div style="width: 80px; text-align: right">${times.join('')}</div>
+						<div class="childSingleLine">${subjects.join('')}</div>
+						<div class="childSingleLine" style="width: 80px; text-align: right">${times.join('')}</div>
 					</div>
 					<div class="vSpace-20"></div>
 					<div class="bottomAction">

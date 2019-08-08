@@ -3,6 +3,8 @@ var GroundLevel = {
 	init: function () {
 		enableAllTippy();
 		photoLoader.load(pg.getEl('groundLevelProfilePhoto'), `profile_pic/${firebaseAuth.userId}_small.jpg`, `profile_pic/${firebaseAuth.userId}.jpg`);
+
+		this.doHighlight();
 	},
 
 	gl: (l, p) => gl(l, p, 'GroundLevel'),
@@ -21,7 +23,7 @@ var GroundLevel = {
 			<div data-active="${pageId === 'notifications'}" onclick="GroundLevel.go('notifications')" title="${this.gl('notifications')}"><i class="fas fa-bell"></i></div>
 			<div onclick="GroundLevel.add()" class="theme-primary"><i class="fas fa-plus"></i></div>
 			<div data-active="${pageId === 'schedules'}" onclick="GroundLevel.go('schedules')" title="${this.gl('schedules')}"><i class="fas fa-clock"></i></div>
-			<div data-active="${pageId === 'assignmnetsAndExams'}" onclick="GroundLevel.go('assignmnetsAndExams')" title="${this.gl('assignmnetsAndExams')}"><i class="fas fa-tasks"></i></div>
+			<div data-active="${pageId === 'assignmentsAndExams'}" onclick="GroundLevel.go('assignmentsAndExams')" title="${this.gl('assignmentsAndExams')}"><i class="fas fa-tasks"></i></div>
 		</div>`;
 	},
 
@@ -71,6 +73,30 @@ var GroundLevel = {
 		});
 	},
 
+	highlight: function (page, id) {
+		this.pendingHighlight = id;
+		this.go(page);
+	},
+
+	doHighlight: function () {
+		if (this.pendingHighlight == null) return;
+		var id = `a${this.pendingHighlight}`;
+		delete this.pendingHighlight;
+
+		setTimeout(() => {
+			console.log(id);
+			var target = pg.getEl(id);
+			console.log(target);
+			var top = target.offsetTop;
+			pg.thisPage.querySelector('.body > div:first-child').scrollTop = top - 20;
+	
+			target.classList.add('highlight');
+			setTimeout(() => {
+				target.classList.remove('highlight');
+			}, 800)
+		}, 500);
+	},
+
 };
 
 vipLanguage.lang['GroundLevel'] = {
@@ -78,7 +104,7 @@ vipLanguage.lang['GroundLevel'] = {
 		home: 'Home',
 		notifications: 'Notification',
 		schedules: 'Schedule',
-		assignmnetsAndExams: 'Assignment &amp; Exam',
+		assignmentsAndExams: 'Assignment &amp; Exam',
 		groups: 'Groups',
 		profile: 'Profile',
 
@@ -95,7 +121,7 @@ vipLanguage.lang['GroundLevel'] = {
 		home: 'Beranda',
 		notifications: 'Notifikasi',
 		schedules: 'Jadwal',
-		assignmnetsAndExams: 'Tugas &amp; Ujian',
+		assignmentsAndExams: 'Tugas &amp; Ujian',
 		groups: 'Grup-grup',
 		profile: 'Profil',
 

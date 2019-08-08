@@ -168,6 +168,15 @@ vipPaging.pageTemplate['examForm'] = {
 			pg.getEl('note').value = pg.exam.note;
 			pg.getEl('date').setAttribute('data-date', pg.exam.examDate);
 			pg.getEl('date').value = app.displayDate(pg.exam.examDate);
+
+			if (pg.exam.examTime == null) {
+				pg.getEl('time').value = '';
+				pg.getEl('clearTimeBtn').setAttribute('data-active', false);
+			}
+			else {
+				pg.getEl('time').value = pg.exam.examTime;
+				pg.getEl('clearTimeBtn').setAttribute('data-active', true);
+			}
 		},
 
 		done: async () => {
