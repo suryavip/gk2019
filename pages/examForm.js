@@ -140,23 +140,28 @@ vipPaging.pageTemplate['examForm'] = {
 
 		loadData: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var exams = await dat.db.saved.where('channel').startsWith('exam/').toArray();
+			var channel = await dat.db.ownership.where({id: pg.parameter}).first();
 			if (pg.thisPage.id !== currentPage) return;
-
-			pg.exam = null;
-			var groupId = '';
-			for (i in exams) {
-				if (exams[i].data[pg.parameter] == null) continue;
-				pg.exam = exams[i].data[pg.parameter];
-				groupId = exams[i].channel.replace('exam/', '');
+			if (channel == null) {
+				window.history.go(-1);
+				return;
 			}
 
+			var exams = await dat.db.saved.where({channel: channel.channel}).first();
+			if (pg.thisPage.id !== currentPage) return;
+
+			if (exams == null) {
+				window.history.go(-1);
+				return;
+			}
+
+			pg.exam = exams.data[pg.parameter];
 			if (pg.exam == null) {
 				window.history.go(-1);
 				return;
 			}
 
-			pg.selectedGroup = groupId;
+			pg.selectedGroup = channel.channel.split('/')[1];
 			pg.loadGroup();
 
 			pg.getEl('subject').value = pg.exam.subject;

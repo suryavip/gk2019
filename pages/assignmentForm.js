@@ -135,23 +135,28 @@ vipPaging.pageTemplate['assignmentForm'] = {
 
 		loadData: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var assignments = await dat.db.saved.where('channel').startsWith('assignment/').toArray();
+			var channel = await dat.db.ownership.where({id: pg.parameter}).first();
 			if (pg.thisPage.id !== currentPage) return;
-
-			pg.assignment = null;
-			var groupId = '';
-			for (i in assignments) {
-				if (assignments[i].data[pg.parameter] == null) continue;
-				pg.assignment = assignments[i].data[pg.parameter];
-				groupId = assignments[i].channel.replace('assignment/', '');
+			if (channel == null) {
+				window.history.go(-1);
+				return;
 			}
 
+			var assignments = await dat.db.saved.where({channel: channel.channel}).first();
+			if (pg.thisPage.id !== currentPage) return;
+
+			if (assignments == null) {
+				window.history.go(-1);
+				return;
+			}
+
+			pg.assignment = assignments.data[pg.parameter];
 			if (pg.assignment == null) {
 				window.history.go(-1);
 				return;
 			}
 
-			pg.selectedGroup = groupId;
+			pg.selectedGroup = channel.channel.split('/')[1];
 			pg.loadGroup();
 
 			pg.getEl('subject').value = pg.assignment.subject;
