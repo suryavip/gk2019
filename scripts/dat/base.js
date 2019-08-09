@@ -26,6 +26,9 @@ dat.attachListener = function (callBack, channels) {
 	var internalCB = function (e) {
 		var i = channels.indexOf(e.detail);
 		if (i > -1) callBack(e.detail);
+		var root = e.detail.split('/')[0];
+		var i = channels.indexOf(root);
+		if (i > -1) callBack(e.detail);
 	}
 	pg.thisPage.addEventListener(`dat-change`, internalCB);
 	callBack(channels[0])

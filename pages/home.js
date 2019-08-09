@@ -6,6 +6,7 @@ vipPaging.pageTemplate['home'] = {
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
 		GroundLevel.init();
+		dat.attachListener(pg.loadGroup, ['group', 'schedule', 'assignment', 'exam']);
 		pg.load();
 	},
 	innerHTML: d => `
@@ -35,6 +36,16 @@ vipPaging.pageTemplate['home'] = {
 			<button onclick="go('examForm')">${gl('addExam')}</button>
 		</div>
 
+		<div class="aPadding-30 activable" style="text-align:center" id="free">
+			<h2>${gl('free')}</h2>
+			<div class="vSpace-30"></div>
+			<img src="illustrations/undraw_relaxation_1_wbr7.svg" width="200px" />
+			<div class="vSpace-30"></div>
+			<button onclick="GroundLevel.go('schedules')">${gl('seeSchedule')}</button>
+			<div class="vSpace-20"></div>
+			<button onclick="GroundLeve.go('assignmentsAndExams')">${gl('seeAssignmentAndExam')}</button>
+		</div>
+
 		<div class="container-20 activable" id="quickSchedule">
 			<div class="table">
 				<div style="width:100%"><h3>${gl('tomorrowsSchedule')}</h3></div>
@@ -49,6 +60,14 @@ vipPaging.pageTemplate['home'] = {
 					<div class="childSingleLine" style="width: 80px; text-align: right" id="quickScheduleHours"></div>
 				</div>
 			</div>
+		</div>
+
+		<div class="aPadding-30 activable" style="text-align:center" id="noAssignmentOrExam">
+			<h2>${gl('noAssignmentOrExam')}</h2>
+			<div class="vSpace-30"></div>
+			<img src="illustrations/undraw_relaxation_1_wbr7.svg" width="200px" />
+			<div class="vSpace-30"></div>
+			<button onclick="GroundLeve.go('assignmentsAndExams')">${gl('seeAssignmentAndExam')}</button>
 		</div>
 
 		<div class="container-20 activable" id="quickAssignment">
@@ -78,8 +97,10 @@ vipPaging.pageTemplate['home'] = {
 </div>
 `,
 	functions: {
+		tomorrow: moment().add(1, 'day'),
 		load: async () => {
 			var currentPage = `${pg.thisPage.id}`;
+			var g = await dat.db.saved.where({ channel: 'group' }).first();
 			var s = await dat.db.saved.where('channel').startsWith('schedule/').toArray();
 			var a = await dat.db.saved.where('channel').startsWith('assignment/').toArray();
 			var e = await dat.db.saved.where('channel').startsWith('exam/').toArray();
@@ -100,15 +121,22 @@ vipPaging.pageTemplate['home'] = {
 			var sEmpty = await pg.loadQuickSchedule(s);
 			var aEmpty = await pg.loadQuickAssignment(a);
 			var eEmpty = await pg.loadQuickExam(e);
-			
+
+			//freshStart means no group, schedule, assignment or exam
+			//empty means there is group, but no schedule, assignment or exam at all
+			//free means there is no schedule, assignment or exam for tomorrow
+			//noAssignmentOrExam means there is schedule, but no assignment or exam for tomorrow
+
+			/*var gEmpty = g == null || Object.keys(g.data).length === 0;
+			pg.getEl('freshStart').setAttribute('data-active', gEmpty);*/
+
 			pg.getEl('empty').setAttribute('data-active', sEmpty && aEmpty && eEmpty);
 		},
 		loadQuickSchedule: async (s) => {
 			//filter to only tomorrow's schedule
-			var tomorrow = moment().add(1, 'day').format('d');
 			var schedules = [];
 			for (scheduleId in s) {
-				if (scheduleId[scheduleId.length - 1] !== tomorrow) continue;
+				if (scheduleId[scheduleId.length - 1] !== pg.tomorrow.format('d')) continue;
 				schedules = schedules.concat(s[scheduleId]);
 			}
 			schedules.sort((a, b) => {
@@ -134,10 +162,9 @@ vipPaging.pageTemplate['home'] = {
 		},
 		loadQuickAssignment: async (assignment) => {
 			//filter to only tomorrow's schedule
-			var tomorrow = moment().add(1, 'day').format('YYYY-MM-DD');
 			var out = [];
 			for (assignmentId in assignment) {
-				if (assignment[assignmentId].dueDate !== tomorrow) continue;
+				if (assignment[assignmentId].dueDate !== pg.tomorrow.format('YYYY-MM-DD')) continue;
 
 				var a = assignment[assignmentId];
 
@@ -154,16 +181,15 @@ vipPaging.pageTemplate['home'] = {
 				</div>`);
 			}
 			pg.getEl('quickAssignmentContent').innerHTML = out.join('<div class="vSpace-10"></div>');
-			pg.getEl('quickAssignment').setAttribute('data-active', out !== '');
+			pg.getEl('quickAssignment').setAttribute('data-active', out.length > 0);
 
-			return out === ''; //is empty
+			return out.length === 0; //is empty
 		},
 		loadQuickExam: async (exam) => {
 			//filter to only tomorrow's schedule
-			var tomorrow = moment().add(1, 'day').format('YYYY-MM-DD');
 			var e = [];
 			for (examId in exam) {
-				if (exam[examId].examDate !== tomorrow) continue;
+				if (exam[examId].examDate !== pg.tomorrow.format('YYYY-MM-DD')) continue;
 				exam[examId]['examId'] = examId;
 				e.push(exam[examId]);
 			}
@@ -195,9 +221,9 @@ vipPaging.pageTemplate['home'] = {
 				</div>`);
 			}
 			pg.getEl('quickExamContent').innerHTML = out.join('<div class="vSpace-10"></div>');
-			pg.getEl('quickExam').setAttribute('data-active', out !== '');
+			pg.getEl('quickExam').setAttribute('data-active', out.length > 0);
 
-			return out === ''; //is empty
+			return out.length === 0; //is empty
 		},
 	},
 	lang: {
@@ -205,10 +231,24 @@ vipPaging.pageTemplate['home'] = {
 			welcome: 'Welcome...',
 			createGroup: `Create new Class's Group`,
 			joinTips: 'or join with existing group using link',
+
 			emptyTips: 'Start filling data...',
 			manageSchedule: 'Manage Schedule',
 			addAssignment: 'Add Assignment',
 			addExam: 'Add Exam',
+
+			freeToday: `Nothing for today`,
+			freeTomorrow: `Nothing for tomorrow`,
+			seeSchedule: 'See Schedules',
+			seeAssignmentAndExam: 'See Assignments and Exams',
+
+			noAssignmentOrExamToday: 'There is no assignment or exam today',
+			noAssignmentOrExamTomorrow: 'There is no assignment or exam tomorrow',
+
+			todaysSchedule: `Today's schedule:`,
+			todaysAssignment: `Today's assignment:`,
+			todaysExam: `Today's exam:`,
+
 			tomorrowsSchedule: `Tomorrow's schedule:`,
 			tomorrowsAssignment: `Tomorrow's assignment:`,
 			tomorrowsExam: `Tomorrow's exam:`,
@@ -217,10 +257,24 @@ vipPaging.pageTemplate['home'] = {
 			welcome: 'Selamat datang...',
 			createGroup: 'Buat Grup Kelas',
 			joinTips: 'atau gunakan link untuk bergabung ke grup yang sudah ada',
+
 			emptyTips: 'Mulai isi data...',
 			manageSchedule: 'Atur Jadwal',
 			addAssignment: 'Tambah Tugas',
 			addExam: 'Tambah Ujian',
+
+			freeToday: `Tidak ada apa-apa hari ini`,
+			freeTomorrow: `Tidak ada apa-apa besok`,
+			seeSchedule: 'Lihat Jadwal',
+			seeAssignmentAndExam: 'Lihat Tugas dan Ujian',
+
+			noAssignmentOrExamToday: 'Tidak ada tugas atau ujian hari ini',
+			noAssignmentOrExamTomorrow: 'Tidak ada tugas atau ujian besok',
+
+			todaysSchedule: `Jadwal hari ini:`,
+			todaysAssignment: `Tugas hari ini:`,
+			todaysExam: `Ujian hari ini:`,
+
 			tomorrowsSchedule: `Jadwal besok:`,
 			tomorrowsAssignment: `Tugas besok:`,
 			tomorrowsExam: `Ujian besok:`,
