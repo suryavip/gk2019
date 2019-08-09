@@ -3,8 +3,6 @@ var GroundLevel = {
 	init: function () {
 		enableAllTippy();
 		photoLoader.load(pg.getEl('groundLevelProfilePhoto'), `profile_pic/${firebaseAuth.userId}_small.jpg`, `profile_pic/${firebaseAuth.userId}.jpg`);
-
-		this.doHighlight();
 	},
 
 	gl: (l, p) => gl(l, p, 'GroundLevel'),
@@ -83,18 +81,14 @@ var GroundLevel = {
 		var id = `a${this.pendingHighlight}`;
 		delete this.pendingHighlight;
 
+		var target = pg.getEl(id);
+		var top = target.offsetTop;
+		pg.thisPage.querySelector('.body > div:first-child').scrollTop = top - 20;
+
+		target.classList.add('highlight');
 		setTimeout(() => {
-			console.log(id);
-			var target = pg.getEl(id);
-			console.log(target);
-			var top = target.offsetTop;
-			pg.thisPage.querySelector('.body > div:first-child').scrollTop = top - 20;
-	
-			target.classList.add('highlight');
-			setTimeout(() => {
-				target.classList.remove('highlight');
-			}, 800)
-		}, 500);
+			target.classList.remove('highlight');
+		}, 800)
 	},
 
 };

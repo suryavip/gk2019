@@ -127,6 +127,8 @@ vipPaging.pageTemplate['schedules'] = {
 				day.add(1, 'days');
 			}
 			pg.getEl('content').innerHTML = out.join('');
+
+			GroundLevel.doHighlight();
 		},
 	},
 	lang: {

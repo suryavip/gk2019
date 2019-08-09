@@ -42,7 +42,7 @@ vipPaging.pageTemplate['home'] = {
 			<div class="vSpace-30"></div>
 			<button onclick="GroundLevel.go('schedules')">${gl('seeSchedule')}</button>
 			<div class="vSpace-20"></div>
-			<button onclick="GroundLeve.go('assignmentsAndExams')">${gl('seeAssignmentAndExam')}</button>
+			<button onclick="GroundLevel.go('assignmentsAndExams')">${gl('seeAssignmentAndExam')}</button>
 		</div>
 
 		<div class="container-20 activable" id="quickSchedule">
@@ -66,7 +66,7 @@ vipPaging.pageTemplate['home'] = {
 			<div class="vSpace-30"></div>
 			<img src="illustrations/undraw_relaxation_1_wbr7.svg" width="200px" />
 			<div class="vSpace-30"></div>
-			<button onclick="GroundLeve.go('assignmentsAndExams')">${gl('seeAssignmentAndExam')}</button>
+			<button onclick="GroundLevel.go('assignmentsAndExams')">${gl('seeAssignmentAndExam')}</button>
 		</div>
 
 		<div class="container-20 activable" id="quickAssignment">
@@ -105,6 +105,7 @@ vipPaging.pageTemplate['home'] = {
 			var isToday = pg.selectedDay.format('d') === moment().format('d');
 			if (isToday) pg.selectedDay = moment().add(1, 'day');
 			else pg.selectedDay = moment();
+			pg.thisPage.querySelector('.body > div:first-child').scrollTop = 0;
 			pg.load();
 		},
 		load: async () => {

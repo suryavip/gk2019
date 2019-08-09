@@ -129,6 +129,8 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 			enableAllTippy();
 
 			pg.getEl('empty').setAttribute('data-active', all.length === 0);
+
+			GroundLevel.doHighlight();
 		},
 		delete: async (type, owner, id) => {
 			ui.popUp.confirm(gl('deleteConfirm', type), a => {
