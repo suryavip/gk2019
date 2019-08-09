@@ -6,15 +6,14 @@ vipPaging.pageTemplate['home'] = {
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
 		GroundLevel.init();
-		dat.attachListener(pg.loadGroup, ['group', 'schedule', 'assignment', 'exam']);
-		pg.load();
+		dat.attachListener(pg.load, ['group', 'schedule', 'assignment', 'exam']);
 	},
 	innerHTML: d => `
 <div class="vipPaging-vLayout">
 	<div class="head"><div>${GroundLevel.head(d.pageId)}</div></div>
 	<div class="body"><div><div class="maxWidthWrap-640">
 		
-		<div class="aPadding-30 activable" style="text-align:center" id="freshStart">
+		<div class="container aPadding-30 activable" style="text-align:center" id="freshStart">
 			<h2>${gl('welcome')}</h2>
 			<div class="vSpace-30"></div>
 			<img src="illustrations/undraw_welcome_3gvl.svg" width="200px" />
@@ -24,7 +23,7 @@ vipPaging.pageTemplate['home'] = {
 			<h3>${gl('joinTips')}</h3>
 		</div>
 
-		<div class="aPadding-30 activable" style="text-align:center" id="empty">
+		<div class="container aPadding-30 activable" style="text-align:center" id="empty">
 			<h2>${gl('emptyTips')}</h2>
 			<div class="vSpace-30"></div>
 			<img src="illustrations/undraw_product_teardown_elol.svg" width="200px" />
@@ -36,8 +35,8 @@ vipPaging.pageTemplate['home'] = {
 			<button onclick="go('examForm')">${gl('addExam')}</button>
 		</div>
 
-		<div class="aPadding-30 activable" style="text-align:center" id="free">
-			<h2>${gl('free')}</h2>
+		<div class="container aPadding-30 activable" style="text-align:center" id="free">
+			<h2 id="freeTitle"></h2>
 			<div class="vSpace-30"></div>
 			<img src="illustrations/undraw_relaxation_1_wbr7.svg" width="200px" />
 			<div class="vSpace-30"></div>
@@ -48,7 +47,7 @@ vipPaging.pageTemplate['home'] = {
 
 		<div class="container-20 activable" id="quickSchedule">
 			<div class="table">
-				<div style="width:100%"><h3>${gl('tomorrowsSchedule')}</h3></div>
+				<div style="width:100%"><h3 id="quickScheduleTitle"></h3></div>
 				<div>
 					<div class="circleButton" onclick="GroundLevel.go('schedules')"><i class="fas fa-ellipsis-h"></i></div>
 				</div>
@@ -62,8 +61,8 @@ vipPaging.pageTemplate['home'] = {
 			</div>
 		</div>
 
-		<div class="aPadding-30 activable" style="text-align:center" id="noAssignmentOrExam">
-			<h2>${gl('noAssignmentOrExam')}</h2>
+		<div class="container aPadding-30 activable" style="text-align:center" id="noAssignmentOrExam">
+			<h2 id="noAssignmentOrExamTitle"></h2>
 			<div class="vSpace-30"></div>
 			<img src="illustrations/undraw_relaxation_1_wbr7.svg" width="200px" />
 			<div class="vSpace-30"></div>
@@ -72,7 +71,7 @@ vipPaging.pageTemplate['home'] = {
 
 		<div class="container-20 activable" id="quickAssignment">
 			<div class="table">
-				<div style="width:100%"><h3>${gl('tomorrowsAssignment')}</h3></div>
+				<div style="width:100%"><h3 id="quickAssignmentTitle"></h3></div>
 				<div>
 					<div class="circleButton" onclick="GroundLevel.go('assignmentsAndExams')"><i class="fas fa-ellipsis-h"></i></div>
 				</div>
@@ -83,7 +82,7 @@ vipPaging.pageTemplate['home'] = {
 
 		<div class="container-20 activable" id="quickExam">
 			<div class="table">
-				<div style="width:100%"><h3>${gl('tomorrowsExam')}</h3></div>
+				<div style="width:100%"><h3 id="quickExamTitle"></h3></div>
 				<div>
 					<div class="circleButton" onclick="GroundLevel.go('assignmentsAndExams')"><i class="fas fa-ellipsis-h"></i></div>
 				</div>
@@ -92,13 +91,32 @@ vipPaging.pageTemplate['home'] = {
 			<div id="quickExamContent"></div>
 		</div>
 
+		<div class="container aPadding-30">
+			<button onclick="pg.toggleDay()" id="toggleDay"></button>
+		</div>
+
 	</div></div></div>
 	<div class="foot"><div>${GroundLevel.foot(d.pageId)}</div></div>
 </div>
 `,
 	functions: {
-		tomorrow: moment().add(1, 'day'),
+		selectedDay: moment().add(1, 'day'),
+		toggleDay: () => {
+			var isToday = pg.selectedDay.format('d') === moment().format('d');
+			if (isToday) pg.selectedDay = moment().add(1, 'day');
+			else pg.selectedDay = moment();
+			pg.load();
+		},
 		load: async () => {
+			//set language
+			var isToday = pg.selectedDay.format('d') === moment().format('d');
+			pg.getEl('freeTitle').textContent = isToday ? gl('freeToday') : gl('freeTomorrow');
+			pg.getEl('quickScheduleTitle').textContent = isToday ? gl('todaysSchedule') : gl('tomorrowsSchedule');
+			pg.getEl('noAssignmentOrExamTitle').textContent = isToday ? gl('noAssignmentOrExamToday') : gl('noAssignmentOrExamTomorrow');
+			pg.getEl('quickAssignmentTitle').textContent = isToday ? gl('todaysAssignment') : gl('tomorrowsAssignment');
+			pg.getEl('quickExamTitle').textContent = isToday ? gl('todaysExam') : gl('tomorrowsExam');
+			pg.getEl('toggleDay').textContent = isToday ? gl('seeTomorrow') : gl('seeToday');
+
 			var currentPage = `${pg.thisPage.id}`;
 			var g = await dat.db.saved.where({ channel: 'group' }).first();
 			var s = await dat.db.saved.where('channel').startsWith('schedule/').toArray();
@@ -118,25 +136,29 @@ vipPaging.pageTemplate['home'] = {
 			var a = mergeData(a);
 			var e = mergeData(e);
 
+			var gEmpty = g == null || Object.keys(g.data).length === 0;
+			var sFresh = Object.keys(s).length === 0;
+			var aFresh = Object.keys(a).length === 0;
+			var eFresh = Object.keys(e).length === 0;
 			var sEmpty = await pg.loadQuickSchedule(s);
 			var aEmpty = await pg.loadQuickAssignment(a);
 			var eEmpty = await pg.loadQuickExam(e);
 
-			//freshStart means no group, schedule, assignment or exam
+			//freshStart means no group, schedule, assignment or exam at all
 			//empty means there is group, but no schedule, assignment or exam at all
 			//free means there is no schedule, assignment or exam for tomorrow
-			//noAssignmentOrExam means there is schedule, but no assignment or exam for tomorrow
+			//noAssignmentOrExam means there is schedule for tomorrow, but no assignment or exam for tomorrow
 
-			/*var gEmpty = g == null || Object.keys(g.data).length === 0;
-			pg.getEl('freshStart').setAttribute('data-active', gEmpty);*/
-
-			pg.getEl('empty').setAttribute('data-active', sEmpty && aEmpty && eEmpty);
+			pg.getEl('freshStart').setAttribute('data-active', gEmpty && sFresh && aFresh && eFresh);
+			pg.getEl('empty').setAttribute('data-active', sFresh && aFresh && eFresh);
+			pg.getEl('free').setAttribute('data-active', sEmpty && aEmpty && eEmpty);
+			pg.getEl('noAssignmentOrExam').setAttribute('data-active', !sEmpty && aEmpty && eEmpty);
 		},
 		loadQuickSchedule: async (s) => {
 			//filter to only tomorrow's schedule
 			var schedules = [];
 			for (scheduleId in s) {
-				if (scheduleId[scheduleId.length - 1] !== pg.tomorrow.format('d')) continue;
+				if (scheduleId[scheduleId.length - 1] !== pg.selectedDay.format('d')) continue;
 				schedules = schedules.concat(s[scheduleId]);
 			}
 			schedules.sort((a, b) => {
@@ -164,7 +186,7 @@ vipPaging.pageTemplate['home'] = {
 			//filter to only tomorrow's schedule
 			var out = [];
 			for (assignmentId in assignment) {
-				if (assignment[assignmentId].dueDate !== pg.tomorrow.format('YYYY-MM-DD')) continue;
+				if (assignment[assignmentId].dueDate !== pg.selectedDay.format('YYYY-MM-DD')) continue;
 
 				var a = assignment[assignmentId];
 
@@ -189,7 +211,7 @@ vipPaging.pageTemplate['home'] = {
 			//filter to only tomorrow's schedule
 			var e = [];
 			for (examId in exam) {
-				if (exam[examId].examDate !== pg.tomorrow.format('YYYY-MM-DD')) continue;
+				if (exam[examId].examDate !== pg.selectedDay.format('YYYY-MM-DD')) continue;
 				exam[examId]['examId'] = examId;
 				e.push(exam[examId]);
 			}
@@ -252,6 +274,9 @@ vipPaging.pageTemplate['home'] = {
 			tomorrowsSchedule: `Tomorrow's schedule:`,
 			tomorrowsAssignment: `Tomorrow's assignment:`,
 			tomorrowsExam: `Tomorrow's exam:`,
+
+			seeToday: `See what's for today`,
+			seeTomorrow: `See what's for tomorrow`,
 		},
 		id: {
 			welcome: 'Selamat datang...',
@@ -278,6 +303,9 @@ vipPaging.pageTemplate['home'] = {
 			tomorrowsSchedule: `Jadwal besok:`,
 			tomorrowsAssignment: `Tugas besok:`,
 			tomorrowsExam: `Ujian besok:`,
+
+			seeToday: `Lihat untuk hari ini`,
+			seeTomorrow: `Lihat untuk besok`,
 		},
 	},
 };
