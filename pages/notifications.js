@@ -53,13 +53,20 @@ vipPaging.pageTemplate['notifications'] = {
 					</div>
 				</div></div>`;*/
 
-				console.log(n);
+				if (n.data.performerName != null)  n.data.performerName = `<strong>${app.escapeHTML(n.data.performerName)}</strong>`;
+				if (n.data.targetName != null) n.data.targetName = `<strong>${app.escapeHTML(n.data.targetName)}</strong>`;
+				if (n.data.groupName != null) n.data.groupName = `<strong>${app.escapeHTML(n.data.groupName)}</strong>`;
+				if (n.data.subject != null) n.data.subject = `<strong>${app.escapeHTML(n.data.subject)}</strong>`;
+				if (n.data.dayName != null) n.data.dayName = `<strong>${moment(n.data.day, 'd').format('dddd')}</strong>`;
+
+				var notifText = gl(n.type, n.data);
+				if (notifText == null) continue;
 
 				out += `<div class="container">
 					<div class="list">
 						<div class="photo"><div data-photoRefPath="profile_pic/${n.data.performerUserId}_small.jpg" data-fullPhotoRefPath="profile_pic/${n.data.performerUserId}.jpg"><i class="fas fa-user"></i></div></div>
 						<div class="content" data-profile="${n.data.performerUserId}">
-							<h4 data-profileData="name">${app.escapeHTML(n.data.performerName)}</h4>
+							<p>${notifText}</p>
 							<h5>${moment(n.time * 1000).fromNow()}</h5>
 						</div>
 					</div>
@@ -69,7 +76,6 @@ vipPaging.pageTemplate['notifications'] = {
 			pg.getEl('content').innerHTML = out;
 
 			photoLoader.autoLoad(pg.getEl('content'));
-			ProfileResolver.fillData(pg.getEl('content'));
 
 			pg.getEl('empty').setAttribute('data-active', out === '');
 		},
@@ -78,12 +84,12 @@ vipPaging.pageTemplate['notifications'] = {
 		en: {
 			empty: `You're all caught up!`,
 
-			'assignment-new': '',
-			'assignment-edit': '',
-			'assignment-delete': '',
-			'exam-new': '',
-			'exam-edit': '',
-			'exam-delete': '',
+			'assignment-new': p => `${p['performerName']} added new ${p['subject']}\'s assignment`,
+			'assignment-edit': p => `${p['performerName']} edited ${p['subject']}\'s assignment`,
+			'assignment-delete': p => `${p['performerName']} deleted ${p['subject']}\'s assignment`,
+			'exam-new': p => `${p['performerName']} added new ${p['subject']}\'s exam`,
+			'exam-edit': p => `${p['performerName']} edited ${p['subject']}\'s exam`,
+			'exam-delete': p => `${p['performerName']} deleted ${p['subject']}\'s exam`,
 			'group-edit': p => `${p['performerName']} changed ${p['groupName']} group info's`,
 			'pending-new': p => `${p['performerName']} asked to join ${p['groupName']}`,
 			'member-new-target': p => `${p['performerName']} accepted you to join ${p['groupName']}`,
@@ -94,17 +100,17 @@ vipPaging.pageTemplate['notifications'] = {
 			'member-delete-self': p => `${p['performerName']} left from ${p['groupName']}`,
 			'member-delete': p => `${p['performerName']} kicked ${p['targetName']} from ${p['groupName']}`,
 			'admin-delete': p => `${p['performerName']} left from ${p['groupName']}`,
-			'schedule-edit': '',
+			'schedule-edit': p => `${p['performerName']} changed ${p['dayName']}\'s schedule`,
 		},
 		id: {
 			empty: 'Tidak ada notifikasi',
 
-			'assignment-new': '',
-			'assignment-edit': '',
-			'assignment-delete': '',
-			'exam-new': '',
-			'exam-edit': '',
-			'exam-delete': '',
+			'assignment-new': p => `${p['performerName']} menambahkan tugas ${p['subject']}`,
+			'assignment-edit': p => `${p['performerName']} mengubah tugas ${p['subject']}`,
+			'assignment-delete': p => `${p['performerName']} menghapus tugas ${p['subject']}`,
+			'exam-new': p => `${p['performerName']} menambahkan ujian ${p['subject']}`,
+			'exam-edit': p => `${p['performerName']} mengubah ujian ${p['subject']}`,
+			'exam-delete': p => `${p['performerName']} menghapus ujian ${p['subject']}`,
 			'group-edit': p => `${p['performerName']} mengubah info grup ${p['groupName']}`,
 			'pending-new': p => `${p['performerName']} meminta bergabung kedalam grup ${p['groupName']}`,
 			'member-new-target': p => `${p['performerName']} menerima kamu bergabung kedalam grup ${p['groupName']}`,
@@ -115,7 +121,7 @@ vipPaging.pageTemplate['notifications'] = {
 			'member-delete-self': p => `${p['performerName']} keluar dari grup ${p['groupName']}`,
 			'member-delete': p => `${p['performerName']} mengeluarkan ${p['targetName']} dari grup ${p['groupName']}`,
 			'admin-delete': p => `${p['performerName']} keluar dari grup ${p['groupName']}`,
-			'schedule-edit': '',
+			'schedule-edit': p => `${p['performerName']} mengubah jadwal hari ${p['dayName']}`,
 		},
 	},
 };
