@@ -35,14 +35,18 @@ var photoLoader = {
 	autoLoad: function (scope) {
 		if (scope == null) scope = pg.thisPage;
 		var photos = scope.querySelectorAll('[data-photoRefPath]');
-		var toLoad = [];
+		var toLoad = {};
 		for (var i = 0; i < photos.length; i++) {
-			var value = photos[i].getAttribute('data-photoRefPath');
-			toLoad.push(value);
+			var photoRefPath = photos[i].getAttribute('data-photoRefPath');
+			var fullPhotoRefPath = photos[i].getAttribute('data-fullPhotoRefPath');
+			toLoad[photoRefPath] = fullPhotoRefPath;
+		}
+		for (photoRefPath in toLoad) {
+			var fullPhotoRefPath = toLoad[photoRefPath];
 			this.load(
-				Array.prototype.slice.call(scope.querySelectorAll(`[data-photoRefPath="${value}"]`)),
-				value,
-				photos[i].getAttribute('data-fullPhotoRefPath')
+				Array.prototype.slice.call(scope.querySelectorAll(`[data-photoRefPath="${photoRefPath}"]`)),
+				photoRefPath,
+				photoRefPath
 			);
 		}
 	},
