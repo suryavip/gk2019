@@ -138,7 +138,9 @@ vipPaging.pageTemplate['home'] = {
 			var e = mergeData(e);
 
 			var gEmpty = g == null || Object.keys(g.data).length === 0;
-			var sFresh = Object.keys(s).length === 0;
+			var sCount = 0;
+			for (i in s) sCount += s[i].length;
+			var sFresh = sCount === 0;
 			var aFresh = Object.keys(a).length === 0;
 			var eFresh = Object.keys(e).length === 0;
 			var sEmpty = await pg.loadQuickSchedule(s);
