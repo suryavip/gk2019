@@ -81,7 +81,7 @@ var ProfileResolver = {
 		this.resolve(userIds, users => {
 			for (userId in users) {
 				var user = users[userId];
-				var target = scope.querySelectorAll(`[data-profile="${userId}"] [data-profileData]`);
+				var target = scope.querySelectorAll(`[data-profile="${userId}"][data-profileData]`);
 				for (var i = 0; i < target.length; i++) {
 					var col = target[i].getAttribute('data-profileData');
 					var data = user[col];

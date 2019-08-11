@@ -36,12 +36,12 @@ var GroundLevel = {
 
 	profilePopUp: function () {
 		//show popup of own profile, with 2 button: one for edit, one for signout
-		var popUpBuild = (id) => `<div data-profile="${firebaseAuth.userId}">
+		var popUpBuild = (id) => `<div>
 				<div class="vSpace-10"></div>
 				<div class="profilePhoto circleCenter-120"><i class="fas fa-user"></i></div>
 				<div class="vSpace-20"></div>
-				<h1 data-profileData="name">...</h1>
-				<h5 data-profileData="school"></h5>
+				<h1 data-profile="${firebaseAuth.userId}" data-profileData="name">...</h1>
+				<h5 data-profile="${firebaseAuth.userId}" data-profileData="school"></h5>
 				<div class="table dual-10 vSpace-30">
 					<div><button class="primary" onclick="go('settings')">${this.gl('settings')}</button></div>
 					<div><button class="negative" onclick="GroundLevel.signOut()">${this.gl('signOut')}</button></div>
