@@ -91,9 +91,11 @@ vipPaging.pageTemplate['groupForm'] = {
 				success = gl('saved');
 			}
 
-			dat.server.request(method, 'group', data, () => {
+			dat.server.request(method, 'group', data, (f) => {
 				ui.float.success(success);
-				window.history.go(-1);
+				if (typeof pg.parameter === 'string') window.history.go(-1);
+				else if (vipHistory.getPrevStack() === 'groups') window.history.go(-1);
+				else go('groups', null, 1);
 			}, (connectionError) => {
 				ui.btnLoading.off(pg.getEl('btn'));
 				if (connectionError) ui.float.error(gl('connectionError', null, 'app'));

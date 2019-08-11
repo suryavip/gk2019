@@ -91,7 +91,7 @@ vipPaging.pageTemplate['home'] = {
 			<div id="quickExamContent"></div>
 		</div>
 
-		<div class="container aPadding-30">
+		<div class="container aPadding-30 activable" id="toggleDayContainer">
 			<button onclick="pg.toggleDay()" id="toggleDay"></button>
 		</div>
 
@@ -152,10 +152,13 @@ vipPaging.pageTemplate['home'] = {
 			//free means there is no schedule, assignment or exam for tomorrow
 			//noAssignmentOrExam means there is schedule for tomorrow, but no assignment or exam for tomorrow
 
-			pg.getEl('freshStart').setAttribute('data-active', gEmpty && sFresh && aFresh && eFresh);
-			pg.getEl('empty').setAttribute('data-active', sFresh && aFresh && eFresh);
-			pg.getEl('free').setAttribute('data-active', sEmpty && aEmpty && eEmpty);
+			var isFresh = sFresh && aFresh && eFresh;
+
+			pg.getEl('freshStart').setAttribute('data-active', gEmpty && isFresh);
+			pg.getEl('empty').setAttribute('data-active', !gEmpty && isFresh);
+			pg.getEl('free').setAttribute('data-active', !isFresh && sEmpty && aEmpty && eEmpty);
 			pg.getEl('noAssignmentOrExam').setAttribute('data-active', !sEmpty && aEmpty && eEmpty);
+			pg.getEl('toggleDayContainer').setAttribute('data-active', !isFresh);
 		},
 		loadQuickSchedule: async (s) => {
 			//filter to only tomorrow's schedule
