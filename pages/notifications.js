@@ -102,7 +102,7 @@ vipPaging.pageTemplate['notifications'] = {
 
 			if (n.data.subject != null) n.data.subject = `<strong>${app.escapeHTML(n.data.subject)}</strong>`;
 
-			if (n.data.dayName != null) n.data.dayName = `<strong>${moment(n.data.day, 'd').format('dddd')}</strong>`;
+			if (n.data.day != null) n.data.dayName = `<strong>${moment(n.data.day, 'd').format('dddd')}</strong>`;
 
 			var notifText = gl(n.type, n.data);
 			if (notifText == null) return '';
