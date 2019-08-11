@@ -81,6 +81,20 @@ vipPaging.pageTemplate['notifications'] = {
 
 			if (n.type === 'schedule-edit') onclick = `GroundLevel.highlight('schedules', '${n.data.scheduleId}')`;
 
+			var isGroupThings = [
+				'group-edit',
+				'pending-new',
+				'member-new-target',
+				'member-new',
+				'admin-new-target',
+				'admin-new',
+				'admin-stop',
+				'member-delete-self',
+				'member-delete',
+				'admin-delete',
+			];
+			if (isGroupThings.indexOf(n.type) >= 0) onclick = `go('group', '${n.data.groupId}')`;
+
 			var card = '';
 			/*card = `<div class="aPadding-20-tandem"><div class="card list feedback">
 				<div class="iconCircle"><div><i class="fas fa-minus"></i></div></div>
@@ -91,7 +105,7 @@ vipPaging.pageTemplate['notifications'] = {
 				</div>
 			</div></div>`;*/
 
-			if (n.data.performerName != null)  n.data.performerName = `<strong data-profile="${n.data.performerUserId}" data-profileData="name">${app.escapeHTML(n.data.performerName)}</strong>`;
+			if (n.data.performerName != null) n.data.performerName = `<strong data-profile="${n.data.performerUserId}" data-profileData="name">${app.escapeHTML(n.data.performerName)}</strong>`;
 
 			if (n.data.targetName != null) n.data.targetName = `<strong data-profile="${n.data.targetUserId}" data-profileData="name">${app.escapeHTML(n.data.targetName)}</strong>`;
 
