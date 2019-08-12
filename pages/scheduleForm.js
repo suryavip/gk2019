@@ -3,7 +3,7 @@ vipPaging.pageTemplate['scheduleForm'] = {
 	opening: () => {
 		ui.btnLoading.install();
 
-		pg.groupId = pg.parameter.split('schedule')[0];
+		pg.owner = pg.parameter.split('schedule')[0];
 
 		pg.loadData();
 	},
@@ -18,6 +18,7 @@ vipPaging.pageTemplate['scheduleForm'] = {
 	<div class="body"><div><div class="maxWidthWrap-480">
 		<div class="container-20">
 			<h1>${moment(d.parameter[d.parameter.length - 1], 'd').format('dddd')}</h1>
+			<h4 id="groupName"></h4>
 		</div>
 		<div id="schedules"></div>
 		<div class="aPadding-20">
@@ -61,7 +62,7 @@ vipPaging.pageTemplate['scheduleForm'] = {
 					var tb = schedules[i].lastElementChild;
 					var startAt = tb.firstElementChild.firstElementChild;
 					var endAt = tb.lastElementChild.firstElementChild;
-	
+
 					if (startAt.getAttribute('data-untouched') === 'true') {
 						//adjust to lastStartAt
 						startAt.value = lastEndAt;
@@ -72,11 +73,11 @@ vipPaging.pageTemplate['scheduleForm'] = {
 						var newEndAt = moment(startAt.value, 'HH:mm').add(timeLength, 'milliseconds');
 						endAt.value = moment(newEndAt).format('HH:mm');
 					}
-	
+
 					lastStartAt = startAt.value;
 					lastEndAt = endAt.value;
 				}
-	
+
 				var lastIndex = filled.length - 1;
 				if (filled.length === 0 || filled[lastIndex] === true) {
 					//add last slot
@@ -94,11 +95,24 @@ vipPaging.pageTemplate['scheduleForm'] = {
 			}, 100);
 		},
 
-		
+
 		loadData: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var schedule = await dat.db.saved.where({ channel: `schedule/${pg.groupId}` }).first();
+			var group = await dat.db.saved.where({ channel: 'group' }).first();
+			var schedule = await dat.db.saved.where({ channel: `schedule/${pg.owner}` }).first();
 			if (pg.thisPage.id !== currentPage) return;
+
+			if (group == null) group = {};
+			else group = group.data;
+			group[firebaseAuth.userId] = { name: gl('private') };
+
+			if (group[pg.owner] == null) {
+				window.history.go(-1);
+				return;
+			}
+			else group = group[pg.owner];
+
+			pg.getEl('groupName').textContent = group.name;
 
 			if (schedule != null) schedule = schedule.data[pg.parameter];
 
@@ -140,7 +154,7 @@ vipPaging.pageTemplate['scheduleForm'] = {
 
 			console.log(data);
 
-			dat.server.request('PUT', `schedule/${pg.groupId}`, data, () => {
+			dat.server.request('PUT', `schedule/${pg.owner}`, data, () => {
 				ui.float.success(gl('saved'));
 				window.history.go(-1);
 			}, (connectionError) => {
@@ -156,12 +170,14 @@ vipPaging.pageTemplate['scheduleForm'] = {
 			save: 'Save',
 			subjectPlaceholder: 'Subject',
 			saved: 'Changes are saved',
+			private: 'Private',
 		},
 		id: {
 			title: 'Ubah Jadwal',
 			save: 'Simpan',
 			subjectPlaceholder: 'Mata Pelajaran',
 			saved: 'Perubahan tersimpan',
+			private: 'Pribadi',
 		},
 	},
 };

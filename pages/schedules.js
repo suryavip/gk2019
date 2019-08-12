@@ -6,7 +6,11 @@ vipPaging.pageTemplate['schedules'] = {
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
 		GroundLevel.init();
-		dat.attachListener(pg.loadGroup, ['group']);
+		if (typeof GroundLevel.pendingHighlight === 'string') {
+			var sid = GroundLevel.pendingHighlight;
+			pg.selectedDay = sid[sid.length - 1];
+		}
+		dat.attachListener(pg.load, ['group', 'schedule']);
 	},
 	innerHTML: d => `
 <div class="vipPaging-vLayout">
@@ -14,8 +18,8 @@ vipPaging.pageTemplate['schedules'] = {
 	<div class="body"><div><div class="maxWidthWrap-640">
 		
 		<div class="container-20">
-			<div class="card list feedback" onclick="pg.chooseGroup()">
-				<div class="content"><h2 id="selectedGroupName">${gl('private')}</h2></div>
+			<div class="card list feedback" onclick="pg.chooseDay()">
+				<div class="content"><h2 id="selectedDay">${moment().format('dddd')}</h2></div>
 				<div class="icon"><i class="fas fa-sort-down"></i></div>
 			</div>
 		</div>
@@ -26,70 +30,68 @@ vipPaging.pageTemplate['schedules'] = {
 </div>
 `,
 	functions: {
-		selectedGroup: firebaseAuth.userId,
-		loadGroup: async () => {
-			var currentPage = `${pg.thisPage.id}`;
-			pg.groups = await dat.db.saved.where({ channel: 'group' }).first();
-			if (pg.thisPage.id !== currentPage) return;
-
-			if (pg.groups == null) pg.groups = {};
-			else pg.groups = pg.groups.data;
-
-			pg.groups[firebaseAuth.userId] = { name: gl('private') };
-
-			if (pg.lastListener != null) pg.thisPage.removeEventListener('dat-change', pg.lastListener);
-
-			if (pg.groups[pg.selectedGroup] == null) {
-				//group not found, revert to private
-				pg.selectedGroup = firebaseAuth.userId;
-			}
-			pg.getEl('selectedGroupName').textContent = pg.groups[pg.selectedGroup].name;
-			pg.lastListener = dat.attachListener(pg.load, [`schedule/${pg.selectedGroup}`]);
-		},
-		chooseGroup: async () => {
+		selectedDay: moment().format('d'),
+		chooseDay: () => {
 			var options = [];
-			for (gid in pg.groups) options.push({
-				callBackParam: gid,
-				title: app.escapeHTML(pg.groups[gid].name),
-				icon: gid === firebaseAuth.userId ? 'fas fa-user' : 'fas fa-users',
-			});
-			options.sort((a, b) => {
-				if (a.callBackParam === firebaseAuth.userId) return -1;
-				if (b.callBackParam === firebaseAuth.userId) return 1;
-				if (a.title < b.title) return -1;
-				if (a.title > b.title) return 1;
-				return 0;
-			});
-			ui.popUp.option(options, groupId => {
-				if (groupId == null) return;
-				if (groupId === pg.selectedGroup) return;
-				pg.selectedGroup = groupId;
-				pg.loadGroup();
+			for (var i = 0; i < 7; i++) {
+				options.push({
+					callBackParam: `${i}`,
+					title: moment(i, 'd').format('dddd'),
+					icon: i == pg.selectedDay ? 'fas fa-check' : '',
+				});
+			}
+			ui.popUp.option(options, day => {
+				if (day == null) return;
+				if (day === pg.selectedDay) return;
+				pg.selectedDay = day;
+				pg.load();
 			});
 		},
 		load: async () => {
+			pg.getEl('selectedDay').textContent = moment(pg.selectedDay, 'd').format('dddd');
+
 			var currentPage = `${pg.thisPage.id}`;
-			var schedules = await dat.db.saved.where({channel: `schedule/${pg.selectedGroup}`}).first();
+			var g = await dat.db.saved.where({ channel: 'group' }).first();
+			var s = await dat.db.saved.where('channel').startsWith('schedule/').toArray();
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (schedules == null) schedules = [];
-			else schedules = schedules.data;
+			if (g == null) groups = [];
+			else {
+				var groups = [];
+				for (gid in g.data) {
+					g.data[gid]['groupId'] = gid;
+					groups.push(g.data[gid]);
+				}
+			}
+			groups.sort((a, b) => {
+				if (a.name < b.name) return -1;
+				if (a.name > b.name) return 1;
+				return 0;
+			});
+			groups = [{ name: gl('private'), groupId: firebaseAuth.userId }].concat(groups);
 
-			var byDay = {};
-			for (sid in schedules) {
-				var s = schedules[sid];
-				byDay[sid[sid.length - 1]] = s;
+			var schedules = {}; //groupId as key, array as value containing schedules for selected day
+			for (i in s) {
+				var gid = s[i].channel.split('/')[1];
+				for (sid in s[i].data) {
+					var day = sid[sid.length - 1];
+					if (day !== pg.selectedDay) continue;
+					schedules[gid] = s[i].data[sid];
+				}
 			}
 
-			var day = moment();
+			pg.build(groups, schedules);
+		},
+		build: async (groups, schedules) => {
 			var out = [];
-			while (out.length < 7) {
-				var schedule = byDay[day.format('d')];
-				var sid = `${pg.selectedGroup}schedule${day.format('d')}`;
+			for (i in groups) {
+				var g = groups[i];
+				var s = schedules[g.groupId];
+				var sid = `${g.groupId}schedule${pg.selectedDay}`;
 				
-				if (schedule == null || schedule.length < 1) {
+				if (s == null || s.length < 1) {
 					out.push(`<div class="container-20 highlightable" id="a${sid}">
-						<h1>${day.format('dddd')}</h1>
+						<h2>${app.escapeHTML(g.name)}</h2>
 						<div class="vSpace-20"></div>
 						<p>${gl('empty')}</p>
 						<div class="vSpace-20"></div>
@@ -98,21 +100,20 @@ vipPaging.pageTemplate['schedules'] = {
 							<div onclick="go('scheduleForm', '${sid}')"><i class="fas fa-pen"></i><p>${gl('edit')}</p></div>
 						</div>
 					</div>`);
-					day.add(1, 'days');
 					continue;
 				}
 
 				var subjects = [];
 				var times = [];
-				for (i in schedule) {
-					var d = schedule[i];
+				for (i in s) {
+					var d = s[i];
 					subjects.push(`<h4>${app.escapeHTML(d.subject)}</h4>`);
 					var endTime = moment(d.time, 'HH:mm').add(d.length, 'minutes');
 					times.push(`<p>${d.time} - ${endTime.format('HH:mm')}</p>`);
 				}
 
 				out.push(`<div class="container-20 highlightable" id="a${sid}">
-					<h1>${day.format('dddd')}</h1>
+					<h2>${app.escapeHTML(g.name)}</h2>
 					<div class="vSpace-20"></div>
 					<div class="table">
 						<div class="childSingleLine">${subjects.join('')}</div>
@@ -124,7 +125,6 @@ vipPaging.pageTemplate['schedules'] = {
 						<div onclick="go('scheduleForm', '${sid}')"><i class="fas fa-pen"></i><p>${gl('edit')}</p></div>
 					</div>
 				</div>`);
-				day.add(1, 'days');
 			}
 			pg.getEl('content').innerHTML = out.join('');
 
@@ -134,12 +134,12 @@ vipPaging.pageTemplate['schedules'] = {
 	lang: {
 		en: {
 			private: 'Private',
-			empty: `You're all caught up!`,
+			empty: `No schedule`,
 			edit: 'Edit',
 		},
 		id: {
 			private: 'Pribadi',
-			empty: 'Tidak ada notifikasi',
+			empty: 'Tidak ada jadwal',
 			edit: 'Ubah',
 		},
 	},

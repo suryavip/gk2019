@@ -45,10 +45,13 @@ vipPaging.pageTemplate['notifications'] = {
 
 			var out = '';
 			var tagItem = {};
+			var oldestLimit = app.comparableDate(moment().subtract(3, 'd'));
 			for (i in notification) {
 				var n = notification[i];
 
 				if (n.data.groupId != null && n.data.groupId in pg.group !== true) continue; //not in group
+
+				if (app.comparableDate(n.time * 1000) < oldestLimit) continue;
 
 				//skip if not the latest
 				if (n.type.startsWith('assignment')) {
