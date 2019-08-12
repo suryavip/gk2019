@@ -1,7 +1,7 @@
 var fcmHandler = {
 	sendTokenBusy: false,
 	sendToken: newToken => {
-		if (firebaseAuth.isSignedIn()) {
+		if (!firebaseAuth.isSignedIn()) {
 			fcmHandler.sendTokenBusy = false;
 			return;
 		}
@@ -13,10 +13,11 @@ var fcmHandler = {
 		var data = {
 			new: newToken,
 			old: '',
-			appVersion: appVersion,
 			deviceModel: `${device.manufacturer} ${device.model}`,
 			devicePlatform: device.platform,
 			deviceVersion: device.version,
+			appVersion: appVersion,
+			clientLanguage: 'id',
 		};
 
 		if (typeof oldToken === 'string') {
@@ -71,15 +72,15 @@ window.addEventListener('firebase-status-signedin', () => {
 		//{"google.delivered_priority":"high","google.sent_time":1553844810369,"google.ttl":259200,"google.original_priority":"high","oldName":"XII IPS I","targetException":"[\"sfPTqNLWnTVcc3CW9vMlHTjVz713\"]","tap":true,"from":"206566094511","groupId":"a59966ba-6772-47f7-b3a6-8ce67a981f2a","performer":"{\"uid\":\"sfPTqNLWnTVcc3CW9vMlHTjVz713\",\"name\":\"Surya\"}","google.message_id":"0:1553844810399688%7f5590a37f5590a3","newName":"XII IPS 1","collapse_key":"com.boostedcode.bs2019","notifType":"editGroup"}
 
 		if (n.notifType === 'test') {
-			float.success(gl('testNotifSuccess', null, 'fcmHandler'));	
+			ui.float.success(gl('testNotifSuccess', null, 'fcmHandler'));	
 			return;
 		}
 
 		if (fromBackground) {
 			go('notifications');
 		}
-		else if (pg.thisPage.id !== 'notifications') {
-			float.normal(gl('newNotification', null, 'fcmHandler'), 5000, `go('notifications')`);
+		else {
+			ui.float.success(gl('newNotification', null, 'fcmHandler'), 5000, `go('notifications')`);
 		}
 	}
 
