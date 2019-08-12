@@ -51,6 +51,8 @@
 
 				isCordova ? 'scripts/cordova-only.js' : null,
 
+				isCordova ? `scripts/fcmHandler.js` : null,
+
 				`ui/default.css?${appVersion}`,
 				`ui/popUp.js?${appVersion}`,
 				`ui/float.js?${appVersion}`,
