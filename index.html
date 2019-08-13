@@ -30,6 +30,14 @@
 		var isCordova = navigator.userAgent.match(/(Cordova)/) != null;
 		var isLocal = location.protocol !== 'https:';
 
+		function getTheme() {
+			var a = localJSON.get('settings', 'theme');
+			var b = 'default';
+			//list the theme other than 'light' here...
+			//if (a === 'dark') b = a;
+			return b;
+		}
+
 		function loadStage1() {
 			var isSupported = isCordova ||
 				bowser.check({ chrome: '70' }, true) ||
@@ -105,13 +113,15 @@
 					});
 				});
 
+				var lang = localJSON.get('settings', 'language') || 'id';
+
 				dat.init();
 				vipGesture.init();
 				vipTransitor.init();
-				vipLanguage.init('id');
+				vipLanguage.init(lang);
 				vipPaging.init();
 				vipHistory.init();
-				moment.locale(vipLanguage.key);
+				moment.locale(lang);
 			});
 		}
 		window.addEventListener('load', () => {

@@ -1,4 +1,7 @@
 vipPaging.pageTemplate['settings'] = {
+	import: [
+		'scripts/langTheme.js',
+	],
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
 		//
