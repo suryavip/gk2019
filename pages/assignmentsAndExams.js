@@ -56,11 +56,13 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 			if (pg.thisPage.id !== currentPage) return;
 
 			var all = [];
+			var todayLimit = app.comparableDate();
 			var group = function (source, type, dateColName) {
 				for (i in source) {
 					var groupId = source[i].channel.replace(`${type}/`, '');
 					for (id in source[i].data) {
 						var t = source[i].data[id];
+						if (t[dateColName] < todayLimit) continue; //dont show yesterday's
 						t['date'] = t[dateColName];
 						t[`rowId`] = id;
 						t['groupId'] = groupId;

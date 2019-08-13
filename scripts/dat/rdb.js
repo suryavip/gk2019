@@ -42,7 +42,10 @@ dat.rdb = {
 		var curData = await dat.db.saved.where({ channel: channel }).first();
 		if (curData == null) curData = {};
 
-		if (newVal !== curData['lastTimestamp']) {
+		var isFirstLoadAndGroupChannel = channel === 'group' && Object.keys(dat.rdb.groups).length === 0;
+		//group will always be reloaded on first load to make sure nothing missed/skipped
+
+		if (newVal !== curData['lastTimestamp'] || isFirstLoadAndGroupChannel) {
 			console.log(`changes on ${channel}: ${newVal} vs ${curData['lastTimestamp']}`);
 			var f = await dat.server.fetch(channel, newVal);
 			if (f.status !== 200) {
@@ -59,7 +62,7 @@ dat.rdb = {
 			var groups = curData['data'];
 		}
 
-		if (channel === 'group') dat.rdb.updateGroups(groups);
+		if (channel === 'group') dat.rdb.updateGroups(curData['data'], groups);
 	},
 	endpoints: (groupId) => [
 		`member/${groupId}`,
@@ -67,15 +70,20 @@ dat.rdb = {
 		`assignment/${groupId}`,
 		`exam/${groupId}`,
 	],
-	updateGroups: async function (newGroups) {
+	updateGroups: async function (oldGroups, newGroups) {
+		if (oldGroups == null) oldGroups = {};
 		//push private data
 		newGroups[firebaseAuth.userId] = { level: 'admin' };
-		//compare this.groups vs newGroups
+		oldGroups[firebaseAuth.userId] = { level: 'admin' };
+		//compare oldGroups || this.groups vs newGroups
 		var added = {};
 		for (gid in newGroups) {
-			if (this.groups[gid] == null) added[gid] = newGroups[gid].level;
+			if (oldGroups[gid] == null || this.groups[gid] == null) added[gid] = newGroups[gid].level;
 		}
 		var removed = {};
+		for (gid in oldGroups) {
+			if (newGroups[gid] == null) removed[gid] = oldGroups[gid].level;
+		}
 		for (gid in this.groups) {
 			if (newGroups[gid] == null) removed[gid] = this.groups[gid].level;
 		}
@@ -105,7 +113,6 @@ dat.rdb = {
 		}
 
 		this.groups = newGroups;
-		localJSON.put('dat', 'groups', this.groups); //used by app.js
 
 		//return true if there is a changes in group list
 		//return false if there is no change in group list
@@ -116,7 +123,6 @@ dat.rdb = {
 window.addEventListener('firebase-status-signedin', () => {
 	dat.rdb.add('group');
 	dat.rdb.add('notification');
-
 });
 
 window.addEventListener('firebase-signout', () => {

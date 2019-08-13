@@ -7,12 +7,16 @@ vipPaging.pageTemplate['notifications'] = {
 	opening: () => {
 		GroundLevel.init();
 		dat.attachListener(pg.load, ['group', 'notification']);
+		dat.server.status.listen(status => {
+			pg.getEl('loader').setAttribute('data-active', status > 0);
+		});
 	},
 	innerHTML: d => `
 <div class="vipPaging-vLayout">
 	<div class="head"><div>${GroundLevel.head(d.pageId)}</div></div>
 	<div class="body"><div><div class="maxWidthWrap-640">
 		
+		<div class="activable" data-active="true" id="loader">${vipLoading.loader}</div>
 		<div class="aPadding-30 activable" style="text-align:center" id="empty">
 			<h2>${gl('empty')}</h2>
 			<div class="vSpace-30"></div>
