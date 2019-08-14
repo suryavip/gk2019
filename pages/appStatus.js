@@ -38,7 +38,6 @@ vipPaging.pageTemplate['appStatus'] = {
 		resetSync: () => {
 			ui.popUp.confirm(gl('resetSyncConfirm'), async a => {
 				if (!a) return;
-				localJSON.drop('dat');
 				await dat.db.delete();
 				app.reload();
 			});
