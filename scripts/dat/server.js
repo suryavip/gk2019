@@ -2,6 +2,7 @@ if (typeof dat === 'undefined') var dat = {};
 
 dat.server = {
 	init: function () {
+		this.status.ongoing = [];
 		this.status.installIndicator();
 	},
 	status: {
@@ -83,4 +84,5 @@ dat.server = {
 
 window.addEventListener('firebase-status-signedin', () => {
 	dat.server.status.ongoing = [];
+	dat.server.status.change();
 });

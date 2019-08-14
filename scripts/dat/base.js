@@ -47,5 +47,4 @@ window.addEventListener('firebase-signout', () => {
 	dat.db.delete().then(() => {
 		dat.init();
 	});
-	localJSON.drop('dat');
 });

@@ -11,7 +11,7 @@ vipPaging.pageTemplate['appStatus'] = {
 			<div class="title">${gl('title')}</div>
 		</div>
 	</div></div>
-	<div class="body"><div><div class="maxWidthWrap-640 aPadding-10">
+	<div class="body"><div><div class="maxWidthWrap-640">
 
 		<div class="container-20" style="text-align:center">
 			<img src="icon/xxxhdpi.png" width="96">
