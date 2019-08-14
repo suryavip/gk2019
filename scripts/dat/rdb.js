@@ -123,6 +123,7 @@ dat.rdb = {
 window.addEventListener('firebase-status-signedin', () => {
 	dat.rdb.add('group');
 	dat.rdb.add('notification');
+	dat.rdb.add('opinion');
 });
 
 window.addEventListener('firebase-signout', () => {

@@ -91,6 +91,28 @@ var GroundLevel = {
 		}, 800)
 	},
 
+	changeChecked: function (clicker, type, id) {
+		var currentValue = clicker.classList.contains('theme-positive');
+
+		//change appearence
+		clicker.classList.toggle('theme-positive');
+		if (!currentValue) clicker.innerHTML = `<i class="fas fa-check"></i>`;
+		else clicker.innerHTML = `<i class="fas fa-minus"></i>`;
+
+		//update data on server
+		var data = {};
+		data[`${type}Id`] = id;
+		data['checked'] = !currentValue;
+
+		dat.server.request('PUT', `opinion`, data, () => {
+			//
+		}, (connectionError) => {
+			//
+			if (connectionError) ui.float.error(gl('connectionError', null, 'app'));
+			else ui.float.error(gl('unexpectedError', `PUT: schedule`, 'app'));
+		});
+	},
+
 };
 
 vipLanguage.lang['GroundLevel'] = {

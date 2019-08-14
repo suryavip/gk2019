@@ -120,10 +120,14 @@ vipPaging.pageTemplate['home'] = {
 
 			var currentPage = `${pg.thisPage.id}`;
 			var g = await dat.db.saved.where({ channel: 'group' }).first();
+			var o = await dat.db.saved.where({ channel: 'opinion' }).first();
 			var s = await dat.db.saved.where('channel').startsWith('schedule/').toArray();
 			var a = await dat.db.saved.where('channel').startsWith('assignment/').toArray();
 			var e = await dat.db.saved.where('channel').startsWith('exam/').toArray();
 			if (pg.thisPage.id !== currentPage) return;
+
+			if (o == null) var opinions = {};
+			else var opinions = o.data;
 
 			//go into data col
 			var mergeData = function (fromArray) {
@@ -144,8 +148,8 @@ vipPaging.pageTemplate['home'] = {
 			var aFresh = Object.keys(a).length === 0;
 			var eFresh = Object.keys(e).length === 0;
 			var sEmpty = await pg.loadQuickSchedule(s);
-			var aEmpty = await pg.loadQuickAssignment(a);
-			var eEmpty = await pg.loadQuickExam(e);
+			var aEmpty = await pg.loadQuickAssignment(a, opinions);
+			var eEmpty = await pg.loadQuickExam(e, opinions);
 
 			//freshStart means no group, schedule, assignment or exam at all
 			//empty means there is group, but no schedule, assignment or exam at all
@@ -188,20 +192,25 @@ vipPaging.pageTemplate['home'] = {
 
 			return schedules.length === 0; //is empty
 		},
-		loadQuickAssignment: async (assignment) => {
+		loadQuickAssignment: async (assignment, opinions) => {
 			//filter to only tomorrow's schedule
 			var out = [];
 			for (assignmentId in assignment) {
 				if (assignment[assignmentId].dueDate !== pg.selectedDay.format('YYYY-MM-DD')) continue;
 
 				var a = assignment[assignmentId];
+				var opinion = opinions[assignmentId];
+				if (opinion == null) var checked = false;
+				else var checked = opinion.checked;
+
+				var checkBtn = `<div onclick="GroundLevel.changeChecked(this, 'assignment', '${assignmentId}')"><i class="fas fa-minus"></i></div>`;
+				if (checked) checkBtn = `<div onclick="GroundLevel.changeChecked(this, 'assignment', '${assignmentId}')" class="theme-positive"><i class="fas fa-check"></i></div>`;
 
 				var note = ''
 				if (a.note !== '') note = `<h5>${app.escapeHTML(app.multiToSingleLine(a.note))}</h5>`;
 
 				out.push(`<div class="card list feedback">
-					<div class="iconCircle"><div><i class="fas fa-minus"></i></div></div>
-					<!--div class="iconCircle"><div class="theme-positive"><i class="fas fa-check"></i></div></div-->
+					<div class="iconCircle">${checkBtn}</div>
 					<div class="content childSingleLine" onclick="GroundLevel.highlight('assignmentsAndExams', '${assignmentId}')">
 						<h4>${app.escapeHTML(a.subject)}</h4>
 						${note}
@@ -213,7 +222,7 @@ vipPaging.pageTemplate['home'] = {
 
 			return out.length === 0; //is empty
 		},
-		loadQuickExam: async (exam) => {
+		loadQuickExam: async (exam, opinions) => {
 			//filter to only tomorrow's schedule
 			var e = [];
 			for (examId in exam) {
@@ -231,6 +240,12 @@ vipPaging.pageTemplate['home'] = {
 			var out = [];
 			for (i in exam) {
 				var e = exam[i];
+				var opinion = opinions[e.examId];
+				if (opinion == null) var checked = false;
+				else var checked = opinion.checked;
+
+				var checkBtn = `<div onclick="GroundLevel.changeChecked(this, 'exam', '${e.examId}')"><i class="fas fa-minus"></i></div>`;
+				if (checked) checkBtn = `<div onclick="GroundLevel.changeChecked(this, 'exam', '${e.examId}')" class="theme-positive"><i class="fas fa-check"></i></div>`;
 
 				var time = '';
 				if (e.examTime != null) time = `<h5>${e.examTime}</h5>`;
@@ -239,8 +254,7 @@ vipPaging.pageTemplate['home'] = {
 				if (e.note !== '' && time == '') note = `<h5>${app.escapeHTML(app.multiToSingleLine(e.note))}</h5>`;
 
 				out.push(`<div class="card list feedback">
-					<div class="iconCircle"><div><i class="fas fa-minus"></i></div></div>
-					<!--div class="iconCircle"><div class="theme-positive"><i class="fas fa-check"></i></div></div-->
+					<div class="iconCircle">${checkBtn}</div>
 					<div class="content childSingleLine" onclick="GroundLevel.highlight('assignmentsAndExams', '${e.examId}')">
 						<h4>${app.escapeHTML(e.subject)}</h4>
 						${time}
