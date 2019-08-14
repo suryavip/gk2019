@@ -13,7 +13,7 @@ vipPaging.pageTemplate['home'] = {
 	<div class="head"><div>${GroundLevel.head(d.pageId)}</div></div>
 	<div class="body"><div><div class="maxWidthWrap-640">
 		
-		<div class="container aPadding-30 activable" style="text-align:center" id="freshStart">
+		<div class="aPadding-30 activable" style="text-align:center" id="freshStart">
 			<h2>${gl('welcome')}</h2>
 			<div class="vSpace-30"></div>
 			<img src="illustrations/undraw_welcome_3gvl.svg" width="200px" />
@@ -23,7 +23,7 @@ vipPaging.pageTemplate['home'] = {
 			<h3>${gl('joinTips')}</h3>
 		</div>
 
-		<div class="container aPadding-30 activable" style="text-align:center" id="empty">
+		<div class="aPadding-30 activable" style="text-align:center" id="empty">
 			<h2>${gl('emptyTips')}</h2>
 			<div class="vSpace-30"></div>
 			<img src="illustrations/undraw_product_teardown_elol.svg" width="200px" />
