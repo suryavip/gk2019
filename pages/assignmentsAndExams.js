@@ -51,9 +51,13 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 		},
 		load: async () => {
 			var currentPage = `${pg.thisPage.id}`;
+			var o = await dat.db.saved.where({ channel: 'opinion' }).first();
 			var assignments = await dat.db.saved.where('channel').startsWith('assignment/').toArray();
 			var exams = await dat.db.saved.where('channel').startsWith('exam/').toArray();
 			if (pg.thisPage.id !== currentPage) return;
+
+			if (o == null) var opinions = {};
+			else var opinions = o.data;
 
 			var all = [];
 			var todayLimit = app.comparableDate();
@@ -91,6 +95,13 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 			for (i in all) {
 				var a = all[i];
 
+				var opinion = opinions[a.rowId];
+				if (opinion == null) var checked = false;
+				else var checked = opinion.checked;
+
+				var checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${a.rowId}')"><i class="fas fa-minus"></i></div>`;
+				if (checked) checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${a.rowId}')" class="theme-positive"><i class="fas fa-check"></i></div>`;
+
 				var attachment = [];
 				for (at in a.attachment) {
 					attachment.push(`<div class="attachment">
@@ -110,8 +121,7 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 				var aTime = moment(`${a.date}${a.examTime != null ? ` ${a.examTime}` : ''}`);
 				out += `<div class="container highlightable" id="a${a.rowId}">
 					<div class="list">
-						<div class="iconCircle"><div><i class="fas fa-minus"></i></div></div>
-						<!--div class="iconCircle"><div class="theme-positive"><i class="fas fa-check"></i></div></div-->
+						<div class="iconCircle">${checkBtn}</div>
 						<div class="content">
 							<h4>${gl(a.type)}: ${app.escapeHTML(a.subject)}</h4>
 							<h5>${app.displayDate(aTime, false, a.examTime != null)}</h5>

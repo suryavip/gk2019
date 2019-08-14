@@ -108,8 +108,6 @@ var GroundLevel = {
 			//
 		}, (connectionError) => {
 			//
-			if (connectionError) ui.float.error(gl('connectionError', null, 'app'));
-			else ui.float.error(gl('unexpectedError', `PUT: schedule`, 'app'));
 		});
 	},
 
