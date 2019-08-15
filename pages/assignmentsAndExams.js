@@ -110,7 +110,7 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 			pg.getEl('content').innerHTML = out;
 			enableAllTippy();
 
-			pg.getEl('empty').setAttribute('data-active', all.length === 0);
+			pg.getEl('empty').setAttribute('data-active', out === '');
 
 			GroundLevel.doHighlight();
 		},
