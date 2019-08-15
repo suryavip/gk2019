@@ -38,23 +38,8 @@ vipPaging.pageTemplate['groups'] = {
 	functions: {
 		load: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var g = await dat.db.saved.where({ channel: 'group' }).first();
+			var group = await dat.db.group.orderBy('name').toArray();
 			if (pg.thisPage.id !== currentPage) return;
-
-			if (g == null) group = [];
-			else {
-				var group = [];
-				for (gid in g.data) {
-					g.data[gid]['groupId'] = gid;
-					group.push(g.data[gid]);
-				}
-			}
-
-			group.sort((a, b) => {
-				if (a.name < b.name) return -1;
-				if (a.name > b.name) return 1;
-				return 0;
-			});
 
 			var out = '';
 			for (i in group) {

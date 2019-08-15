@@ -4,12 +4,17 @@ dat.init = function () {
 	this.db = new Dexie(`${projectId}_data`);
 
 	this.db.version(1).stores({
-		saved: 'channel',
-		ownership: 'id,channel',
+		/*saved: 'channel',
+		ownership: 'id,channel',*/
 
-		/*schedule: 'scheduleId,owner',
-		assignment: 'assignmentId,owner',
-		exam: 'examId,owner',*/
+		lastTimestamp: 'channel',
+		group: 'groupId,name',
+		notification: '++,time',
+		opinion: 'parentId,source',
+		member: '++,groupId',
+		schedule: 'scheduleId,owner,source',
+		assignment: 'assignmentId,dueDate,owner,source',
+		exam: 'examId,examDate,owner,source',
 	});
 
 	this.server.init();

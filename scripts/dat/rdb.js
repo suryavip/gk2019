@@ -39,14 +39,22 @@ dat.rdb = {
 			return;
 		}
 
-		var curData = await dat.db.saved.where({ channel: channel }).first();
-		if (curData == null) curData = {};
+		var lastTimestamp = await dat.db.lastTimestamp.where({ channel: channel }).first();
+		if (lastTimestamp == null) lastTimestamp = 0;
+		else lastTimestamp = lastTimestamp.lastTimestamp;
+
+		if (channel === 'group') {
+			//load current groups list
+			var g = await dat.db.group.toArray();
+			var oldGroups = {};
+			for (i in g) oldGroups[g[i].groupId] = true;
+		}
 
 		var isFirstLoadAndGroupChannel = channel === 'group' && Object.keys(dat.rdb.groups).length === 0;
 		//group will always be reloaded on first load to make sure nothing missed/skipped
 
-		if (newVal !== curData['lastTimestamp'] || isFirstLoadAndGroupChannel) {
-			console.log(`changes on ${channel}: ${newVal} vs ${curData['lastTimestamp']}`);
+		if (newVal !== lastTimestamp || isFirstLoadAndGroupChannel) {
+			console.log(`changes on ${channel}: ${newVal} vs ${lastTimestamp}`);
 			var f = await dat.server.fetch(channel, newVal);
 			if (f.status !== 200) {
 				console.error(`fetch error, retrying after cooldown (${dat.server.retryCoolDown} ms)`);
@@ -55,14 +63,14 @@ dat.rdb = {
 				}, dat.server.retryCoolDown);
 				return;
 			}
-			var groups = f.b;
+			var newGroups = f.b;
 		}
 		else {
 			console.log(`ignoring changes on ${channel} because same timestamp`);
-			var groups = curData['data'];
+			if (channel === 'group') var newGroups = oldGroups;
 		}
 
-		if (channel === 'group') dat.rdb.updateGroups(curData['data'], groups);
+		if (channel === 'group') dat.rdb.updateGroups(oldGroups, newGroups);
 	},
 	endpoints: (groupId) => [
 		`member/${groupId}`,
@@ -73,19 +81,19 @@ dat.rdb = {
 	updateGroups: async function (oldGroups, newGroups) {
 		if (oldGroups == null) oldGroups = {};
 		//push private data
-		newGroups[firebaseAuth.userId] = { level: 'admin' };
-		oldGroups[firebaseAuth.userId] = { level: 'admin' };
+		newGroups[firebaseAuth.userId] = true;
+		oldGroups[firebaseAuth.userId] = true;
 		//compare oldGroups || this.groups vs newGroups
 		var added = {};
 		for (gid in newGroups) {
-			if (oldGroups[gid] == null || this.groups[gid] == null) added[gid] = newGroups[gid].level;
+			if (oldGroups[gid] == null || this.groups[gid] == null) added[gid] = true;
 		}
 		var removed = {};
 		for (gid in oldGroups) {
-			if (newGroups[gid] == null) removed[gid] = oldGroups[gid].level;
+			if (newGroups[gid] == null) removed[gid] = true;
 		}
 		for (gid in this.groups) {
-			if (newGroups[gid] == null) removed[gid] = this.groups[gid].level;
+			if (newGroups[gid] == null) removed[gid] = true;
 		}
 
 		if (Object.keys(added).length == 0 && Object.keys(removed).length == 0) console.log('no change in group list');

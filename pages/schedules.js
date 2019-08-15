@@ -51,34 +51,14 @@ vipPaging.pageTemplate['schedules'] = {
 			pg.getEl('selectedDay').textContent = moment(pg.selectedDay, 'd').format('dddd');
 
 			var currentPage = `${pg.thisPage.id}`;
-			var g = await dat.db.saved.where({ channel: 'group' }).first();
-			var s = await dat.db.saved.where('channel').startsWith('schedule/').toArray();
+			var g = await dat.db.group.orderBy('name').toArray();
+			var s = await dat.db.schedule.filter(s => s.scheduleId[s.scheduleId.length - 1] === pg.selectedDay).toArray();
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (g == null) groups = [];
-			else {
-				var groups = [];
-				for (gid in g.data) {
-					g.data[gid]['groupId'] = gid;
-					groups.push(g.data[gid]);
-				}
-			}
-			groups.sort((a, b) => {
-				if (a.name < b.name) return -1;
-				if (a.name > b.name) return 1;
-				return 0;
-			});
-			groups = [{ name: gl('private'), groupId: firebaseAuth.userId }].concat(groups);
+			var groups = [{ name: gl('private'), groupId: firebaseAuth.userId }].concat(g);
 
-			var schedules = {}; //groupId as key, array as value containing schedules for selected day
-			for (i in s) {
-				var gid = s[i].channel.split('/')[1];
-				for (sid in s[i].data) {
-					var day = sid[sid.length - 1];
-					if (day !== pg.selectedDay) continue;
-					schedules[gid] = s[i].data[sid];
-				}
-			}
+			var schedules = {}; //owner as key, array as value containing schedules for selected day
+			for (i in s) schedules[s.owner] = s[i];
 
 			pg.build(groups, schedules);
 		},

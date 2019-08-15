@@ -98,26 +98,21 @@ vipPaging.pageTemplate['scheduleForm'] = {
 
 		loadData: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var group = await dat.db.saved.where({ channel: 'group' }).first();
-			var schedule = await dat.db.saved.where({ channel: `schedule/${pg.owner}` }).first();
+			if (pg.owner === firebaseAuth.userId) var group = { name: gl('private') };
+			else var group = await dat.db.group.where({ groupId: pg.owner }).first();
+			var schedule = await dat.db.schedule.where({ scheduleId: pg.parameter }).first();
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (group == null) group = {};
-			else group = group.data;
-			group[firebaseAuth.userId] = { name: gl('private') };
-
-			if (group[pg.owner] == null) {
+			if (group == null) {
 				window.history.go(-1);
 				return;
 			}
-			else group = group[pg.owner];
 
 			pg.getEl('groupName').textContent = group.name;
 
-			if (schedule != null) schedule = schedule.data[pg.parameter];
-
 			if (schedule != null) {
 				//load schedule
+				schedule = schedule.data
 				var out = [];
 				for (i in schedule) {
 					var d = schedule[i];
@@ -151,8 +146,6 @@ vipPaging.pageTemplate['scheduleForm'] = {
 					length: (moment(endAt.value, 'HH:mm') - moment(startAt.value, 'HH:mm')) / (60 * 1000), //in minutes
 				});
 			}
-
-			console.log(data);
 
 			dat.server.request('PUT', `schedule/${pg.owner}`, data, () => {
 				ui.float.success(gl('saved'));

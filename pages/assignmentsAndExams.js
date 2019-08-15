@@ -6,7 +6,7 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
 		GroundLevel.init();
-		dat.attachListener(pg.loadGroup, ['group']);
+		dat.attachListener(pg.load, ['group', 'assignment', 'exam', 'opinion']);
 	},
 	innerHTML: d => `
 <div class="vipPaging-vLayout">
@@ -29,78 +29,49 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 </div>
 `,
 	functions: {
-		loadGroup: async () => {
-			//getting what assignment and exam to listen to
-			var currentPage = `${pg.thisPage.id}`;
-			pg.groups = await dat.db.saved.where({ channel: 'group' }).first();
-			if (pg.thisPage.id !== currentPage) return;
-
-			if (pg.groups == null) pg.groups = {};
-			else pg.groups = pg.groups.data;
-
-			pg.groups[firebaseAuth.userId] = { name: gl('private') };
-
-			var endpoints = [];
-			for (gid in pg.groups) {
-				endpoints.push(`assignment/${gid}`);
-				endpoints.push(`exam/${gid}`);
-			}
-
-			if (pg.lastListener != null) pg.thisPage.removeEventListener('dat-change', pg.lastListener);
-			pg.lastListener = dat.attachListener(pg.load, endpoints);
-		},
 		load: async () => {
+			var todayLimit = app.comparableDate();
 			var currentPage = `${pg.thisPage.id}`;
-			var o = await dat.db.saved.where({ channel: 'opinion' }).first();
-			var assignments = await dat.db.saved.where('channel').startsWith('assignment/').toArray();
-			var exams = await dat.db.saved.where('channel').startsWith('exam/').toArray();
+			var groups = await dat.db.group.toArray();
+			var assignments = await dat.db.assignment.orderBy('dueDate').filter(a => app.comparableDate(a.dueDate) >= todayLimit).toArray();
+			var exams = await dat.db.exam.orderBy('examDate').filter(e => app.comparableDate(e.examDate) >= todayLimit).toArray();
+			var opinions = await dat.db.opinion.toArray();
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (o == null) var opinions = {};
-			else var opinions = o.data;
+			//creating owner's name dictionary by groupId
+			var ownerName = {};
+			ownerName[firebaseAuth.userId] = gl('private');
+			for (i in groups) ownerName[groups[i].groupId] = groups[i].name;
 
-			var all = [];
-			var todayLimit = app.comparableDate();
-			var group = function (source, type, dateColName) {
-				for (i in source) {
-					var groupId = source[i].channel.replace(`${type}/`, '');
-					for (id in source[i].data) {
-						var t = source[i].data[id];
-						if (t[dateColName] < todayLimit) continue; //dont show yesterday's
-						t['date'] = t[dateColName];
-						t[`rowId`] = id;
-						t['groupId'] = groupId;
-						t['type'] = type;
-						all.push(t);
-					}
-				}
-			};
-			group(assignments, 'assignment', 'dueDate');
-			group(exams, 'exam', 'examDate');
+			//creating isChecked dictionary by parentId
+			var isChecked = {};
+			for (i in opinions) isChecked[opinions[i].parentId] = opinions[i].checked;
 
-			//sort by type then by date
-			all.sort((a, b) => {
-				if (a.type === b.type) return 0;
-				if (a.type === 'exam') return -1;
-				return 1;
-			});
-			all.sort((a, b) => {
-				if (a.date < b.date) return -1;
-				if (a.date > b.date) return 1;
-				return 0;
-			});
+			//merge assignments and exams
+			var byDate = {};
+			for (i in exams) {
+				var e = exams[i];
+				var dt = e.examTime;
+				e['type'] = 'exam';
+				if (byDate[dt] == null) byDate[dt] = [];
+				byDate[dt].push(e);
+			}
+			for (i in assignments) {
+				var a = assignments[i];
+				var dt = a.dueDate;
+				a['type'] = 'assignment';
+				if (byDate[dt] == null) byDate[dt] = [];
+				byDate[dt].push(a);
+			}
 
 			//print
 			var out = '';
-			for (i in all) {
-				var a = all[i];
+			for (i in byDate) {
+				var a = byDate[i];
+				var rowId = a[`${type}Id`];
 
-				var opinion = opinions[a.rowId];
-				if (opinion == null) var checked = false;
-				else var checked = opinion.checked;
-
-				var checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${a.rowId}')"><i class="fas fa-minus"></i></div>`;
-				if (checked) checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${a.rowId}')" class="theme-positive"><i class="fas fa-check"></i></div>`;
+				if (isChecked[rowId] === true) var checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${rowId}')" class="theme-positive"><i class="fas fa-check"></i></div>`;
+				else var checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${rowId}')"><i class="fas fa-minus"></i></div>`;
 
 				var attachment = [];
 				for (at in a.attachment) {
@@ -113,13 +84,12 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 				</div>`;
 				else attachment = '';
 
-				var note = ''
-				if (a.note !== '') note = `<div class="aPadding-20-tandem">
-					<p>${app.escapeHTML(a.note)}</p>
-				</div>`;
+				if (a.note !== '') var note = `<div class="aPadding-20-tandem"><p>${app.escapeHTML(a.note)}</p></div>`;
+				else var note = '';
 
 				var aTime = moment(`${a.date}${a.examTime != null ? ` ${a.examTime}` : ''}`);
-				out += `<div class="container highlightable" id="a${a.rowId}">
+
+				out += `<div class="container highlightable" id="a${rowId}">
 					<div class="list">
 						<div class="iconCircle">${checkBtn}</div>
 						<div class="content">
@@ -130,10 +100,10 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 					${note}
 					${attachment}
 					<div class="bottomAction aPadding-20-tandem">
-						<div onclick="${a.groupId === firebaseAuth.userId ? '' : `go('group', '${a.groupId}')`}"><i class="${a.groupId === firebaseAuth.userId ? 'fas fa-user' : 'fas fa-users'}"></i><p>${app.escapeHTML(pg.groups[a.groupId].name)}</p></div>
+						<div onclick="${a.groupId === firebaseAuth.userId ? '' : `go('group', '${a.owner}')`}"><i class="${a.owner === firebaseAuth.userId ? 'fas fa-user' : 'fas fa-users'}"></i><p>${app.escapeHTML(ownerName[a.owner])}</p></div>
 						<div class="space"></div>
-						<div title="${gl('delete')}" onclick="pg.delete('${a.type}', '${a.groupId}', '${a.rowId}')"><i class="fas fa-trash"></i></div>
-						<div title="${gl('edit')}" onclick="go('${a.type}Form', '${a.rowId}')"><i class="fas fa-pen"></i></div>
+						<div title="${gl('delete')}" onclick="pg.delete('${a.type}', '${a.owner}', '${rowId}')"><i class="fas fa-trash"></i></div>
+						<div title="${gl('edit')}" onclick="go('${a.type}Form', '${rowId}')"><i class="fas fa-pen"></i></div>
 					</div>
 				</div>`;
 			}

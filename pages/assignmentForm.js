@@ -30,7 +30,7 @@ vipPaging.pageTemplate['assignmentForm'] = {
 				pg.getEl('btn').disabled = pg.getEl('subject').value === '';
 			});
 
-			pg.loadGroup();
+			pg.loadOwner();
 			pg.getEl('subject').focus();
 		}
 	},
@@ -45,8 +45,8 @@ vipPaging.pageTemplate['assignmentForm'] = {
 	<div class="body"><div><div class="maxWidthWrap-480">
 
 		<div class="container-20">
-			<div class="card list ${typeof d.parameter === 'string' ? '' : 'feedback'}" onclick="${typeof d.parameter === 'string' ? '' : 'pg.chooseGroup()'}">
-				<div class="content"><h2 id="selectedGroupName">${gl('private')}</h2></div>
+			<div class="card list ${typeof d.parameter === 'string' ? '' : 'feedback'}" onclick="${typeof d.parameter === 'string' ? '' : 'pg.chooseOwner()'}">
+				<div class="content"><h2 id="selectedOwnerName">${gl('private')}</h2></div>
 				<div class="icon"><i class="fas fa-sort-down"></i></div>
 			</div>
 		</div>
@@ -71,59 +71,55 @@ vipPaging.pageTemplate['assignmentForm'] = {
 </div>
 `,
 	functions: {
-		selectedGroup: firebaseAuth.userId,
-		loadGroup: async () => {
+		selectedOwner: firebaseAuth.userId,
+		loadOwner: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			pg.groups = await dat.db.saved.where({ channel: 'group' }).first();
+			if (pg.selectedOwner === firebaseAuth.userId) var group = { name: gl('private') };
+			else var group = await dat.db.group.where({ groupId: pg.selectedOwner }).first();
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (pg.groups == null) pg.groups = {};
-			else pg.groups = pg.groups.data;
-
-			pg.groups[firebaseAuth.userId] = { name: gl('private') };
-
-			if (pg.groups[pg.selectedGroup] == null) {
+			if (group == null) {
 				//group not found, revert to private
-				pg.selectedGroup = firebaseAuth.userId;
+				pg.selectedOwner = firebaseAuth.userId;
+				pg.loadOwner();
+				return;
 			}
-			pg.getEl('selectedGroupName').textContent = pg.groups[pg.selectedGroup].name;
+
+			pg.getEl('selectedOwnerName').textContent = group.name;
 			pg.loadSubjectAutoFill();
 		},
-		chooseGroup: async () => {
-			var options = [];
-			for (gid in pg.groups) options.push({
-				callBackParam: gid,
-				title: app.escapeHTML(pg.groups[gid].name),
-				icon: gid === firebaseAuth.userId ? 'fas fa-user' : 'fas fa-users',
-			});
-			options.sort((a, b) => {
-				if (a.callBackParam === firebaseAuth.userId) return -1;
-				if (b.callBackParam === firebaseAuth.userId) return 1;
-				if (a.title < b.title) return -1;
-				if (a.title > b.title) return 1;
-				return 0;
+		chooseOwner: async () => {
+			var currentPage = `${pg.thisPage.id}`;
+			var groups = await dat.db.group.orderBy('name').toArray();
+			if (pg.thisPage.id !== currentPage) return;
+
+			var options = [{
+				callBackParam: firebaseAuth.userId,
+				title: gl('private'),
+				icon: 'fas fa-user',
+			}];
+			for (i in groups) options.push({
+				callBackParam: groups[i].groupId,
+				title: app.escapeHTML(groups[i].name),
+				icon: 'fas fa-users',
 			});
 			ui.popUp.option(options, groupId => {
 				if (groupId == null) return;
-				if (groupId === pg.selectedGroup) return;
-				pg.selectedGroup = groupId;
-				pg.loadGroup();
+				if (groupId === pg.selectedOwner) return;
+				pg.selectedOwner = groupId;
+				pg.loadOwner();
 			});
 		},
 		loadSubjectAutoFill: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var schedules = await dat.db.saved.where({channel: `schedule/${pg.selectedGroup}`}).first();
+			var schedules = await dat.db.schedule.where({ owner: pg.selectedOwner }).toArray();
 			if (pg.thisPage.id !== currentPage) return;
-
-			if (schedules == null) schedules = {};
-			else schedules = schedules.data;
 
 			var subjects = [];
 			for (i in schedules) {
 				for (ii in schedules[i]) {
-					if (subjects.indexOf(schedules[i][ii].subject) < 0) {
-						subjects.push(schedules[i][ii].subject);
-					}
+					var subject = schedules[i][ii].subject;
+					if (subjects.indexOf(subject) < 0) subjects.push(subject);
 				}
 			}
 
@@ -135,29 +131,15 @@ vipPaging.pageTemplate['assignmentForm'] = {
 
 		loadData: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var channel = await dat.db.ownership.where({id: pg.parameter}).first();
+			pg.assignment = await dat.db.assignment.where({ assignmentId: pg.parameter }).first();
 			if (pg.thisPage.id !== currentPage) return;
-			if (channel == null) {
+			if (pg.assignment == null) { //not found
 				window.history.go(-1);
 				return;
 			}
 
-			var assignments = await dat.db.saved.where({channel: channel.channel}).first();
-			if (pg.thisPage.id !== currentPage) return;
-
-			if (assignments == null) {
-				window.history.go(-1);
-				return;
-			}
-
-			pg.assignment = assignments.data[pg.parameter];
-			if (pg.assignment == null) {
-				window.history.go(-1);
-				return;
-			}
-
-			pg.selectedGroup = channel.channel.split('/')[1];
-			pg.loadGroup();
+			pg.selectedOwner = pg.assignment.owner;
+			pg.loadOwner();
 
 			pg.getEl('subject').value = pg.assignment.subject;
 			pg.getEl('note').value = pg.assignment.note;
@@ -192,7 +174,7 @@ vipPaging.pageTemplate['assignmentForm'] = {
 				success = gl('saved');
 			}
 
-			dat.server.request(method, `assignment/${pg.selectedGroup}`, data, () => {
+			dat.server.request(method, `assignment/${pg.selectedOwner}`, data, () => {
 				ui.float.success(success);
 				window.history.go(-1);
 			}, (connectionError) => {

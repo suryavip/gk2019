@@ -30,30 +30,25 @@ vipPaging.pageTemplate['notifications'] = {
 `,
 	functions: {
 		load: async () => {
+			var oldestLimit = app.comparableDate(moment().subtract(3, 'd'));
 			var currentPage = `${pg.thisPage.id}`;
-			var group = await dat.db.saved.where({ channel: 'group' }).first();
-			var notification = await dat.db.saved.where({ channel: 'notification' }).first();
+			var groups = await dat.db.group.toArray();
+			var notifications = await dat.db.notification.orderBy('time').filter(n => app.comparableDate(n.time) >= oldestLimit).toArray();
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (group == null) pg.group = {};
-			else pg.group = group.data;
+			//make groupName dict by groupId
+			pg.groupName = {};
+			for (i in groups) pg.groupName[groups[i].groupId] = groups[i].groupName;
 
-			if (notification == null) notification = [];
-			else notification = notification.data;
-
-			notification.sort((a, b) => {
-				if (a.time < b.time) return 1;
-				if (a.time > b.time) return -1;
-				return 0;
-			});
+			//reverse sort
+			notifications.reverse();
 
 			var out = '';
 			var tagItem = {};
-			var oldestLimit = app.comparableDate(moment().subtract(3, 'd'));
-			for (i in notification) {
-				var n = notification[i];
+			for (i in notifications) {
+				var n = notifications[i];
 
-				if (n.data.groupId != null && n.data.groupId in pg.group !== true) continue; //not in group
+				if (n.data.groupId != null && n.data.groupId in pg.groupName !== true) continue; //not in group
 
 				if (app.comparableDate(n.time * 1000) < oldestLimit) continue;
 
@@ -118,7 +113,7 @@ vipPaging.pageTemplate['notifications'] = {
 
 			if (n.data.groupName != null) {
 				n.data.groupName = `<strong>${app.escapeHTML(n.data.groupName)}</strong>`;
-				n.data.newGroupName = `<strong>${app.escapeHTML(pg.group[n.data.groupId].name)}</strong>`;
+				n.data.newGroupName = `<strong>${app.escapeHTML(pg.groupName[n.data.groupId])}</strong>`;
 			}
 
 			if (n.data.subject != null) n.data.subject = `<strong>${app.escapeHTML(n.data.subject)}</strong>`;

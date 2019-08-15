@@ -66,11 +66,11 @@ vipPaging.pageTemplate['group'] = {
 	functions: {
 		load: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var g = await dat.db.saved.where({ channel: 'group' }).first();
+			var g = await dat.db.group.where({ groupId: pg.parameter }).first();
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (g == null || g.data[pg.parameter] == null) pg.loadAnonymous();
-			else pg.loadFromDB(g.data[pg.parameter]);
+			if (g == null) pg.loadAnonymous();
+			else pg.loadFromDB(g);
 		},
 		loadAnonymous: async () => {
 			vipPaging.bodyState('loading');
@@ -140,16 +140,13 @@ vipPaging.pageTemplate['group'] = {
 		},
 		loadMembers: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var m = await dat.db.saved.where({ channel: `member/${pg.parameter}` }).first();
+			var m = await dat.db.member.where({ groupId: pg.parameter }).toArray();
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (m == null) {
-				window.history.go(-1);
-				return;
-			}
+			var levels = {};
+			for (i in m) levels[m[i].userId] = m[i].level;
 
-			var levels = m.data;
-			ProfileResolver.resolve(Object.keys(m.data), users => {
+			ProfileResolver.resolve(Object.keys(levels), users => {
 				var members = [];
 				pg.byUserId = {};
 				pg.adminCount = 0;

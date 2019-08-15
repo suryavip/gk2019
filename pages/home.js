@@ -119,37 +119,30 @@ vipPaging.pageTemplate['home'] = {
 			pg.getEl('toggleDay').textContent = isToday ? gl('seeTomorrow') : gl('seeToday');
 
 			var currentPage = `${pg.thisPage.id}`;
-			var g = await dat.db.saved.where({ channel: 'group' }).first();
-			var o = await dat.db.saved.where({ channel: 'opinion' }).first();
-			var s = await dat.db.saved.where('channel').startsWith('schedule/').toArray();
-			var a = await dat.db.saved.where('channel').startsWith('assignment/').toArray();
-			var e = await dat.db.saved.where('channel').startsWith('exam/').toArray();
+
+			var gEmpty = await dat.db.group.count() === 0;
+			var sFresh = await dat.db.schedule.filter(s => s.data.length > 0).count() === 0;
+			var aFresh = await dat.db.assignment.count() === 0;
+			var eFresh = await dat.db.exam.count() === 0;
+
+			var opinions = await dat.db.opinion.toArray();
+
+			var s = await dat.db.schedule.filter(s => s.scheduleId[s.scheduleId.length - 1] === pg.selectedDay.format('d')).toArray();
+			var a = await dat.db.assignment.where({ dueDate: pg.selectedDay.format('YYYY-MM-DD') }).toArray();
+			var e = await dat.db.exam.where({ examDate: pg.selectedDay.format('YYYY-MM-DD') }).sortBy('examTime');
+
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (o == null) var opinions = {};
-			else var opinions = o.data;
+			var sEmpty = s.length === 0;
+			var aEmpty = a.length === 0;
+			var eEmpty = e.length === 0;
 
-			//go into data col
-			var mergeData = function (fromArray) {
-				var r = {};
-				for (i in fromArray) {
-					for (ii in fromArray[i].data) r[ii] = fromArray[i].data[ii];
-				}
-				return r;
-			};
-			var s = mergeData(s);
-			var a = mergeData(a);
-			var e = mergeData(e);
+			var isChecked = {};
+			for (i in opinions) isChecked[opinions[i].parentId] = opinions[i].checked;
 
-			var gEmpty = g == null || Object.keys(g.data).length === 0;
-			var sCount = 0;
-			for (i in s) sCount += s[i].length;
-			var sFresh = sCount === 0;
-			var aFresh = Object.keys(a).length === 0;
-			var eFresh = Object.keys(e).length === 0;
-			var sEmpty = await pg.loadQuickSchedule(s);
-			var aEmpty = await pg.loadQuickAssignment(a, opinions);
-			var eEmpty = await pg.loadQuickExam(e, opinions);
+			await pg.loadQuickSchedule(s);
+			await pg.loadQuickAssignment(a, isChecked);
+			await pg.loadQuickExam(e, isChecked);
 
 			//freshStart means no group, schedule, assignment or exam at all
 			//empty means there is group, but no schedule, assignment or exam at all
@@ -166,16 +159,7 @@ vipPaging.pageTemplate['home'] = {
 		},
 		loadQuickSchedule: async (s) => {
 			//filter to only tomorrow's schedule
-			var schedules = [];
-			for (scheduleId in s) {
-				if (scheduleId[scheduleId.length - 1] !== pg.selectedDay.format('d')) continue;
-				schedules = schedules.concat(s[scheduleId]);
-			}
-			schedules.sort((a, b) => {
-				if (a.time < b.time) return -1;
-				if (a.time > b.time) return 1;
-				return 0;
-			});
+			var schedules = s.data || [];
 
 			//build schedule
 			var subjects = [];
@@ -192,26 +176,21 @@ vipPaging.pageTemplate['home'] = {
 
 			return schedules.length === 0; //is empty
 		},
-		loadQuickAssignment: async (assignment, opinions) => {
+		loadQuickAssignment: async (assignment, isChecked) => {
 			//filter to only tomorrow's schedule
 			var out = [];
-			for (assignmentId in assignment) {
-				if (assignment[assignmentId].dueDate !== pg.selectedDay.format('YYYY-MM-DD')) continue;
-
-				var a = assignment[assignmentId];
-				var opinion = opinions[assignmentId];
-				if (opinion == null) var checked = false;
-				else var checked = opinion.checked;
-
-				var checkBtn = `<div onclick="GroundLevel.changeChecked(this, 'assignment', '${assignmentId}')"><i class="fas fa-minus"></i></div>`;
-				if (checked) checkBtn = `<div onclick="GroundLevel.changeChecked(this, 'assignment', '${assignmentId}')" class="theme-positive"><i class="fas fa-check"></i></div>`;
+			for (i in assignment) {
+				var a = assignment[i];
+				
+				if (isChecked[a.assignmentId]) var checkBtn = `<div onclick="GroundLevel.changeChecked(this, 'assignment', '${a.assignmentId}')" class="theme-positive"><i class="fas fa-check"></i></div>`;
+				else var checkBtn = `<div onclick="GroundLevel.changeChecked(this, 'assignment', '${a.assignmentId}')"><i class="fas fa-minus"></i></div>`;
 
 				var note = ''
 				if (a.note !== '') note = `<h5>${app.escapeHTML(app.multiToSingleLine(a.note))}</h5>`;
 
 				out.push(`<div class="card list feedback">
 					<div class="iconCircle">${checkBtn}</div>
-					<div class="content childSingleLine" onclick="GroundLevel.highlight('assignmentsAndExams', '${assignmentId}')">
+					<div class="content childSingleLine" onclick="GroundLevel.highlight('assignmentsAndExams', '${a.assignmentId}')">
 						<h4>${app.escapeHTML(a.subject)}</h4>
 						${note}
 					</div>
@@ -222,30 +201,14 @@ vipPaging.pageTemplate['home'] = {
 
 			return out.length === 0; //is empty
 		},
-		loadQuickExam: async (exam, opinions) => {
+		loadQuickExam: async (exam, isChecked) => {
 			//filter to only tomorrow's schedule
-			var e = [];
-			for (examId in exam) {
-				if (exam[examId].examDate !== pg.selectedDay.format('YYYY-MM-DD')) continue;
-				exam[examId]['examId'] = examId;
-				e.push(exam[examId]);
-			}
-			exam = e;
-			exam.sort((a, b) => {
-				if (a.time < b.time) return -1;
-				if (a.time > b.time) return 1;
-				return 0;
-			});
-
 			var out = [];
 			for (i in exam) {
 				var e = exam[i];
-				var opinion = opinions[e.examId];
-				if (opinion == null) var checked = false;
-				else var checked = opinion.checked;
 
-				var checkBtn = `<div onclick="GroundLevel.changeChecked(this, 'exam', '${e.examId}')"><i class="fas fa-minus"></i></div>`;
-				if (checked) checkBtn = `<div onclick="GroundLevel.changeChecked(this, 'exam', '${e.examId}')" class="theme-positive"><i class="fas fa-check"></i></div>`;
+				if (isChecked[e.examId]) var checkBtn = `<div onclick="GroundLevel.changeChecked(this, 'exam', '${e.examId}')" class="theme-positive"><i class="fas fa-check"></i></div>`;
+				else var checkBtn = `<div onclick="GroundLevel.changeChecked(this, 'exam', '${e.examId}')"><i class="fas fa-minus"></i></div>`;
 
 				var time = '';
 				if (e.examTime != null) time = `<h5>${e.examTime}</h5>`;

@@ -42,22 +42,16 @@ vipPaging.pageTemplate['groupForm'] = {
 	functions: {
 		autoFillSchool: (u) => {
 			if (u[firebaseAuth.userId].isEmpty) return;
-			
+
 			var school = u[firebaseAuth.userId].school;
 			if (school == null) school = '';
 			pg.getEl('school').value = school;
 		},
 		loadGroup: async () => {
 			var currentPage = `${pg.thisPage.id}`;
-			var group = await dat.db.saved.where({ channel: 'group' }).first();
+			pg.group = await dat.db.group.where({ groupId: pg.parameter }).first();
 			if (pg.thisPage.id !== currentPage) return;
 
-			if (group == null) {
-				window.history.go(-1);
-				return;
-			}
-
-			pg.group = group.data[pg.parameter];
 			if (pg.group == null) {
 				window.history.go(-1);
 				return;
