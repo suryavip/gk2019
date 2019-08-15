@@ -120,10 +120,11 @@ vipPaging.pageTemplate['home'] = {
 
 			var currentPage = `${pg.thisPage.id}`;
 
+			var todayLimit = app.comparableDate();
 			var gEmpty = await dat.db.group.count() === 0;
 			var sFresh = await dat.db.schedule.filter(s => s.data.length > 0).count() === 0;
-			var aFresh = await dat.db.assignment.count() === 0;
-			var eFresh = await dat.db.exam.count() === 0;
+			var aFresh = await dat.db.assignment.filter(a => app.comparableDate(a.dueDate) >= todayLimit).count() === 0;
+			var eFresh = await dat.db.exam.filter(e => app.comparableDate(e.examDate) >= todayLimit).count() === 0;
 
 			var opinions = await dat.db.opinion.toArray();
 
