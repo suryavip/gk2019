@@ -147,14 +147,21 @@ vipPaging.pageTemplate['scheduleForm'] = {
 				});
 			}
 
-			dat.server.request('PUT', `schedule/${pg.owner}`, data, () => {
+			if (pg.owner === firebaseAuth.userId) {
+				await dat.local.putSchedule(data.day, data.data);
 				ui.float.success(gl('saved'));
 				window.history.go(-1);
-			}, (connectionError) => {
-				ui.btnLoading.off(pg.getEl('btn'));
-				if (connectionError) ui.float.error(gl('connectionError', null, 'app'));
-				else ui.float.error(gl('unexpectedError', `PUT: schedule`, 'app'));
-			});
+			}
+			else {
+				dat.server.request('PUT', `schedule/${pg.owner}`, data, () => {
+					ui.float.success(gl('saved'));
+					window.history.go(-1);
+				}, (connectionError) => {
+					ui.btnLoading.off(pg.getEl('btn'));
+					if (connectionError) ui.float.error(gl('connectionError', null, 'app'));
+					else ui.float.error(gl('unexpectedError', `PUT: schedule`, 'app'));
+				});
+			}
 		},
 	},
 	lang: {

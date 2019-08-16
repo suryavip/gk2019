@@ -92,4 +92,15 @@ dat.local = {
 		});
 		dat.server.pending.putOpinion();
 	},
+
+	putSchedule: async function (day, data) {
+		await dat.db.schedule.put({
+			scheduleId: `${firebaseAuth.userId}schedule${day}`,
+			day: day,
+			data: data,
+			owner: firebaseAuth.userId,
+			source: 'local',
+		});
+		dat.server.pending.putSchedule();
+	}
 };

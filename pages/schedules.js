@@ -58,7 +58,7 @@ vipPaging.pageTemplate['schedules'] = {
 			var groups = [{ name: gl('private'), groupId: firebaseAuth.userId }].concat(g);
 
 			var schedules = {}; //owner as key, array as value containing schedules for selected day
-			for (i in s) schedules[s.owner] = s[i];
+			for (i in s) schedules[s[i].owner] = s[i];
 
 			pg.build(groups, schedules);
 		},
@@ -66,7 +66,7 @@ vipPaging.pageTemplate['schedules'] = {
 			var out = [];
 			for (i in groups) {
 				var g = groups[i];
-				var s = schedules[g.groupId];
+				var s = schedules[g.groupId].data;
 				var sid = `${g.groupId}schedule${pg.selectedDay}`;
 				
 				if (s == null || s.length < 1) {

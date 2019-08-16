@@ -90,6 +90,13 @@ dat.server = {
 				await dat.server.request('PUT', 'opinion', o, () => {}, () => {});
 			}
 		},
+		putSchedule: async function () {
+			var schedules = await dat.db.schedule.where({ source: 'local' }).toArray();
+			for (i in schedules) {
+				var s = schedules[i];
+				await dat.server.request('PUT', `schedule/${firebaseAuth.userId}`, s, () => {}, () => {});
+			}
+		},
 	},
 };
 
@@ -99,4 +106,5 @@ window.addEventListener('firebase-status-signedin', () => {
 
 	//do pendings
 	dat.server.pending.putOpinion();
+	dat.server.pending.putSchedule();
 });
