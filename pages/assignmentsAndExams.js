@@ -72,7 +72,7 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 				var a = byDate[d][i];
 				var rowId = a[`${a.type}Id`];
 
-				if (isChecked[rowId] === true) var checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${rowId}')" class="theme-positive"><i class="fas fa-check"></i></div>`;
+				if (isChecked[rowId]) var checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${rowId}')" class="theme-positive"><i class="fas fa-check"></i></div>`;
 				else var checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${rowId}')"><i class="fas fa-minus"></i></div>`;
 
 				var attachment = [];
@@ -110,7 +110,7 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 					</div>
 				</div>`;
 			}}
-			
+
 			pg.getEl('content').innerHTML = out;
 			enableAllTippy();
 
