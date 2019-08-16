@@ -66,10 +66,12 @@ vipPaging.pageTemplate['schedules'] = {
 			var out = [];
 			for (i in groups) {
 				var g = groups[i];
-				var s = schedules[g.groupId].data;
+				var s = schedules[g.groupId];
+				if (s == null) s = [];
+				else s = s.data;
 				var sid = `${g.groupId}schedule${pg.selectedDay}`;
 				
-				if (s == null || s.length < 1) {
+				if (s.length < 1) {
 					out.push(`<div class="container-20 highlightable" id="a${sid}">
 						<h2>${app.escapeHTML(g.name)}</h2>
 						<div class="vSpace-20"></div>
