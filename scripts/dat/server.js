@@ -82,13 +82,46 @@ dat.server = {
 	},
 
 	pending: {
+		retrying: false,
+		doAll: async function () {
+			this.retrying = false;
+
+			dat.server.pending.schedule.put();
+
+			dat.server.pending.assignment.post();
+			dat.server.pending.assignment.put();
+			dat.server.pending.assignment.delete();
+		
+			dat.server.pending.exam.post();
+			dat.server.pending.exam.put();
+			dat.server.pending.exam.delete();
+		
+			var doPendingOpinion = async () => {
+				var count = await dat.db.assignment.where('source').anyOf(['local-new', 'local']).count();
+				count += await dat.db.exam.where('source').anyOf(['local-new', 'local']).count();
+				if (count === 0) dat.server.pending.opinion.put(); //do this after all assignment and exam synced
+				else setTimeout(doPendingOpinion, 5000);
+			}
+			doPendingOpinion();
+		},
+
+		failed: async function (connectionError) {
+			console.log('pending failed');
+			if (connectionError) {
+				if (this.retrying) return;
+				this.retrying = true;
+				console.log(`pending request is retrying in ${dat.server.retryCoolDown}`);
+				setTimeout(dat.server.pending.doAll, dat.server.retryCoolDown);
+			}
+		},
+
 		opinion: {
 			put: async function () {
 				var opinions = await dat.db.opinion.where({ source: 'local' }).toArray();
 				for (i in opinions) {
 					var o = opinions[i];
 					o[`${o.type}Id`] = o.parentId;
-					await dat.server.request('PUT', 'opinion', o, () => { }, () => { });
+					await dat.server.request('PUT', 'opinion', o, () => { }, dat.server.pending.failed);
 				}
 			},
 		},
@@ -97,7 +130,7 @@ dat.server = {
 				var schedules = await dat.db.schedule.where({ source: 'local' }).toArray();
 				for (i in schedules) {
 					var s = schedules[i];
-					await dat.server.request('PUT', `schedule/${firebaseAuth.userId}`, s, () => { }, () => { });
+					await dat.server.request('PUT', `schedule/${firebaseAuth.userId}`, s, () => { }, dat.server.pending.failed);
 				}
 			},
 		},
@@ -106,14 +139,14 @@ dat.server = {
 				var assignments = await dat.db.assignment.where({ source: 'local-new' }).toArray();
 				for (i in assignments) {
 					var a = assignments[i];
-					await dat.server.request('POST', `assignment/${firebaseAuth.userId}`, a, () => { }, () => { });
+					await dat.server.request('POST', `assignment/${firebaseAuth.userId}`, a, () => { }, dat.server.pending.failed);
 				}
 			},
 			put: async function () {
 				var assignments = await dat.db.assignment.where({ source: 'local' }).toArray();
 				for (i in assignments) {
 					var a = assignments[i];
-					await dat.server.request('PUT', `assignment/${firebaseAuth.userId}`, a, () => { }, () => { });
+					await dat.server.request('PUT', `assignment/${firebaseAuth.userId}`, a, () => { }, dat.server.pending.failed);
 				}
 			},
 			delete: async function () {
@@ -123,7 +156,33 @@ dat.server = {
 					await dat.server.request('DELETE', `assignment/${firebaseAuth.userId}`, a, (f, b) => {
 						//delete from deletedAssignment if success
 						dat.db.deletedAssignment.delete(b.assignmentId);
-					}, () => { });
+					}, dat.server.pending.failed);
+				}
+			},
+		},
+		exam: {
+			post: async function () {
+				var exams = await dat.db.exam.where({ source: 'local-new' }).toArray();
+				for (i in exams) {
+					var a = exams[i];
+					await dat.server.request('POST', `exam/${firebaseAuth.userId}`, a, () => { }, dat.server.pending.failed);
+				}
+			},
+			put: async function () {
+				var exams = await dat.db.exam.where({ source: 'local' }).toArray();
+				for (i in exams) {
+					var a = exams[i];
+					await dat.server.request('PUT', `exam/${firebaseAuth.userId}`, a, () => { }, dat.server.pending.failed);
+				}
+			},
+			delete: async function () {
+				var exams = await dat.db.deletedExam.toArray();
+				for (i in exams) {
+					var a = exams[i];
+					await dat.server.request('DELETE', `exam/${firebaseAuth.userId}`, a, (f, b) => {
+						//delete from deletedExam if success
+						dat.db.deletedExam.delete(b.examId);
+					}, dat.server.pending.failed);
 				}
 			},
 		},
@@ -135,16 +194,5 @@ window.addEventListener('firebase-status-signedin', () => {
 	dat.server.status.change();
 
 	//do pendings
-	dat.server.pending.schedule.put();
-	dat.server.pending.assignment.post();
-	dat.server.pending.assignment.put();
-	dat.server.pending.assignment.delete();
-
-	var doPendingOpinion = async () => {
-		var count = await dat.db.assignment.where('source').anyOf(['local-new', 'local']).count();
-		count += await dat.db.exam.where('source').anyOf(['local-new', 'local']).count();
-		if (count === 0) dat.server.pending.opinion.put(); //do this after all assignment and exam synced
-		else setTimeout(doPendingOpinion, 5000);
-	}
-	doPendingOpinion();
+	dat.server.pending.doAll();
 });

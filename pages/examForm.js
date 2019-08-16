@@ -122,8 +122,8 @@ vipPaging.pageTemplate['examForm'] = {
 
 			var subjects = [];
 			for (i in schedules) {
-				for (ii in schedules[i]) {
-					var subject = schedules[i][ii].subject;
+				for (ii in schedules[i].data) {
+					var subject = schedules[i].data[ii].subject;
 					if (subjects.indexOf(subject) < 0) subjects.push(subject);
 				}
 			}
@@ -175,6 +175,23 @@ vipPaging.pageTemplate['examForm'] = {
 			}
 
 			ui.btnLoading.on(pg.getEl('btn'));
+
+			if (pg.selectedOwner === firebaseAuth.userId) {
+				//do local first because private exam
+				if (typeof pg.parameter === 'string') {
+					await dat.local.private.exam.put(pg.parameter, date, time, note.value, []);
+					ui.float.success(gl('saved'));
+					window.history.go(-1);
+				}
+				else {
+					await dat.local.private.exam.post(subject.value, date, time, note.value, []);
+					ui.float.success(gl('created'));
+					window.history.go(-1);
+				}
+				return;
+			}
+
+			//do to server directly
 
 			var method = 'POST';
 			var data = {

@@ -129,7 +129,7 @@ dat.local = {
 				dat.server.pending.assignment.post();
 			},
 			put: async function (assignmentId, dueDate, note, attachment) {
-				var currentSource = await dat.db.assignment.where({ assignmentId: assignmentId });
+				var currentSource = await dat.db.assignment.where({ assignmentId: assignmentId }).first();
 				await dat.db.assignment.update(assignmentId, {
 					dueDate: dueDate,
 					note: note,
@@ -138,7 +138,8 @@ dat.local = {
 					source: currentSource.source === 'local-new' ? 'local-new' : 'local',
 				});
 				dat.triggerChange(`assignment/${firebaseAuth.userId}`);
-				dat.server.pending.assignment.put();
+				if (currentSource.source === 'local-new') dat.server.pending.assignment.post();
+				else dat.server.pending.assignment.put();
 			},
 			delete: async function (assignmentId) {
 				await dat.db.transaction(
@@ -154,6 +155,52 @@ dat.local = {
 					});
 				dat.triggerChange(`assignment/${firebaseAuth.userId}`);
 				dat.server.pending.assignment.delete();
+			},
+		},
+		exam: {
+			post: async function (subject, examDate, examTime, note, attachment) {
+				await dat.db.exam.put({
+					examId: dat.local.private.generateId('exam'),
+					subject: subject,
+					examDate: examDate,
+					examTime: examTime,
+					note: note,
+					attachment: attachment,
+
+					owner: firebaseAuth.userId,
+					source: 'local-new',
+				});
+				dat.triggerChange(`exam/${firebaseAuth.userId}`);
+				dat.server.pending.exam.post();
+			},
+			put: async function (examId, examDate, examTime, note, attachment) {
+				var currentSource = await dat.db.exam.where({ examId: examId }).first();
+				await dat.db.exam.update(examId, {
+					examDate: examDate,
+					examTime: examTime,
+					note: note,
+					attachment: attachment,
+
+					source: currentSource.source === 'local-new' ? 'local-new' : 'local',
+				});
+				dat.triggerChange(`exam/${firebaseAuth.userId}`);
+				if (currentSource.source === 'local-new') dat.server.pending.exam.post();
+				else dat.server.pending.exam.put();
+			},
+			delete: async function (examId) {
+				await dat.db.transaction(
+					'rw',
+					dat.db.exam,
+					dat.db.deletedExam,
+					dat.db.opinion,
+					async () => {
+						await dat.db.deletedExam.put({ examId: examId });
+						await dat.db.exam.delete(examId);
+						//delete pending related opinion too
+						await dat.db.opinion.where({parentId: examId, source: 'local'}).delete();
+					});
+				dat.triggerChange(`exam/${firebaseAuth.userId}`);
+				dat.server.pending.exam.delete();
 			},
 		},
 	},
