@@ -73,7 +73,7 @@ dat.server = {
 
 		if (f.status === 201 || f.status === 200) {
 			await dat.local.update(channel, timestamp, f.b);
-			callBack(f);
+			callBack(f, body);
 		}
 		else failedCallBack(f.status === 'connectionError', f);
 
@@ -82,20 +82,50 @@ dat.server = {
 	},
 
 	pending: {
-		putOpinion: async function () {
-			var opinions = await dat.db.opinion.where({ source: 'local' }).toArray();
-			for (i in opinions) {
-				var o = opinions[i];
-				o[`${o.type}Id`] = o.parentId;
-				await dat.server.request('PUT', 'opinion', o, () => {}, () => {});
-			}
+		opinion: {
+			put: async function () {
+				var opinions = await dat.db.opinion.where({ source: 'local' }).toArray();
+				for (i in opinions) {
+					var o = opinions[i];
+					o[`${o.type}Id`] = o.parentId;
+					await dat.server.request('PUT', 'opinion', o, () => { }, () => { });
+				}
+			},
 		},
-		putSchedule: async function () {
-			var schedules = await dat.db.schedule.where({ source: 'local' }).toArray();
-			for (i in schedules) {
-				var s = schedules[i];
-				await dat.server.request('PUT', `schedule/${firebaseAuth.userId}`, s, () => {}, () => {});
-			}
+		schedule: {
+			put: async function () {
+				var schedules = await dat.db.schedule.where({ source: 'local' }).toArray();
+				for (i in schedules) {
+					var s = schedules[i];
+					await dat.server.request('PUT', `schedule/${firebaseAuth.userId}`, s, () => { }, () => { });
+				}
+			},
+		},
+		assignment: {
+			post: async function () {
+				var assignments = await dat.db.assignment.where({ source: 'local-new' }).toArray();
+				for (i in assignments) {
+					var a = assignments[i];
+					await dat.server.request('POST', `assignment/${firebaseAuth.userId}`, a, () => { }, () => { });
+				}
+			},
+			put: async function () {
+				var assignments = await dat.db.assignment.where({ source: 'local' }).toArray();
+				for (i in assignments) {
+					var a = assignments[i];
+					await dat.server.request('PUT', `assignment/${firebaseAuth.userId}`, a, () => { }, () => { });
+				}
+			},
+			delete: async function () {
+				var assignments = await dat.db.deletedAssignment.toArray();
+				for (i in assignments) {
+					var a = assignments[i];
+					await dat.server.request('DELETE', `assignment/${firebaseAuth.userId}`, a, (f, b) => {
+						//delete from deletedAssignment if success
+						await dat.db.deleteAssignment.delete(b.assignmentId);
+					}, () => { });
+				}
+			},
 		},
 	},
 };
@@ -107,4 +137,7 @@ window.addEventListener('firebase-status-signedin', () => {
 	//do pendings
 	dat.server.pending.putOpinion();
 	dat.server.pending.putSchedule();
+	dat.server.pending.postAssignment();
+	dat.server.pending.putAssignment();
+	dat.server.pending.deleteAssignment();
 });

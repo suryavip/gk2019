@@ -148,7 +148,7 @@ vipPaging.pageTemplate['scheduleForm'] = {
 			}
 
 			if (pg.owner === firebaseAuth.userId) {
-				await dat.local.putSchedule(data.day, data.data);
+				await dat.local.private.schedule.put(data.day, data.data);
 				ui.float.success(gl('saved'));
 				window.history.go(-1);
 			}

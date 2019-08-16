@@ -99,7 +99,7 @@ var GroundLevel = {
 		if (!currentValue) clicker.innerHTML = `<i class="fas fa-check"></i>`;
 		else clicker.innerHTML = `<i class="fas fa-minus"></i>`;
 
-		dat.local.putOpinion(type, id, !currentValue);
+		dat.local.private.opinion.put(type, id, !currentValue);
 	},
 
 };

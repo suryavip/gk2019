@@ -119,8 +119,16 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 			GroundLevel.doHighlight();
 		},
 		delete: async (type, owner, id) => {
-			ui.popUp.confirm(gl('deleteConfirm', type), a => {
+			ui.popUp.confirm(gl('deleteConfirm', type), async a => {
 				if (!a) return;
+				if (owner === firebaseAuth.userId) {
+					//do local first because private assignment/exam
+					await dat.local.private[type].delete(id);
+					ui.float.success(gl('deleteSuccess', type));
+					return;
+				}
+
+				//do to server directly
 				var data = {};
 				data[`${type}Id`] = id;
 				dat.server.request('DELETE', `${type}/${owner}`, data, () => {

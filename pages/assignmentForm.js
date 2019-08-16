@@ -160,6 +160,23 @@ vipPaging.pageTemplate['assignmentForm'] = {
 
 			ui.btnLoading.on(pg.getEl('btn'));
 
+			if (pg.selectedOwner === firebaseAuth.userId) {
+				//do local first because private assignment
+				if (typeof pg.parameter === 'string') {
+					await dat.local.private.assignment.put(pg.parameter, date, note, []);
+					ui.float.success(gl('saved'));
+					window.history.go(-1);
+				}
+				else {
+					await dat.local.private.assignment.post(subject.value, date, note.value, []);
+					ui.float.success(gl('created'));
+					window.history.go(-1);
+				}
+				return;
+			}
+
+			//do to server directly
+
 			var method = 'POST';
 			var data = {
 				subject: subject.value,

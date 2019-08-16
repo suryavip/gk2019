@@ -15,6 +15,9 @@ dat.init = function () {
 		schedule: 'scheduleId,owner,source',
 		assignment: 'assignmentId,dueDate,owner,source',
 		exam: 'examId,examDate,owner,source',
+
+		deletedAssignment: 'assignmentId', //pending delete
+		deletedExam: 'examId', //pending delete
 	});
 
 	this.server.init();

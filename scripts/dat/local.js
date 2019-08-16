@@ -83,24 +83,69 @@ dat.local = {
 			});
 	},
 
-	putOpinion: async function (type, parentId, checked) {
-		await dat.db.opinion.put({
-			type: type,
-			parentId: parentId,
-			checked: checked === true,
-			source: 'local',
-		});
-		dat.server.pending.putOpinion();
-	},
+	private: {
+		opinion: {
+			put: async function (type, parentId, checked) {
+				await dat.db.opinion.put({
+					type: type, //this is addition info for when actually sending request
+					parentId: parentId, //not used when actually sending request
+					//parentId will be transformed to ${type}Id when actually sending request
+					checked: checked === true,
 
-	putSchedule: async function (day, data) {
-		await dat.db.schedule.put({
-			scheduleId: `${firebaseAuth.userId}schedule${day}`,
-			day: day,
-			data: data,
-			owner: firebaseAuth.userId,
-			source: 'local',
-		});
-		dat.server.pending.putSchedule();
-	}
+					source: 'local',
+				});
+				dat.server.pending.opinion.put();
+			},
+		},
+		schedule: {
+			put: async function (day, data) {
+				await dat.db.schedule.put({
+					scheduleId: `${firebaseAuth.userId}schedule${day}`, //not used when actually sending request
+					day: day, //this is addition info for when actually sending request
+					data: data,
+
+					owner: firebaseAuth.userId,
+					source: 'local',
+				});
+				dat.server.pending.schedule.put();
+			},
+		},
+		generateId: tableName => `${firebaseAuth.userId}${tableName}${new Date().getTime().toString(36)}`,
+		assignment: {
+			post: async function (subject, dueDate, note, attachment) {
+				await dat.db.assignment.put({
+					assignmentId: this.generateId('assignment'),
+					subject: subject,
+					dueDate: dueDate,
+					note: note,
+					attachment: attachment,
+
+					owner: firebaseAuth.userId,
+					source: 'local-new',
+				});
+				dat.server.pending.assignment.post();
+			},
+			put: async function (assignmentId, dueDate, note, attachment) {
+				await dat.db.assignment.update(assignmentId, {
+					dueDate: dueDate,
+					note: note,
+					attachment: attachment,
+
+					source: 'local',
+				});
+				dat.server.pending.assignment.put();
+			},
+			delete: async function (assignmentId) {
+				await dat.db.transaction(
+					'rw',
+					dat.db.assignment,
+					dat.db.deletedAssignment,
+					async () => {
+						await dat.db.deletedAssignment.put({ assignmentId: assignmentId });
+						await dat.db.assignment.delete(assignmentId);
+					});
+				dat.server.pending.assignment.delete();
+			},
+		},
+	},
 };
