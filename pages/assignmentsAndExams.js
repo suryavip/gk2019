@@ -68,7 +68,7 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 			var out = '';
 			for (i in byDate) {
 				var a = byDate[i];
-				var rowId = a[`${type}Id`];
+				var rowId = a[`${a.type}Id`];
 
 				if (isChecked[rowId] === true) var checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${rowId}')" class="theme-positive"><i class="fas fa-check"></i></div>`;
 				else var checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${rowId}')"><i class="fas fa-minus"></i></div>`;

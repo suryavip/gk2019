@@ -34,12 +34,12 @@ dat.local = {
 					await dat.db.opinion.bulkPut(data);
 				}
 				else if (splitted[0] === 'member') {
-					await dat.db.member.clear();
+					await dat.db.member.where({ groupId: splitted[1] }).delete();
 					for (i in data) data[i]['groupId'] = splitted[1];
 					await dat.db.member.bulkPut(data);
 				}
 				else if (splitted[0] === 'schedule') {
-					await dat.db.schedule.where({ source: 'server' }).delete();
+					await dat.db.schedule.where({ owner: splitted[1], source: 'server' }).delete();
 					for (i in data) {
 						data[i]['owner'] = splitted[1];
 						data[i]['source'] = 'server';
@@ -47,7 +47,7 @@ dat.local = {
 					await dat.db.schedule.bulkPut(data);
 				}
 				else if (splitted[0] === 'assignment') {
-					await dat.db.assignment.where({ source: 'server' }).delete();
+					await dat.db.assignment.where({ owner: splitted[1], source: 'server' }).delete();
 					for (i in data) {
 						data[i]['owner'] = splitted[1];
 						data[i]['source'] = 'server';
@@ -55,7 +55,7 @@ dat.local = {
 					await dat.db.assignment.bulkPut(data);
 				}
 				else if (splitted[0] === 'exam') {
-					await dat.db.exam.where({ source: 'server' }).delete();
+					await dat.db.exam.where({ owner: splitted[1], source: 'server' }).delete();
 					for (i in data) {
 						data[i]['owner'] = splitted[1];
 						data[i]['source'] = 'server';
@@ -76,10 +76,20 @@ dat.local = {
 			dat.db.exam,
 			async () => {
 				await dat.db.lastTimestamp.bulkDelete(endpoints);
-				await dat.db.member.where({ owner: owner }).delete();
+				await dat.db.member.where({ groupId: owner }).delete();
 				await dat.db.schedule.where({ owner: owner }).delete();
 				await dat.db.assignment.where({ owner: owner }).delete();
 				await dat.db.exam.where({ owner: owner }).delete();
 			});
+	},
+
+	putOpinion: async function (type, parentId, checked) {
+		await dat.db.opinion.put({
+			type: type,
+			parentId: parentId,
+			checked: checked === true,
+			source: 'local',
+		});
+		dat.server.pending.putOpinion();
 	},
 };

@@ -99,16 +99,7 @@ var GroundLevel = {
 		if (!currentValue) clicker.innerHTML = `<i class="fas fa-check"></i>`;
 		else clicker.innerHTML = `<i class="fas fa-minus"></i>`;
 
-		//update data on server
-		var data = {};
-		data[`${type}Id`] = id;
-		data['checked'] = !currentValue;
-
-		dat.server.request('PUT', `opinion`, data, () => {
-			//
-		}, (connectionError) => {
-			//
-		});
+		dat.local.putOpinion(type, id, !currentValue);
 	},
 
 };

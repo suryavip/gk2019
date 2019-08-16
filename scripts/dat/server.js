@@ -79,10 +79,24 @@ dat.server = {
 
 		delete dat.rdb.ignore[channel];
 		this.status.remove(channel);
-	}
+	},
+
+	pending: {
+		putOpinion: async function () {
+			var opinions = await dat.db.opinion.where({ source: 'local' }).toArray();
+			for (i in opinions) {
+				var o = opinions[i];
+				o[`${o.type}Id`] = o.parentId;
+				await dat.server.request('PUT', 'opinion', o, () => {}, () => {});
+			}
+		},
+	},
 };
 
 window.addEventListener('firebase-status-signedin', () => {
 	dat.server.status.ongoing = [];
 	dat.server.status.change();
+
+	//do pendings
+	dat.server.pending.putOpinion();
 });
