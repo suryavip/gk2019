@@ -94,6 +94,7 @@ dat.local = {
 
 					source: 'local',
 				});
+				dat.triggerChange('opinion');
 				dat.server.pending.opinion.put();
 			},
 		},
@@ -107,6 +108,7 @@ dat.local = {
 					owner: firebaseAuth.userId,
 					source: 'local',
 				});
+				dat.triggerChange(`schedule/${firebaseAuth.userId}`);
 				dat.server.pending.schedule.put();
 			},
 		},
@@ -114,7 +116,7 @@ dat.local = {
 		assignment: {
 			post: async function (subject, dueDate, note, attachment) {
 				await dat.db.assignment.put({
-					assignmentId: this.generateId('assignment'),
+					assignmentId: dat.local.private.generateId('assignment'),
 					subject: subject,
 					dueDate: dueDate,
 					note: note,
@@ -123,16 +125,19 @@ dat.local = {
 					owner: firebaseAuth.userId,
 					source: 'local-new',
 				});
+				dat.triggerChange(`assignment/${firebaseAuth.userId}`);
 				dat.server.pending.assignment.post();
 			},
 			put: async function (assignmentId, dueDate, note, attachment) {
+				var currentSource = await dat.db.assignment.where({ assignmentId: assignmentId });
 				await dat.db.assignment.update(assignmentId, {
 					dueDate: dueDate,
 					note: note,
 					attachment: attachment,
 
-					source: 'local',
+					source: currentSource.source === 'local-new' ? 'local-new' : 'local',
 				});
+				dat.triggerChange(`assignment/${firebaseAuth.userId}`);
 				dat.server.pending.assignment.put();
 			},
 			delete: async function (assignmentId) {
@@ -140,10 +145,14 @@ dat.local = {
 					'rw',
 					dat.db.assignment,
 					dat.db.deletedAssignment,
+					dat.db.opinion,
 					async () => {
 						await dat.db.deletedAssignment.put({ assignmentId: assignmentId });
 						await dat.db.assignment.delete(assignmentId);
+						//delete pending related opinion too
+						await dat.db.opinion.where({parentId: assignmentId, source: 'local'}).delete();
 					});
+				dat.triggerChange(`assignment/${firebaseAuth.userId}`);
 				dat.server.pending.assignment.delete();
 			},
 		},

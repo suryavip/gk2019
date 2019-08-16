@@ -56,7 +56,7 @@ dat.server = {
 		this.status.remove(channel);
 		return f;
 	},
-
+	
 	request: async function (method, channel, body, callBack, failedCallBack) {
 		var timestamp = parseInt(new Date().getTime() / 1000);
 
@@ -122,7 +122,7 @@ dat.server = {
 					var a = assignments[i];
 					await dat.server.request('DELETE', `assignment/${firebaseAuth.userId}`, a, (f, b) => {
 						//delete from deletedAssignment if success
-						await dat.db.deleteAssignment.delete(b.assignmentId);
+						dat.db.deletedAssignment.delete(b.assignmentId);
 					}, () => { });
 				}
 			},
@@ -135,9 +135,16 @@ window.addEventListener('firebase-status-signedin', () => {
 	dat.server.status.change();
 
 	//do pendings
-	dat.server.pending.putOpinion();
-	dat.server.pending.putSchedule();
-	dat.server.pending.postAssignment();
-	dat.server.pending.putAssignment();
-	dat.server.pending.deleteAssignment();
+	dat.server.pending.schedule.put();
+	dat.server.pending.assignment.post();
+	dat.server.pending.assignment.put();
+	dat.server.pending.assignment.delete();
+
+	var doPendingOpinion = async () => {
+		var count = await dat.db.assignment.where('source').anyOf(['local-new', 'local']).count();
+		count += await dat.db.exam.where('source').anyOf(['local-new', 'local']).count();
+		if (count === 0) dat.server.pending.opinion.put(); //do this after all assignment and exam synced
+		else setTimeout(doPendingOpinion, 5000);
+	}
+	doPendingOpinion();
 });

@@ -117,8 +117,8 @@ vipPaging.pageTemplate['assignmentForm'] = {
 
 			var subjects = [];
 			for (i in schedules) {
-				for (ii in schedules[i]) {
-					var subject = schedules[i][ii].subject;
+				for (ii in schedules[i].data) {
+					var subject = schedules[i].data[ii].subject;
 					if (subjects.indexOf(subject) < 0) subjects.push(subject);
 				}
 			}
@@ -163,7 +163,7 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			if (pg.selectedOwner === firebaseAuth.userId) {
 				//do local first because private assignment
 				if (typeof pg.parameter === 'string') {
-					await dat.local.private.assignment.put(pg.parameter, date, note, []);
+					await dat.local.private.assignment.put(pg.parameter, date, note.value, []);
 					ui.float.success(gl('saved'));
 					window.history.go(-1);
 				}
