@@ -64,10 +64,12 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 				byDate[dt].push(a);
 			}
 
-			//print
+			pg.build(byDate, ownerName, isChecked);
+		},
+		build: (byDate, ownerName, isChecked) => {
 			var out = '';
-			for (i in byDate) {
-				var a = byDate[i];
+			for (d in byDate) { for (i in byDate[d]) {
+				var a = byDate[d][i];
 				var rowId = a[`${a.type}Id`];
 
 				if (isChecked[rowId] === true) var checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${rowId}')" class="theme-positive"><i class="fas fa-check"></i></div>`;
@@ -87,7 +89,8 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 				if (a.note !== '') var note = `<div class="aPadding-20-tandem"><p>${app.escapeHTML(a.note)}</p></div>`;
 				else var note = '';
 
-				var aTime = moment(`${a.date}${a.examTime != null ? ` ${a.examTime}` : ''}`);
+				var aDate = a.type === 'assignment' ? a.dueDate : a.examDate;
+				var aTime = moment(`${aDate}${a.examTime != null ? ` ${a.examTime}` : ''}`);
 
 				out += `<div class="container highlightable" id="a${rowId}">
 					<div class="list">
@@ -106,7 +109,8 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 						<div title="${gl('edit')}" onclick="go('${a.type}Form', '${rowId}')"><i class="fas fa-pen"></i></div>
 					</div>
 				</div>`;
-			}
+			}}
+			
 			pg.getEl('content').innerHTML = out;
 			enableAllTippy();
 
