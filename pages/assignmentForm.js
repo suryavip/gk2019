@@ -1,4 +1,8 @@
 vipPaging.pageTemplate['assignmentForm'] = {
+	import: [
+		'scripts/attachmentForm.js',
+		'scripts/imagePicker.js',
+	],
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
 		ui.btnLoading.install();
@@ -19,6 +23,9 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			scrollHeightChanged++;
 		});
 		note.setAttribute('style', `height: ${note.scrollHeight}px; overflow-y:hidden;`);
+
+		//config for attachment
+		
 
 		if (typeof pg.parameter === 'string') {
 			//load data
@@ -62,6 +69,13 @@ vipPaging.pageTemplate['assignmentForm'] = {
 
 			<div class="inputLabel">${gl('note')}</div>
 			<textarea id="note" maxlength="500" placeholder="${gl('notePlaceholder')}" rows="4"></textarea>
+
+			<div class="horizontalOverflow vSpace-10" id="attachments">
+			<div id="attachmentFormAddBtn" class="smallAttachment" onclick="attachmentForm.add()">
+				<i class="fas fa-plus"></i>
+				<p>${gl('addAttachment')}</p>
+			</div>
+		</div>
 
 			<div class="vSpace-30"></div>
 			<button id="btn" class="primary" onclick="pg.done()">${gl('done')}</button>
@@ -224,6 +238,8 @@ vipPaging.pageTemplate['assignmentForm'] = {
 
 			date: 'Date:',
 
+			addAttachment: 'Add attachment',
+
 			done: 'Save',
 			created: 'New assignment added',
 			saved: 'Changes are saved',
@@ -242,6 +258,8 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			notePlaceholder: 'Bisa sampai 500 karakter...',
 
 			date: 'Tanggal dikumpul:',
+
+			addAttachment: 'Tambah sisipan',
 
 			done: 'Simpan',
 			created: 'Tugas berhasil ditambah',

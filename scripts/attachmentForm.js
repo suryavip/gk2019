@@ -1,16 +1,17 @@
 var attachmentForm = {
+	addBtn: null,
+	saveBtn: null,
+
 	numLimit: 10,
 	list: [],
 	/*{
 		attachmentId: (required)
 		filename: optional if this attachment is file
 	}*/
-	addBtnId: 'attachmentFormAddBtn',
 	listToElement: function () {
 		var attachment = this.list;
 
-		var addBtn = pg.getEl(addBtnId);
-		addBtn.setAttribute('data-active', attachment.length < this.numLimit);
+		this.addBtn.setAttribute('data-active', attachment.length < this.numLimit);
 
 		for (i in attachment) {
 			if (typeof attachment[i].filename === 'string') {
@@ -19,20 +20,20 @@ var attachmentForm = {
 				el.setAttribute('onclick', `attachmentForm.option(this)`);
 				el.innerHTML = `<i class="fas fa-file"></i>
 				<p>${app.escapeHTML(attachment[i].filename)}</p>`;
-				pg.getEl('attachments').insertBefore(el, addBtn);
+				pg.getEl('attachments').insertBefore(el, this.addBtn);
 			}
 			else {
 				//this is image
 				var el = document.createElement('div');
 				el.setAttribute('onclick', `attachmentForm.option(this)`);
 				el.innerHTML = `<i class="fas fa-image"></i>`;
-				pg.getEl('attachments').insertBefore(el, addBtn);
+				pg.getEl('attachments').insertBefore(el, this.addBtn);
 				photoLoader.set(el, attachment[i].base64);
 			}
 		}
 	},
 	add: async () => {
-		var blob = await imagePicker(5, 'blobOrFile');
+		var blob = await imagePicker.pick(5, 'blobOrFile');
 		pg.getEl('saveBtn').disabled = true;
 
 		var attachmentAddBtn = pg.thisPage.querySelector('#attachments > .btn');
