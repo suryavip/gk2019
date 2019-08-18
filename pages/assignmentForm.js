@@ -1,7 +1,9 @@
 vipPaging.pageTemplate['assignmentForm'] = {
 	import: [
-		'scripts/attachmentForm.js',
+		'scripts/AttachmentForm.js',
 		'scripts/imagePicker.js',
+		'scripts/compressorjsWrapper.js',
+		'lib/compressorjs-1.0.5/compressorjs.min.js',
 	],
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
@@ -24,18 +26,16 @@ vipPaging.pageTemplate['assignmentForm'] = {
 		});
 		note.setAttribute('style', `height: ${note.scrollHeight}px; overflow-y:hidden;`);
 
-		//config for attachment
-		
-
 		if (typeof pg.parameter === 'string') {
 			//load data
-			pg.loadData();
+			pg.loadData(); //the rest will be called here
 		}
 		else {
 			//new
-			app.listenForChange(['subject'], () => {
-				pg.getEl('btn').disabled = pg.getEl('subject').value === '';
-			});
+			app.listenForChange(['subject'], pg.controlSaveBtn);
+
+			AttachmentForm.init(pg.getEl('attachments'), pg.getEl('attachmentAddBtn'), null, []);
+			AttachmentForm.listenForStatus(pg.controlSaveBtn);
 
 			pg.loadOwner();
 			pg.getEl('subject').focus();
@@ -71,11 +71,11 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			<textarea id="note" maxlength="500" placeholder="${gl('notePlaceholder')}" rows="4"></textarea>
 
 			<div class="horizontalOverflow vSpace-10" id="attachments">
-			<div id="attachmentFormAddBtn" class="smallAttachment" onclick="attachmentForm.add()">
-				<i class="fas fa-plus"></i>
-				<p>${gl('addAttachment')}</p>
+				<div id="attachmentAddBtn" class="smallAttachment" onclick="AttachmentForm.add()">
+					<i class="fas fa-plus"></i>
+					<p>${gl('addAttachment')}</p>
+				</div>
 			</div>
-		</div>
 
 			<div class="vSpace-30"></div>
 			<button id="btn" class="primary" onclick="pg.done()">${gl('done')}</button>
@@ -85,6 +85,10 @@ vipPaging.pageTemplate['assignmentForm'] = {
 </div>
 `,
 	functions: {
+		controlSaveBtn: () => {
+			pg.getEl('btn').disabled = pg.getEl('subject').value === '' || AttachmentForm.status !== 0;
+		},
+
 		selectedOwner: firebaseAuth.userId,
 		loadOwner: async () => {
 			var currentPage = `${pg.thisPage.id}`;
@@ -159,6 +163,9 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			pg.getEl('note').value = pg.assignment.note;
 			pg.getEl('date').setAttribute('data-date', pg.assignment.dueDate);
 			pg.getEl('date').value = app.displayDate(pg.assignment.dueDate);
+
+			AttachmentForm.init(pg.getEl('attachments'), pg.getEl('attachmentAddBtn'), pg.assignment.owner, pg.assignment.attachment);
+			AttachmentForm.listenForStatus(pg.controlSaveBtn);
 		},
 
 		done: async () => {
@@ -233,10 +240,10 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			subject: 'Subject:',
 			subjectPlaceholder: 'Subject...',
 
+			date: 'Date:',
+
 			note: 'Notes:',
 			notePlaceholder: 'You can write up to 500 character...',
-
-			date: 'Date:',
 
 			addAttachment: 'Add attachment',
 
@@ -254,10 +261,10 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			subject: 'Mata pelajaran:',
 			subjectPlaceholder: 'Mata pelajaran...',
 
+			date: 'Tanggal dikumpul:',
+
 			note: 'Catatan:',
 			notePlaceholder: 'Bisa sampai 500 karakter...',
-
-			date: 'Tanggal dikumpul:',
 
 			addAttachment: 'Tambah sisipan',
 

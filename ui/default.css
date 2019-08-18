@@ -371,7 +371,7 @@ i.fab, i.fal, i.far, i.fas {
 }
 
 .activable:not([data-active=true]), #dat-syncIndicator:not([data-active=true]) {
-  display: none;
+  display: none !important;
 }
 
 .singleLine, .childSingleLine > *, .calendarHead > div.title > *, .actionBar > .title, .horizontalOverflow > .attachment > p, .horizontalOverflow .smallAttachment > p {
