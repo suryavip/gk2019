@@ -699,6 +699,9 @@ $listPadding: 20px;
 		& > i {
 			font-size: 20px;
 		}
+		&[data-hideIcon] > i {
+			opacity: 0;
+		}
 		& > p {
 			//this is for file name. after icon
 			margin-top: 5px;

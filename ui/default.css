@@ -1272,6 +1272,10 @@ textarea {
   font-size: 20px;
 }
 
+.horizontalOverflow > .attachment[data-hideIcon] > i, .horizontalOverflow .smallAttachment[data-hideIcon] > i {
+  opacity: 0;
+}
+
 .horizontalOverflow > .attachment > p, .horizontalOverflow .smallAttachment > p {
   margin-top: 5px;
 }

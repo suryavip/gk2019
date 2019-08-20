@@ -114,13 +114,14 @@ dat.local = {
 		},
 		generateId: tableName => `${firebaseAuth.userId}${tableName}${new Date().getTime().toString(36)}`,
 		assignment: {
-			post: async function (subject, dueDate, note, attachment) {
+			post: async function (subject, dueDate, note, attachment, attachmentUploadDate) {
 				await dat.db.assignment.put({
 					assignmentId: dat.local.private.generateId('assignment'),
 					subject: subject,
 					dueDate: dueDate,
 					note: note,
 					attachment: attachment,
+					attachmentUploadDate: attachmentUploadDate, //this is addition info for when actually sending request
 
 					owner: firebaseAuth.userId,
 					source: 'local-new',
@@ -128,12 +129,13 @@ dat.local = {
 				dat.triggerChange(`assignment/${firebaseAuth.userId}`);
 				dat.server.pending.assignment.post();
 			},
-			put: async function (assignmentId, dueDate, note, attachment) {
+			put: async function (assignmentId, dueDate, note, attachment, attachmentUploadDate) {
 				var currentSource = await dat.db.assignment.where({ assignmentId: assignmentId }).first();
 				await dat.db.assignment.update(assignmentId, {
 					dueDate: dueDate,
 					note: note,
 					attachment: attachment,
+					attachmentUploadDate: attachmentUploadDate, //this is addition info for when actually sending request
 
 					source: currentSource.source === 'local-new' ? 'local-new' : 'local',
 				});
@@ -158,7 +160,7 @@ dat.local = {
 			},
 		},
 		exam: {
-			post: async function (subject, examDate, examTime, note, attachment) {
+			post: async function (subject, examDate, examTime, note, attachment, attachmentUploadDate) {
 				await dat.db.exam.put({
 					examId: dat.local.private.generateId('exam'),
 					subject: subject,
@@ -166,6 +168,7 @@ dat.local = {
 					examTime: examTime,
 					note: note,
 					attachment: attachment,
+					attachmentUploadDate: attachmentUploadDate, //this is addition info for when actually sending request
 
 					owner: firebaseAuth.userId,
 					source: 'local-new',
@@ -173,13 +176,14 @@ dat.local = {
 				dat.triggerChange(`exam/${firebaseAuth.userId}`);
 				dat.server.pending.exam.post();
 			},
-			put: async function (examId, examDate, examTime, note, attachment) {
+			put: async function (examId, examDate, examTime, note, attachment, attachmentUploadDate) {
 				var currentSource = await dat.db.exam.where({ examId: examId }).first();
 				await dat.db.exam.update(examId, {
 					examDate: examDate,
 					examTime: examTime,
 					note: note,
 					attachment: attachment,
+					attachmentUploadDate: attachmentUploadDate, //this is addition info for when actually sending request
 
 					source: currentSource.source === 'local-new' ? 'local-new' : 'local',
 				});

@@ -10,10 +10,13 @@ var AttachmentForm = {
 		}*/
 		this.limit = limit || 10;
 
+		this.uploadDate = moment.utc();
+
 		this.addBtn.classList.add('activable');
 		this.buildElement();
 	},
 	gl: (k, p) => gl(k, p, 'AttachmentForm'),
+	generateId: () => `${firebaseAuth.userId}${new Date().getTime().toString(36)}`,
 
 	buildElement: function () {
 		//implement this.attachments into this.area
@@ -34,7 +37,7 @@ var AttachmentForm = {
 			}
 			else {
 				//this is image
-				el.setAttribute('data-photoRefPath', `attachment/${this.ownerId}/${a.attachmentId}.jpg`);
+				el.setAttribute('data-photoRefPath', `attachment/${this.ownerId}/${a.attachmentId}`);
 				el.innerHTML = `<i class="fas fa-image"></i>`;
 				this.area.insertBefore(el, this.addBtn);
 			}
@@ -57,14 +60,20 @@ var AttachmentForm = {
 		pg.thisPage.dispatchEvent(ev);
 	},
 
-	/*add: async function () {
-		var blob = await imagePicker.pick(10, 'blobOrFile');
+	add: function () {
+		//TODO: show option to add image or file
+	},
+
+	addImage: async function () {
+		var imgs = await imagePicker.pick(10, 'blobOrFile');
 		this.changeStatus(1);
 
-		this.addBtn.setAttribute('data-active', this.attachments.length + blob.length < this.limit);
+		//adjust addBtn
+		this.addBtn.setAttribute('data-active', this.attachments.length + imgs.length < this.limit);
 
+		//create loading items
 		var els = [];
-		for (var i = 0; i < blob.length && i + this.attachments.length < this.limit; i++) {
+		for (var i = 0; i < imgs.length && i + this.attachments.length < this.limit; i++) {
 			var el = document.createElement('div');
 			el.setAttribute('onclick', `AttachmentForm.option(this)`);
 			el.classList.add('smallAttachment');
@@ -74,26 +83,40 @@ var AttachmentForm = {
 			els.push(el);
 		}
 
-		for (var i = 0; i < blob.length && i + this.attachments.length < this.limit; i++) {
-			var compressed = await compressorjsWrapper(blob[i], 2560, 2560, 0.6);
-			if (compressed.size > 1 * 1024 * 1024) {
-				this.area.removeChild(els[i]);
-				ui.popUp.alert(this.gl('imageTooBig'));
-				return;
+		//compress for thumb then upload
+		for (var i = 0; i < imgs.length && i + this.attachments.length < this.limit; i++) {
+			var attachmentId = this.generateId();
+
+			//compress
+			var thumb = await compressorjsWrapper(imgs[i], 200, 200, 0.6);
+			var compressed = await compressorjsWrapper(imgs[i], 2560, 2560, 0.6);
+
+			//upload
+			var metadata = { contentType: 'image/jpeg' };
+			var thumbNoHead = thumb.base64.split('base64,')[1];
+			var compressedNoHead = compressed.base64.split('base64,')[1];
+			try {
+				await firebase.storage().ref(`temp_attachment/${this.uploadDate.format('YYYY/MM/DD')}/${firebaseAuth.userId}/${attachmentId}_thumb`).putString(thumbNoHead, 'base64', metadata);
+
+				await firebase.storage().ref(`temp_attachment/${this.uploadDate.format('YYYY/MM/DD')}/${firebaseAuth.userId}/${attachmentId}`).putString(compressedNoHead, 'base64', metadata);
+
+				photoLoader.removeSpinner(els[i]);
+				photoLoader.set(els[i], compressed.base64, true);
+
+				this.attachments.push({
+					attachmentId: attachmentId,
+				});
 			}
-			this.attachments.push({
-				type: 'image',
-				base64: compressed.base64,
-			});
-			//load to el
-			photoLoader.removeSpinner(els[i]);
-			photoLoader.set(els[i], compressed.base64, true);
+			catch (err) {
+				//TODO
+				console.error(err);
+			}
 		}
 
 		this.changeStatus(0);
 	},
 
-	option: async function (targetEl) {
+	/*option: async function (targetEl) {
 		//find index
 		var attachments = this.area.children;
 		var index = 0;

@@ -63,7 +63,10 @@ dat.rdb = {
 				}, dat.server.retryCoolDown);
 				return;
 			}
-			var newGroups = f.b;
+			if (channel === 'group') {
+				var newGroups = {};
+				for (i in f.b) newGroups[f.b[i].groupId] = true;
+			}
 		}
 		else {
 			console.log(`ignoring changes on ${channel} because same timestamp`);

@@ -76,8 +76,11 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 				else var checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${rowId}')"><i class="fas fa-minus"></i></div>`;
 
 				var attachment = [];
-				for (at in a.attachment) {
-					attachment.push(`<div class="attachment">
+				for (i in a.attachment) {
+					var at = a.attachment[i];
+					var photoRefPath = `attachment/${a.owner}/${at.attachmentId}_thumb`;
+					var fullPhotoRefPath = `attachment/${a.owner}/${at.attachmentId}`;
+					attachment.push(`<div class="attachment" data-photoRefPath="${photoRefPath}" data-fullPhotoRefPath="${fullPhotoRefPath}">
 						<i class="fas fa-image"></i>
 					</div>`);
 				}
@@ -115,6 +118,8 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 			enableAllTippy();
 
 			pg.getEl('empty').setAttribute('data-active', out === '');
+
+			photoLoader.autoLoad(pg.getEl('content'));
 
 			GroundLevel.doHighlight();
 		},
