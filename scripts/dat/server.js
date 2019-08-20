@@ -72,7 +72,11 @@ dat.server = {
 		});
 
 		if (f.status === 201 || f.status === 200) {
-			await dat.local.update(channel, timestamp, f.b);
+			if (channel === 'group') {
+				await dat.local.update(channel, timestamp, f.b.groups);
+				await firebase.auth().signInWithCustomToken(f.b.customToken);
+			}
+			else await dat.local.update(channel, timestamp, f.b);
 			callBack(f, body);
 		}
 		else failedCallBack(f.status === 'connectionError', f);

@@ -65,7 +65,7 @@ dat.rdb = {
 			}
 			if (channel === 'group') {
 				var newGroups = {};
-				for (i in f.b) newGroups[f.b[i].groupId] = true;
+				for (i in f.b.groups) newGroups[f.b.groups[i].groupId] = true;
 			}
 		}
 		else {
