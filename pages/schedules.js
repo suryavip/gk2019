@@ -10,7 +10,7 @@ vipPaging.pageTemplate['schedules'] = {
 			var sid = GroundLevel.pendingHighlight;
 			pg.selectedDay = sid[sid.length - 1];
 		}
-		dat.attachListener(pg.load, ['group', 'schedule']);
+		dat.attachListener(pg.load, ['schedule']);
 	},
 	innerHTML: d => `
 <div class="vipPaging-vLayout">
