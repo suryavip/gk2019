@@ -32,10 +32,11 @@ vipPaging.pageTemplate['assignmentForm'] = {
 		}
 		else {
 			//new
-			app.listenForChange(['subject'], pg.controlSaveBtn);
+			app.listenForChange(['subject'], () => {
+				pg.getEl('btn').disabled = pg.getEl('subject').value === '';
+			});
 
 			AttachmentForm.init(pg.getEl('attachments'), pg.getEl('attachmentAddBtn'), null, []);
-			AttachmentForm.listenForStatus(pg.controlSaveBtn);
 
 			pg.loadOwner();
 			pg.getEl('subject').focus();
@@ -71,7 +72,7 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			<textarea id="note" maxlength="500" placeholder="${gl('notePlaceholder')}" rows="4"></textarea>
 
 			<div class="horizontalOverflow vSpace-10" id="attachments">
-				<div id="attachmentAddBtn" class="smallAttachment" onclick="AttachmentForm.add()">
+				<div id="attachmentAddBtn" class="smallAttachment" onclick="AttachmentForm.addImage()">
 					<i class="fas fa-plus"></i>
 					<p>${gl('addAttachment')}</p>
 				</div>
@@ -85,10 +86,6 @@ vipPaging.pageTemplate['assignmentForm'] = {
 </div>
 `,
 	functions: {
-		controlSaveBtn: () => {
-			pg.getEl('btn').disabled = pg.getEl('subject').value === '' || AttachmentForm.status !== 0;
-		},
-
 		selectedOwner: firebaseAuth.userId,
 		loadOwner: async () => {
 			var currentPage = `${pg.thisPage.id}`;
@@ -165,10 +162,15 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			pg.getEl('date').value = app.displayDate(pg.assignment.dueDate);
 
 			AttachmentForm.init(pg.getEl('attachments'), pg.getEl('attachmentAddBtn'), pg.assignment.owner, pg.assignment.attachment);
-			AttachmentForm.listenForStatus(pg.controlSaveBtn);
 		},
 
-		done: async () => {
+		done: async (ignoreAttachmentStatus) => {
+			if (AttachmentForm.status !== 0 && !ignoreAttachmentStatus) {
+				//TODO: show confirm that uploading is in progress
+				//if user decide to continue, recall pg.done(true)
+				return;
+			}
+
 			var subject = pg.getEl('subject');
 			var note = pg.getEl('note');
 			var date = pg.getEl('date').getAttribute('data-date');

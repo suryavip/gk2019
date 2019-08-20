@@ -109,6 +109,8 @@ var AttachmentForm = {
 			}
 			catch (err) {
 				//TODO
+				//https://firebase.google.com/docs/storage/web/handle-errors
+				//err.code: storage/retry-limit-exceeded
 				console.error(err);
 			}
 		}
