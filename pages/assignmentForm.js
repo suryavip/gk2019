@@ -164,10 +164,9 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			AttachmentForm.init(pg.getEl('attachments'), pg.getEl('attachmentAddBtn'), pg.assignment.owner, pg.assignment.attachment);
 		},
 
-		done: async (ignoreAttachmentStatus) => {
-			if (AttachmentForm.status !== 0 && !ignoreAttachmentStatus) {
-				//TODO: show confirm that uploading is in progress
-				//if user decide to continue, recall pg.done(true)
+		done: async () => {
+			if (AttachmentForm.status !== 0) {
+				ui.popUp.alert(gl('uploadInProgress'));
 				return;
 			}
 
@@ -253,6 +252,8 @@ vipPaging.pageTemplate['assignmentForm'] = {
 
 			addAttachment: 'Add attachment',
 
+			uploadInProgress: `Upload are in progress. Please wait until it's finish.`,
+
 			done: 'Save',
 			created: 'New assignment added',
 			saved: 'Changes are saved',
@@ -273,6 +274,8 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			notePlaceholder: 'Bisa sampai 500 karakter...',
 
 			addAttachment: 'Tambah sisipan',
+
+			uploadInProgress: 'Upload sedang dalam proses. Harap tunggu sampai proses selesai.',
 
 			done: 'Simpan',
 			created: 'Tugas berhasil ditambah',
