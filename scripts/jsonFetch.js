@@ -1,5 +1,5 @@
 var jsonFetch = {
-	timeout: 10 * 1000,
+	timeout: 20 * 1000,
 	do: async (url, options) => {
 		if (options == null) options = {};
 		options.mode = 'cors';
