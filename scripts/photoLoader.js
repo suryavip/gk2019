@@ -46,7 +46,7 @@ var photoLoader = {
 			this.load(
 				Array.prototype.slice.call(scope.querySelectorAll(`[data-photoRefPath="${photoRefPath}"]`)),
 				photoRefPath,
-				photoRefPath
+				fullPhotoRefPath
 			);
 		}
 	},
