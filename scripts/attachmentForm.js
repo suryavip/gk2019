@@ -16,7 +16,7 @@ var AttachmentForm = {
 		this.buildElement();
 	},
 	gl: (k, p) => gl(k, p, 'AttachmentForm'),
-	generateId: () => `${firebaseAuth.userId}${new Date().getTime().toString(36)}`,
+	generateId: () => `${firebaseAuth.userId}-${new Date().getTime().toString(36)}`,
 
 	buildElement: function () {
 		//implement this.attachments into this.area
@@ -46,22 +46,100 @@ var AttachmentForm = {
 		photoLoader.autoLoad(this.area);
 	},
 
-	status: 0, //0 means idle, 1 means adding
-	listenForStatus: function (callBack) {
-		//useful for controlling saveBtn
-		callBack(this.status);
-		pg.thisPage.addEventListener(`AttachmentFormStatus`, (e) => {
-			callBack(e.detail);
-		});
-	},
-	changeStatus: function (status) {
-		this.status = status;
-		var ev = new CustomEvent(`AttachmentFormStatus`, { detail: this.status });
-		pg.thisPage.dispatchEvent(ev);
+	status: {
+		value: {}, //if key length is 0 then its idle
+		listen: function (callBack) {
+			//useful for controlling saveBtn
+			callBack(Object.keys(this.value).length);
+			pg.thisPage.addEventListener(`AttachmentFormStatus`, (e) => { callBack(e.detail); });
+		},
+		add: function (id) {
+			this.value[id] = true;
+			var ev = new CustomEvent(`AttachmentFormStatus`, { detail: Object.keys(this.value).length });
+			pg.thisPage.dispatchEvent(ev);
+		},
+		remove: function (id) {
+			delete this.value[id];
+			var ev = new CustomEvent(`AttachmentFormStatus`, { detail: Object.keys(this.value).length });
+			pg.thisPage.dispatchEvent(ev);
+		},
 	},
 
 	add: function () {
-		//TODO: show option to add image or file
+		var acceptedTypes = [
+			'image/*',
+			/*'text/plain',
+			'application/pdf',
+			'application/msword',
+			'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			'application/vnd.oasis.opendocument.text',
+			'application/vnd.ms-powerpoint',
+			'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+			'application/vnd.oasis.opendocument.presentation',
+			'application/vnd.ms-excel',
+			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+			'application/vnd.oasis.opendocument.spreadsheet',
+			'application/x-rar-compressed',
+			'application/zip',*/
+		];
+		var input = document.createElement('input');
+		input.multiple = 'multiple';
+		input.type = 'file';
+		input.accept = acceptedTypes.join(',');
+		input.onchange = async () => {
+			console.log(input.files);
+			var batchId = new Date().getTime().toString(36);
+			this.status.add(batchId);
+
+			this.addBtn.setAttribute('data-active', this.attachments.length + input.files.length < this.limit);
+
+			//create loading items
+			var els = [];
+			for (var i = 0; i < input.files.length && i + this.attachments.length < this.limit; i++) {
+				var file = input.files[i];
+				var el = document.createElement('div');
+				el.setAttribute('onclick', `AttachmentForm.option(this)`);
+				el.classList.add('smallAttachment');
+				el.innerHTML = `<i class="fas fa-image"></i>`;
+				this.area.insertBefore(el, this.addBtn);
+				photoLoader.setSpinner(el);
+				els.push(el);
+			}
+
+			for (var i = 0; i < input.files.length && i + this.attachments.length < this.limit; i++) {
+				var file = input.files[i];
+				var attachmentId = this.generateId();
+
+				//compress
+				var thumb = await compressorjsWrapper(file, 200, 200, 0.6);
+				var compressed = await compressorjsWrapper(file, 2560, 2560, 0.6);
+
+				//upload
+				var metadata = { contentType: 'image/jpeg' };
+				var thumbNoHead = thumb.base64.split('base64,')[1];
+				var compressedNoHead = compressed.base64.split('base64,')[1];
+				try {
+					await firebase.storage().ref(`temp_attachment/${this.uploadDate.format('YYYY/MM/DD')}/${firebaseAuth.userId}/${attachmentId}_thumb`).putString(thumbNoHead, 'base64', metadata);
+
+					await firebase.storage().ref(`temp_attachment/${this.uploadDate.format('YYYY/MM/DD')}/${firebaseAuth.userId}/${attachmentId}`).putString(compressedNoHead, 'base64', metadata);
+
+					photoLoader.removeSpinner(els[i]);
+					photoLoader.set(els[i], compressed.base64, true);
+
+					this.attachments.push({
+						attachmentId: attachmentId,
+					});
+				}
+				catch (err) {
+					//https://firebase.google.com/docs/storage/web/handle-errors
+					ui.float.error(this.gl('uploadError', err.code));
+					console.error(err);
+				}
+			}
+
+			this.status.remove(batchId);
+		};
+		input.click();
 	},
 
 	addImage: async function () {

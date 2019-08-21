@@ -72,7 +72,7 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			<textarea id="note" maxlength="500" placeholder="${gl('notePlaceholder')}" rows="4"></textarea>
 
 			<div class="horizontalOverflow vSpace-10" id="attachments">
-				<div id="attachmentAddBtn" class="smallAttachment" onclick="AttachmentForm.addImage()">
+				<div id="attachmentAddBtn" class="smallAttachment" onclick="AttachmentForm.add()">
 					<i class="fas fa-plus"></i>
 					<p>${gl('addAttachment')}</p>
 				</div>
