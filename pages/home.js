@@ -6,7 +6,7 @@ vipPaging.pageTemplate['home'] = {
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
 		GroundLevel.init();
-		dat.attachListener(pg.load, ['group', 'schedule', 'assignment', 'exam']);
+		dat.attachListener(pg.load, ['group', 'schedule', 'assignment', 'exam', 'opinion']);
 	},
 	innerHTML: d => `
 <div class="vipPaging-vLayout">
