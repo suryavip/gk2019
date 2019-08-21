@@ -165,7 +165,7 @@ vipPaging.pageTemplate['assignmentForm'] = {
 		},
 
 		done: async () => {
-			if (AttachmentForm.status !== 0) {
+			if (Object.keys(AttachmentForm.status.value).length > 0) {
 				ui.popUp.alert(gl('uploadInProgress'));
 				return;
 			}
