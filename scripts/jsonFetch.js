@@ -1,4 +1,5 @@
 var jsonFetch = {
+	timeout: 10 * 1000,
 	do: async (url, options) => {
 		if (options == null) options = {};
 		options.mode = 'cors';
@@ -11,7 +12,7 @@ var jsonFetch = {
 		try {
 			const controller = new AbortController();
 			options.signal = controller.signal;
-			setTimeout(() => controller.abort(), 10000);
+			setTimeout(() => controller.abort(), jsonFetch.timeout);
 			var r = await fetch(url, options);
 		}
 		catch (e) {
