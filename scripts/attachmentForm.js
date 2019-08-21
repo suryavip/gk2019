@@ -86,7 +86,8 @@ var AttachmentForm = {
 		input.multiple = 'multiple';
 		input.type = 'file';
 		input.accept = acceptedTypes.join(',');
-		input.onchange = async () => {
+		input.value = '';
+		input.addEventListener('change', async (e) => {
 			console.log(input.files);
 			var batchId = new Date().getTime().toString(36);
 			this.status.add(batchId);
@@ -138,7 +139,7 @@ var AttachmentForm = {
 			}
 
 			this.status.remove(batchId);
-		};
+		});
 		input.click();
 	},
 
