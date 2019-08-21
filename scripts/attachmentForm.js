@@ -108,9 +108,8 @@ var AttachmentForm = {
 				});
 			}
 			catch (err) {
-				//TODO
 				//https://firebase.google.com/docs/storage/web/handle-errors
-				//err.code: storage/retry-limit-exceeded
+				ui.float.error(this.gl('uploadError', err.code));
 				console.error(err);
 			}
 		}
@@ -158,15 +157,17 @@ var AttachmentForm = {
 
 vipLanguage.lang['AttachmentForm'] = {
 	en: {
-		imageTooBig: 'Sorry, this image file size is too big',
 		viewImage: 'View image',
 		deleteImage: 'Delete image',
 		deleteImageConfirm: 'Delete this image?',
+
+		uploadError: p => `Failed to upload (${p})`,
 	},
 	id: {
-		imageTooBig: 'Maaf, ukuran file gambar ini terlalu besar',
 		viewImage: 'Lihat gambar',
 		deleteImage: 'Hapus gambar',
 		deleteImageConfirm: 'Hapus gambar ini?',
+
+		uploadError: p => `Gagal mengupload (${p})`,
 	},
 };
