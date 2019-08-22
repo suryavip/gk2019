@@ -78,7 +78,7 @@ vipPaging.pageTemplate['examForm'] = {
 
 			<div class="vSpace-20"></div>
 			<button id="attachmentAddBtn" onclick="AttachmentForm.add()">${gl('addAttachment')}</button>
-			<div class="vSpace-10" style="text-align:center" id="attachments"></div>
+			<div class="grid vSpace-10" id="attachments"></div>
 
 			<div class="vSpace-30"></div>
 			<button id="btn" class="primary" onclick="pg.done()">${gl('done')}</button>

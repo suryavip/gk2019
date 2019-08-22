@@ -1253,6 +1253,17 @@ textarea {
   font-size: 20px;
 }
 
+.grid {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
 .attachment, .smallAttachment {
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;

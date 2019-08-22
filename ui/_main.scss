@@ -692,6 +692,14 @@ $listPadding: 20px;
 	}
 }
 
+.grid {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
 .attachment, .smallAttachment {
 	display: inline-flex;
 	align-items: center;
