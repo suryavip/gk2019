@@ -171,7 +171,12 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			var note = pg.getEl('note');
 			var date = pg.getEl('date').getAttribute('data-date');
 
-			if (typeof pg.parameter === 'string' && note.value === pg.assignment.note && date === pg.assignment.dueDate) {
+			console.log(JSON.stringify(AttachmentForm.attachments));
+			console.log(JSON.stringify(pg.assignment.attachment));
+
+			var attachmentSame = JSON.stringify(AttachmentForm.attachments) === JSON.stringify(pg.assignment.attachment);
+
+			if (typeof pg.parameter === 'string' && note.value === pg.assignment.note && date === pg.assignment.dueDate && attachmentSame) {
 				ui.float.success(gl('nothingChanged'));
 				window.history.go(-1);
 				return;

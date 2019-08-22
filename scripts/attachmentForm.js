@@ -4,7 +4,7 @@ var AttachmentForm = {
 		this.area = area; //area element which will contain attachment elements
 		this.addBtn = addBtn; //element button that will be disabled if attachment reach it's limit
 		this.ownerId = ownerId; //group or user id
-		this.attachments = initialAttachments; /*{
+		this.attachments = initialAttachments.slice(); /*{
 			attachmentId: string. null for new file/image
 			originalFilename: optional if this attachment is file
 		}*/
@@ -26,10 +26,10 @@ var AttachmentForm = {
 		for (i in this.attachments) {
 			var a = this.attachments[i];
 			var el = document.createElement('div');
-			el.setAttribute('onclick', `AttachmentForm.option(this)`);
 			el.classList.add('smallAttachment');
 			if (typeof a.originalFilename === 'string') {
 				//this is file
+				el.setAttribute('onclick', `AttachmentForm.option(this)`);
 				el.setAttribute('data-fileRefPath', `attachment/${this.ownerId}/${a.attachmentId}`);
 				el.innerHTML = `<i class="fas fa-file"></i>
 				<p>${app.escapeHTML(a.originalFilename)}</p>`;
@@ -38,7 +38,9 @@ var AttachmentForm = {
 			}
 			else {
 				//this is image
-				el.setAttribute('data-photoRefPath', `attachment/${this.ownerId}/${a.attachmentId}`);
+				el.setAttribute('onclick', `AttachmentForm.imageOption(this)`);
+				el.setAttribute('data-photoRefPath', `attachment/${this.ownerId}/${a.attachmentId}_thumb`);
+				el.setAttribute('data-fullPhotoRefPath', `attachment/${this.ownerId}/${a.attachmentId}`);
 				el.innerHTML = `<i class="fas fa-image"></i>`;
 				//this.area.insertBefore(el, this.addBtn);
 				this.area.appendChild(el);
@@ -86,7 +88,7 @@ var AttachmentForm = {
 		var els = [];
 		for (var i = 0; i < files.length && i + this.attachments.length < this.limit; i++) {
 			var el = document.createElement('div');
-			el.setAttribute('onclick', `AttachmentForm.option(this)`);
+			el.setAttribute('onclick', `AttachmentForm.imageOption(this)`);
 			el.classList.add('smallAttachment');
 			el.innerHTML = `<i class="fas fa-image"></i>`;
 			this.area.appendChild(el);
@@ -172,7 +174,7 @@ var AttachmentForm = {
 		this.status.remove(batchId);
 	},
 
-	/*option: async function (targetEl) {
+	imageOption: async function (targetEl) {
 		//find index
 		var attachments = this.area.children;
 		var index = 0;
@@ -193,10 +195,8 @@ var AttachmentForm = {
 		ui.popUp.option(options, (action) => {
 			if (typeof action !== 'string') return;
 			if (action === 'view') {
-				var url = targetEl.style.backgroundImage;
-				url = url.substr(5);
-				url = url.substr(0, url.length - 2);
-				photoLoader.view(url);
+				var fullPhotoRefPath = targetEl.getAttribute('data-fullPhotoRefPath');
+				photoLoader.view(fullPhotoRefPath);
 			}
 			if (action === 'delete') {
 				ui.popUp.confirm(this.gl('deleteImageConfirm'), v => {
@@ -206,7 +206,7 @@ var AttachmentForm = {
 				});
 			}
 		});
-	},*/
+	},
 
 };
 
