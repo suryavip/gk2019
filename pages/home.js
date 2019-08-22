@@ -128,7 +128,7 @@ vipPaging.pageTemplate['home'] = {
 
 			var opinions = await dat.db.opinion.toArray();
 
-			var s = await dat.db.schedule.filter(s => s.scheduleId[s.scheduleId.length - 1] === pg.selectedDay.format('d')).toArray();
+			var s = await dat.db.schedule.filter(s => s.scheduleId[s.scheduleId.length - 1] === pg.selectedDay.format('d') && s.data.length > 0).toArray();
 			var a = await dat.db.assignment.where({ dueDate: pg.selectedDay.format('YYYY-MM-DD') }).toArray();
 			var e = await dat.db.exam.where({ examDate: pg.selectedDay.format('YYYY-MM-DD') }).sortBy('examTime');
 
