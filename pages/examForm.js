@@ -1,4 +1,10 @@
 vipPaging.pageTemplate['examForm'] = {
+	import: [
+		'scripts/AttachmentForm.js',
+		'scripts/FilePicker.js',
+		'scripts/compressorjsWrapper.js',
+		'lib/compressorjs-1.0.5/compressorjs.min.js',
+	],
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
 		ui.btnLoading.install();
@@ -29,6 +35,8 @@ vipPaging.pageTemplate['examForm'] = {
 			app.listenForChange(['subject'], () => {
 				pg.getEl('btn').disabled = pg.getEl('subject').value === '';
 			});
+
+			AttachmentForm.init(pg.getEl('attachments'), pg.getEl('attachmentAddBtn'), null, []);
 
 			pg.loadOwner();
 			pg.getEl('subject').focus();
@@ -68,6 +76,10 @@ vipPaging.pageTemplate['examForm'] = {
 			<div class="inputLabel">${gl('note')}</div>
 			<textarea id="note" maxlength="500" placeholder="${gl('notePlaceholder')}" rows="4"></textarea>
 
+			<div class="vSpace-20"></div>
+			<button id="attachmentAddBtn" onclick="AttachmentForm.add()">${gl('addAttachment')}</button>
+			<div class="vSpace-10" style="text-align:center" id="attachments"></div>
+
 			<div class="vSpace-30"></div>
 			<button id="btn" class="primary" onclick="pg.done()">${gl('done')}</button>
 		</div>
@@ -76,6 +88,7 @@ vipPaging.pageTemplate['examForm'] = {
 </div>
 `,
 	functions: {
+		exam: {},
 		selectedOwner: firebaseAuth.userId,
 		loadOwner: async () => {
 			var currentPage = `${pg.thisPage.id}`;
@@ -159,16 +172,25 @@ vipPaging.pageTemplate['examForm'] = {
 				pg.getEl('time').value = pg.exam.examTime;
 				pg.getEl('clearTimeBtn').setAttribute('data-active', true);
 			}
+
+			AttachmentForm.init(pg.getEl('attachments'), pg.getEl('attachmentAddBtn'), pg.exam.owner, pg.exam.attachment);
 		},
 
 		done: async () => {
+			if (Object.keys(AttachmentForm.status.value).length > 0) {
+				ui.popUp.alert(gl('uploadInProgress'));
+				return;
+			}
+
 			var subject = pg.getEl('subject');
 			var note = pg.getEl('note');
 			var date = pg.getEl('date').getAttribute('data-date');
 			if (pg.getEl('time').value === '') var time = null;
 			else var time = pg.getEl('time').value;
 
-			if (typeof pg.parameter === 'string' && note.value === pg.exam.note && date === pg.exam.examDate && time === pg.exam.examTime) {
+			var attachmentSame = JSON.stringify(AttachmentForm.attachments) === JSON.stringify(pg.exam.attachment);
+
+			if (typeof pg.parameter === 'string' && note.value === pg.exam.note && date === pg.exam.examDate && time === pg.exam.examTime && attachmentSame) {
 				ui.float.success(gl('nothingChanged'));
 				window.history.go(-1);
 				return;
@@ -176,15 +198,17 @@ vipPaging.pageTemplate['examForm'] = {
 
 			ui.btnLoading.on(pg.getEl('btn'));
 
+			var uploadDate = AttachmentForm.uploadDate.format('YYYY-MM-DD');
+
 			if (pg.selectedOwner === firebaseAuth.userId) {
 				//do local first because private exam
 				if (typeof pg.parameter === 'string') {
-					await dat.local.private.exam.put(pg.parameter, date, time, note.value, []);
+					await dat.local.private.exam.put(pg.parameter, date, time, note.value, AttachmentForm.attachments, uploadDate);
 					ui.float.success(gl('saved'));
 					window.history.go(-1);
 				}
 				else {
-					await dat.local.private.exam.post(subject.value, date, time, note.value, []);
+					await dat.local.private.exam.post(subject.value, date, time, note.value, AttachmentForm.attachments, uploadDate);
 					ui.float.success(gl('created'));
 					window.history.go(-1);
 				}
@@ -199,6 +223,8 @@ vipPaging.pageTemplate['examForm'] = {
 				note: note.value,
 				examDate: date,
 				examTime: time,
+				attachment: AttachmentForm.attachments,
+				attachmentUploadDate: uploadDate,
 			};
 			var success = gl('created');
 
@@ -252,6 +278,10 @@ vipPaging.pageTemplate['examForm'] = {
 			date: 'Date:',
 			timePlaceholder: 'Choose time (optional)',
 
+			addAttachment: 'Add attachment',
+
+			uploadInProgress: `Upload are in progress. Please wait until it's finish.`,
+
 			done: 'Save',
 			created: 'New exam added',
 			saved: 'Changes are saved',
@@ -271,6 +301,10 @@ vipPaging.pageTemplate['examForm'] = {
 
 			date: 'Tanggal dikumpul:',
 			timePlaceholder: 'Pilih waktu (opsional)',
+
+			addAttachment: 'Tambah sisipan',
+
+			uploadInProgress: 'Upload sedang dalam proses. Harap tunggu sampai proses selesai.',
 
 			done: 'Simpan',
 			created: 'Ujian berhasil ditambah',

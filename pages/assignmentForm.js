@@ -83,6 +83,7 @@ vipPaging.pageTemplate['assignmentForm'] = {
 </div>
 `,
 	functions: {
+		assignment: {},
 		selectedOwner: firebaseAuth.userId,
 		loadOwner: async () => {
 			var currentPage = `${pg.thisPage.id}`;
@@ -170,9 +171,6 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			var subject = pg.getEl('subject');
 			var note = pg.getEl('note');
 			var date = pg.getEl('date').getAttribute('data-date');
-
-			console.log(JSON.stringify(AttachmentForm.attachments));
-			console.log(JSON.stringify(pg.assignment.attachment));
 
 			var attachmentSame = JSON.stringify(AttachmentForm.attachments) === JSON.stringify(pg.assignment.attachment);
 

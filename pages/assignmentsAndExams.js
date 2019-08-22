@@ -2,9 +2,15 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 	import: [
 		'scripts/GroundLevel.js',
 		'scripts/ProfileResolver.js',
+
+		`lib/photoSwipe-4.1.2/photoswipe.css`,
+		`lib/photoSwipe-4.1.2/default-skin/default-skin.css`,
+		`lib/photoSwipe-4.1.2/photoswipe.min.js`,
+		`lib/photoSwipe-4.1.2/photoswipe-ui-default.js`,
+		`scripts/photoswipeController.js`,
 	],
 	preopening: () => firebaseAuth.authCheck(true),
-	opening: () => {
+	opening: async () => {
 		GroundLevel.init();
 		dat.attachListener(pg.load, ['assignment', 'exam', 'opinion']);
 	},
@@ -51,7 +57,7 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 			var byDate = {};
 			for (i in exams) {
 				var e = exams[i];
-				var dt = e.examTime;
+				var dt = e.examDate;
 				e['type'] = 'exam';
 				if (byDate[dt] == null) byDate[dt] = [];
 				byDate[dt].push(e);
@@ -66,36 +72,72 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 
 			pg.build(byDate, ownerName, isChecked);
 		},
-		build: (byDate, ownerName, isChecked) => {
-			var out = '';
-			for (d in byDate) { for (i in byDate[d]) {
-				var a = byDate[d][i];
-				var rowId = a[`${a.type}Id`];
-
-				if (isChecked[rowId]) var checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${rowId}')" class="theme-positive"><i class="fas fa-check"></i></div>`;
-				else var checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${rowId}')"><i class="fas fa-minus"></i></div>`;
-
-				var attachment = [];
-				for (i in a.attachment) {
-					var at = a.attachment[i];
-					var photoRefPath = `attachment/${a.owner}/${at.attachmentId}_thumb`;
-					var fullPhotoRefPath = `attachment/${a.owner}/${at.attachmentId}`;
-					attachment.push(`<div class="attachment" data-photoRefPath="${photoRefPath}" data-fullPhotoRefPath="${fullPhotoRefPath}">
+		downloadFileAttachment: async (refPath) => {
+			vipLoading.add('downloadFileAttachment');
+			try {
+				var ref = firebase.storage().ref(refPath);
+				var url = await ref.getDownloadURL();
+				//TODO
+				vipLoading.remove('downloadFileAttachment');
+			}
+			catch (err) {
+				vipLoading.remove('downloadFileAttachment');
+			}
+		},
+		attachmentRefPaths: {}, //group by assignment / exam id
+		attachmentProcessor: (parentId, owner, attachment) => {
+			pg.attachmentRefPaths[parentId] = [];
+			for (i in attachment) {
+				if (typeof attachment[i].originalFilename !== 'string') {
+					attachment[i]['imageIndex'] = pg.attachmentRefPaths[parentId].length;
+					pg.attachmentRefPaths[parentId].push(`attachment/${owner}/${attachment[i].attachmentId}`);
+				}
+			}
+			var out = [];
+			for (i in attachment) {
+				var at = attachment[i];
+				var refPath = `attachment/${owner}/${at.attachmentId}`;
+				if (typeof at.originalFilename === 'string') {
+					out.push(`<div class="attachment" onclick="pg.downloadFileAttachment('${refPath}')">
+						<i class="fas fa-file"></i>
+						<p>${app.escapeHTML(at.originalFilename)}</p>
+					</div>`)
+				}
+				else {
+					var photoRefPath = `attachment/${owner}/${at.attachmentId}_thumb`;
+					out.push(`<div class="attachment" data-photoRefPath="${photoRefPath}" onclick="photoswipeController.showFirebase(pg.attachmentRefPaths['${parentId}'], ${at.imageIndex}, true)">
 						<i class="fas fa-image"></i>
 					</div>`);
 				}
-				if (a.attachment.length > 0) attachment = `<div class="aPadding-20-tandem">
-					<div class="horizontalOverflow vipGesture-prevent">${attachment.join('')}</div>
-				</div>`;
-				else attachment = '';
+			}
+			if (out.length > 0) return `<div class="aPadding-20-tandem">
+				<div class="horizontalOverflow vipGesture-prevent">${out.join('')}</div>
+			</div>`;
+			return '';
+		},
+		build: (byDate, ownerName, isChecked) => {
+			var out = '';
+			
+			//sorting dates
+			var dates = Object.keys(byDate).sort();
 
-				if (a.note !== '') var note = `<div class="aPadding-20-tandem"><p>${app.escapeHTML(a.note)}</p></div>`;
-				else var note = '';
+			for (d in dates) {
+				for (i in byDate[dates[d]]) {
+					var a = byDate[dates[d]][i];
+					var rowId = a[`${a.type}Id`];
 
-				var aDate = a.type === 'assignment' ? a.dueDate : a.examDate;
-				var aTime = moment(`${aDate}${a.examTime != null ? ` ${a.examTime}` : ''}`);
+					if (isChecked[rowId]) var checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${rowId}')" class="theme-positive"><i class="fas fa-check"></i></div>`;
+					else var checkBtn = `<div onclick="GroundLevel.changeChecked(this, '${a.type}', '${rowId}')"><i class="fas fa-minus"></i></div>`;
 
-				out += `<div class="container highlightable" id="a${rowId}">
+					var attachment = pg.attachmentProcessor(rowId, a.owner, a.attachment);
+
+					if (a.note !== '') var note = `<div class="aPadding-20-tandem"><p>${app.escapeHTML(a.note)}</p></div>`;
+					else var note = '';
+
+					var aDate = a.type === 'assignment' ? a.dueDate : a.examDate;
+					var aTime = moment(`${aDate}${a.examTime != null ? ` ${a.examTime}` : ''}`);
+
+					out += `<div class="container highlightable" id="a${rowId}">
 					<div class="list">
 						<div class="iconCircle">${checkBtn}</div>
 						<div class="content">
@@ -112,7 +154,8 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 						<div title="${gl('edit')}" onclick="go('${a.type}Form', '${rowId}')"><i class="fas fa-pen"></i></div>
 					</div>
 				</div>`;
-			}}
+				}
+			}
 
 			pg.getEl('content').innerHTML = out;
 			enableAllTippy();

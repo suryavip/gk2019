@@ -29,7 +29,7 @@ var AttachmentForm = {
 			el.classList.add('smallAttachment');
 			if (typeof a.originalFilename === 'string') {
 				//this is file
-				el.setAttribute('onclick', `AttachmentForm.option(this)`);
+				el.setAttribute('onclick', `AttachmentForm.fileOption(this)`);
 				el.setAttribute('data-fileRefPath', `attachment/${this.ownerId}/${a.attachmentId}`);
 				el.innerHTML = `<i class="fas fa-file"></i>
 				<p>${app.escapeHTML(a.originalFilename)}</p>`;
@@ -141,7 +141,7 @@ var AttachmentForm = {
 		for (var i = 0; i < files.length && i + this.attachments.length < this.limit; i++) {
 			var file = files[i];
 			var el = document.createElement('div');
-			el.setAttribute('onclick', `AttachmentForm.option(this)`);
+			el.setAttribute('onclick', `AttachmentForm.fileOption(this)`);
 			el.classList.add('smallAttachment');
 			el.innerHTML = `<i class="fas fa-file"></i><p>${app.escapeHTML(file.name)}</p>`;
 			this.area.appendChild(el);
@@ -174,7 +174,7 @@ var AttachmentForm = {
 		this.status.remove(batchId);
 	},
 
-	imageOption: async function (targetEl) {
+	imageOption: function (targetEl) {
 		//find index
 		var attachments = this.area.children;
 		var index = 0;
@@ -208,6 +208,20 @@ var AttachmentForm = {
 		});
 	},
 
+	fileOption: function (targetEl) {
+		//find index
+		var attachments = this.area.children;
+		var index = 0;
+		for (var i = 0; i < attachments.length; i++) if (attachments[i] == targetEl) index = i;
+		console.log(`file at index ${index}`);
+
+		ui.popUp.confirm(this.gl('deleteFileConfirm'), v => {
+			if (!v) return;
+			this.area.removeChild(targetEl);
+			this.attachments.splice(index, 1);
+		});
+	},
+
 };
 
 vipLanguage.lang['AttachmentForm'] = {
@@ -216,12 +230,16 @@ vipLanguage.lang['AttachmentForm'] = {
 		deleteImage: 'Delete image',
 		deleteImageConfirm: 'Delete this image?',
 
+		deleteFileConfirm: 'Delete this file?',
+
 		uploadError: p => `Failed to upload (${p})`,
 	},
 	id: {
 		viewImage: 'Lihat gambar',
 		deleteImage: 'Hapus gambar',
 		deleteImageConfirm: 'Hapus gambar ini?',
+
+		deleteFileConfirm: 'Hapus file ini?',
 
 		uploadError: p => `Gagal mengupload (${p})`,
 	},
