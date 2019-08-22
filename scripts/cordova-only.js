@@ -21,11 +21,11 @@ function photoswipeDownload(src) {
 				var blob = oReq.response;
 				if (blob) fss.util.writeFile(fileEntry, blob, () => {
 					console.log(`download from fss complete: ${fileEntry.toURL()}`);
-					float.success(gl('downloaded', path, 'cordovaOnly'));
+					ui.float.success(gl('downloaded', path, 'cordovaOnly'));
 				});
 				else {
 					console.error('we didnt get an XHR response!');
-					float.error(gl('downloadFailed', null, 'cordovaOnly'));
+					ui.float.error(gl('downloadFailed', null, 'cordovaOnly'));
 				}
 			};
 			oReq.send(null);
