@@ -1,6 +1,6 @@
 vipPaging.pageTemplate['signup-photo'] = {
 	import: [
-		'scripts/imagePicker.js',
+		'scripts/FilePicker.js',
 	],
 	preopening: () => firebaseAuth.authCheck(false),
 	opening: () => {
@@ -25,7 +25,7 @@ vipPaging.pageTemplate['signup-photo'] = {
 		<div class="vSpace-20"></div>
 		<div class="profilePhoto circleCenter-120" id="photo" onclick="pg.changePhoto()">
 			<i class="fas fa-camera"></i>
-		</div><div title="${gl('clear')}" class="clearPhotoButton" onclick="imagePicker.clear(pg.getEl('photo'))">
+		</div><div title="${gl('clear')}" class="clearPhotoButton" onclick="FilePicker.clearImage(pg.getEl('photo'))">
 			<i class="fas fa-times"></i>
 		</div>
 		<div class="vSpace-30"></div>
@@ -35,10 +35,13 @@ vipPaging.pageTemplate['signup-photo'] = {
 </div>
 `,
 	functions: {
-		changePhoto: async () => {
-			var image64 = await imagePicker.pick();
-			app.state.cropPhoto.input = image64;
-			go('cropPhoto');
+		changePhoto: () => {
+			FilePicker.result = async (files) => {
+				var image64 = await FilePicker.blobTobase64(files[0]);
+				app.state.cropPhoto.input = image64;
+				go('cropPhoto');
+			},
+			FilePicker.pick(false, false);
 		},
 		done: () => {
 			var photo = pg.getEl('photo');

@@ -1,7 +1,7 @@
 vipPaging.pageTemplate['editProfile'] = {
 	import: [
 		'scripts/reauth.js',
-		'scripts/imagePicker.js',
+		'scripts/FilePicker.js',
 		'scripts/profilePhotoUploader.js',
 		'scripts/ProfileResolver.js',
 	],
@@ -41,7 +41,7 @@ vipPaging.pageTemplate['editProfile'] = {
 		<div style="text-align: center">
 			<div class="profilePhoto circleCenter-120" id="photo" onclick="pg.changePhoto()">
 				<i class="fas fa-camera"></i>
-			</div><div title="${gl('clear')}" class="clearPhotoButton" onclick="imagePicker.clear(pg.getEl('photo'))">
+			</div><div title="${gl('clear')}" class="clearPhotoButton" onclick="FilePicker.clearImage(pg.getEl('photo'))">
 				<i class="fas fa-times"></i>
 			</div>
 		</div>
@@ -59,10 +59,13 @@ vipPaging.pageTemplate['editProfile'] = {
 </div>
 `,
 	functions: {
-		changePhoto: async () => {
-			var image64 = await imagePicker.pick();
-			app.state.cropPhoto.input = image64;
-			go('cropPhoto');
+		changePhoto: () => {
+			FilePicker.result = async (files) => {
+				var image64 = await FilePicker.blobTobase64(files[0]);
+				app.state.cropPhoto.input = image64;
+				go('cropPhoto');
+			},
+			FilePicker.pick(false, false);
 		},
 		loadData: (u) => {
 			if (u[firebaseAuth.userId].isEmpty) return;

@@ -22,7 +22,10 @@ var FilePicker = {
 			callBackParam: 'file',
 		});
 
-		if (options.length === 1) this.openPicker('image', multiple);
+		if (options.length === 1) {
+			this.openPicker('image', multiple);
+			return;
+		}
 
 		ui.popUp.option(options, source => {
 			if (typeof source !== 'string') return;
@@ -83,6 +86,12 @@ var FilePicker = {
 		input.click();
 	},
 
+	clearImage: function (el) {
+		ui.popUp.confirm(this.gl('clearPic'), a => {
+			if (a) photoLoader.remove(el, true);
+		});
+	},
+
 };
 
 vipLanguage.lang['FilePicker'] = {
@@ -94,6 +103,8 @@ vipLanguage.lang['FilePicker'] = {
 
 		chooseFiles: 'Choose files',
 		chooseFile: 'Choose file',
+
+		clearPic: 'Remove photo?',
 	},
 	id: {
 		takePhoto: 'Ambil foto',
@@ -103,5 +114,7 @@ vipLanguage.lang['FilePicker'] = {
 
 		chooseFiles: 'Pilih file',
 		chooseFile: 'Pilih file',
+
+		clearPic: 'Hapus foto?',
 	},
 };
