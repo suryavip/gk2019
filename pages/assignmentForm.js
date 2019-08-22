@@ -1,7 +1,7 @@
 vipPaging.pageTemplate['assignmentForm'] = {
 	import: [
 		'scripts/AttachmentForm.js',
-		'scripts/imagePicker.js',
+		'scripts/FilePicker.js',
 		'scripts/compressorjsWrapper.js',
 		'lib/compressorjs-1.0.5/compressorjs.min.js',
 	],

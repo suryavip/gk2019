@@ -6,7 +6,7 @@ var AttachmentForm = {
 		this.ownerId = ownerId; //group or user id
 		this.attachments = initialAttachments; /*{
 			attachmentId: string. null for new file/image
-			filename: optional if this attachment is file
+			originalFilename: optional if this attachment is file
 		}*/
 		this.limit = limit || 10;
 
@@ -28,11 +28,11 @@ var AttachmentForm = {
 			var el = document.createElement('div');
 			el.setAttribute('onclick', `AttachmentForm.option(this)`);
 			el.classList.add('smallAttachment');
-			if (typeof a.filename === 'string') {
+			if (typeof a.originalFilename === 'string') {
 				//this is file
 				el.setAttribute('data-fileRefPath', `attachment/${this.ownerId}/${a.attachmentId}`);
 				el.innerHTML = `<i class="fas fa-file"></i>
-				<p>${app.escapeHTML(a.filename)}</p>`;
+				<p>${app.escapeHTML(a.originalFilename)}</p>`;
 				//this.area.insertBefore(el, this.addBtn);
 				this.area.appendChild(el);
 			}
@@ -68,66 +68,12 @@ var AttachmentForm = {
 	},
 
 	add: function () {
-		var options = [];
-		if (isCordova) options.push({
-				title: this.gl('takePhoto'),
-				icon: 'fas fa-camera',
-				callBackParam: 'camera',
-			});
-		options.push({
-			title: this.gl('choosePhotos'),
-			icon: 'fas fa-images',
-			callBackParam: 'photos',
-		});
-		options.push({
-			title: this.gl('chooseFiles'),
-			icon: 'fas fa-copy',
-			callBackParam: 'files',
-		});
-		ui.popUp.option(options, source => {
-			if (typeof source !== 'string') return;
-			if (source === 'camera') AttachmentForm.takePhoto();
-			else AttachmentForm.choose(source);
-		});
-	},
-
-	takePhoto: function () {
-		openPicPicker('camera', 'blobOrFile').then(output => {
-			AttachmentForm.imagesIntake(output);
-		}).catch(() => {
-			//
-		});
-	},
-
-	choose: function (type) {
-		//use native picker for files
-		//use plugin for camera
-		var acceptedTypes = [
-			'text/plain',
-			'application/pdf',
-			'application/msword',
-			'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-			'application/vnd.oasis.opendocument.text',
-			'application/vnd.ms-powerpoint',
-			'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-			'application/vnd.oasis.opendocument.presentation',
-			'application/vnd.ms-excel',
-			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-			'application/vnd.oasis.opendocument.spreadsheet',
-			'application/x-rar-compressed',
-			'application/zip',
-		];
-		var input = document.createElement('input');
-		input.multiple = true;
-		input.type = 'file';
-		input.accept = type === 'photos' ? 'image/*' : acceptedTypes.join(',');
-		input.value = '';
-		input.addEventListener('change', async (e) => {
-			if (type === 'photos') AttachmentForm.imagesIntake(input.files);
-			else AttachmentForm.filesIntake(input.files);
-		});
-		document.body.appendChild(input);
-		input.click();
+		FilePicker.result = (files, nonImage) => {
+			console.log(files);
+			if (nonImage) AttachmentForm.filesIntake(files);
+			else AttachmentForm.imagesIntake(files);
+		};
+		FilePicker.pick(true, true);
 	},
 
 	imagesIntake: async function (files) {
@@ -139,12 +85,10 @@ var AttachmentForm = {
 		//create loading items
 		var els = [];
 		for (var i = 0; i < files.length && i + this.attachments.length < this.limit; i++) {
-			var file = files[i];
 			var el = document.createElement('div');
 			el.setAttribute('onclick', `AttachmentForm.option(this)`);
 			el.classList.add('smallAttachment');
 			el.innerHTML = `<i class="fas fa-image"></i>`;
-			//this.area.insertBefore(el, this.addBtn);
 			this.area.appendChild(el);
 			photoLoader.setSpinner(el);
 			els.push(el);
@@ -197,8 +141,7 @@ var AttachmentForm = {
 			var el = document.createElement('div');
 			el.setAttribute('onclick', `AttachmentForm.option(this)`);
 			el.classList.add('smallAttachment');
-			el.innerHTML = `<i class="fas fa-image"></i>`;
-			//this.area.insertBefore(el, this.addBtn);
+			el.innerHTML = `<i class="fas fa-file"></i><p>${app.escapeHTML(file.name)}</p>`;
 			this.area.appendChild(el);
 			photoLoader.setSpinner(el);
 			els.push(el);
@@ -208,24 +151,15 @@ var AttachmentForm = {
 			var file = files[i];
 			var attachmentId = this.generateId();
 
-			//compress
-			var thumb = await compressorjsWrapper(file, 200, 200, 0.6);
-			var compressed = await compressorjsWrapper(file, 2560, 2560, 0.6);
-
 			//upload
-			var metadata = { contentType: 'image/jpeg' };
-			var thumbNoHead = thumb.base64.split('base64,')[1];
-			var compressedNoHead = compressed.base64.split('base64,')[1];
 			try {
-				await firebase.storage().ref(`temp_attachment/${this.uploadDate.format('YYYY/MM/DD')}/${firebaseAuth.userId}/${attachmentId}_thumb`).putString(thumbNoHead, 'base64', metadata);
-
-				await firebase.storage().ref(`temp_attachment/${this.uploadDate.format('YYYY/MM/DD')}/${firebaseAuth.userId}/${attachmentId}`).putString(compressedNoHead, 'base64', metadata);
+				await firebase.storage().ref(`temp_attachment/${this.uploadDate.format('YYYY/MM/DD')}/${firebaseAuth.userId}/${attachmentId}`).put(file);
 
 				photoLoader.removeSpinner(els[i]);
-				photoLoader.set(els[i], compressed.base64, true);
 
 				this.attachments.push({
 					attachmentId: attachmentId,
+					originalFilename: file.name,
 				});
 			}
 			catch (err) {
@@ -278,10 +212,6 @@ var AttachmentForm = {
 
 vipLanguage.lang['AttachmentForm'] = {
 	en: {
-		takePhoto: 'Take a photo',
-		choosePhotos: 'Choose images',
-		chooseFiles: 'Choose files',
-
 		viewImage: 'View image',
 		deleteImage: 'Delete image',
 		deleteImageConfirm: 'Delete this image?',
@@ -289,10 +219,6 @@ vipLanguage.lang['AttachmentForm'] = {
 		uploadError: p => `Failed to upload (${p})`,
 	},
 	id: {
-		takePhoto: 'Ambil foto',
-		choosePhotos: 'Pilih gambar',
-		chooseFiles: 'Pilih file',
-
 		viewImage: 'Lihat gambar',
 		deleteImage: 'Hapus gambar',
 		deleteImageConfirm: 'Hapus gambar ini?',
