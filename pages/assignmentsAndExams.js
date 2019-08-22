@@ -77,7 +77,7 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 			try {
 				var ref = firebase.storage().ref(refPath);
 				var url = await ref.getDownloadURL();
-				//TODO
+				window.open(url, '_blank');
 				vipLoading.remove('downloadFileAttachment');
 			}
 			catch (err) {
@@ -117,7 +117,7 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 		},
 		build: (byDate, ownerName, isChecked) => {
 			var out = '';
-			
+
 			//sorting dates
 			var dates = Object.keys(byDate).sort();
 
