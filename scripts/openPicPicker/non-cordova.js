@@ -28,5 +28,6 @@ var openPicPicker = (source, outputType, numOfFiles) => new Promise((resolve, re
 		}
 		resolve(collectedBase64);
 	};
+	document.body.appendChild(input);
 	input.click();
 });

@@ -682,37 +682,6 @@ $listPadding: 20px;
 		width: 50%;
 		min-width: 180px;
 	}
-	& > .attachment, .smallAttachment {
-		display: inline-flex;
-		align-items: center;
-		flex-direction: column;
-		justify-content: center;
-		background-color: $b-1;
-		color: $f-1;
-		@extend %lightFeedback;
-		width: 160px;
-		height: 120px;
-		background-position: center;
-		background-size: cover;
-		background-repeat: no-repeat;
-		border-radius: 5px;
-		& > i {
-			font-size: 20px;
-		}
-		&[data-hideIcon] > i {
-			opacity: 0;
-		}
-		& > p {
-			//this is for file name. after icon
-			margin-top: 5px;
-			@extend .singleLine;
-		}
-		padding: 10px;
-	}
-	& > .smallAttachment {
-		width: 120px;
-		height: 90px;
-	}
 	& > .arrow {
 		display: inline-block;
 		padding-top: 15px;
@@ -721,6 +690,39 @@ $listPadding: 20px;
 			font-size: 20px;
 		}
 	}
+}
+
+.attachment, .smallAttachment {
+	display: inline-flex;
+	align-items: center;
+	flex-direction: column;
+	justify-content: center;
+	background-color: $b-1;
+	color: $f-1;
+	@extend %lightFeedback;
+	width: 160px;
+	height: 120px;
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+	border-radius: 5px;
+	& > i {
+		font-size: 20px;
+	}
+	&[data-hideIcon] > i {
+		opacity: 0;
+	}
+	& > p {
+		//this is for file name. after icon
+		margin-top: 5px;
+		@extend .singleLine;
+	}
+	padding: 10px;
+	margin: 2px;
+}
+.smallAttachment {
+	width: 120px;
+	height: 90px;
 }
 
 /////////////////////////////////////////////////////////////

@@ -50,7 +50,7 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			<div class="title">${gl(typeof d.parameter === 'string' ? 'editTitle' : 'createTitle')}</div>
 		</div>
 	</div></div>
-	<div class="body"><div><div class="maxWidthWrap-480">
+	<div class="body"><div><div class="maxWidthWrap-640">
 
 		<div class="container-20">
 			<div class="card list ${typeof d.parameter === 'string' ? '' : 'feedback'}" onclick="${typeof d.parameter === 'string' ? '' : 'pg.chooseOwner()'}">
@@ -71,12 +71,9 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			<div class="inputLabel">${gl('note')}</div>
 			<textarea id="note" maxlength="500" placeholder="${gl('notePlaceholder')}" rows="4"></textarea>
 
-			<div class="horizontalOverflow vSpace-10" id="attachments">
-				<div id="attachmentAddBtn" class="smallAttachment" onclick="AttachmentForm.add()">
-					<i class="fas fa-plus"></i>
-					<p>${gl('addAttachment')}</p>
-				</div>
-			</div>
+			<div class="vSpace-20"></div>
+			<button id="attachmentAddBtn" onclick="AttachmentForm.add()">${gl('addAttachment')}</button>
+			<div class="vSpace-10" style="text-align:center" id="attachments"></div>
 
 			<div class="vSpace-30"></div>
 			<button id="btn" class="primary" onclick="pg.done()">${gl('done')}</button>

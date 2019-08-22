@@ -42,7 +42,7 @@ vipPaging.pageTemplate['examForm'] = {
 			<div class="title">${gl(typeof d.parameter === 'string' ? 'editTitle' : 'createTitle')}</div>
 		</div>
 	</div></div>
-	<div class="body"><div><div class="maxWidthWrap-480">
+	<div class="body"><div><div class="maxWidthWrap-640">
 
 		<div class="container-20">
 			<div class="card list ${typeof d.parameter === 'string' ? '' : 'feedback'}" onclick="${typeof d.parameter === 'string' ? '' : 'pg.chooseOwner()'}">
