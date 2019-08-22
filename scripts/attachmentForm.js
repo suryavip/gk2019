@@ -140,6 +140,7 @@ var AttachmentForm = {
 
 			this.status.remove(batchId);
 		});
+		document.body.appendChild(input);
 		input.click();
 	},
 
