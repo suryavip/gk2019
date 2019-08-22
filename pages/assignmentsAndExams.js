@@ -148,7 +148,7 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 					${note}
 					${attachment}
 					<div class="bottomAction aPadding-20-tandem">
-						<div onclick="${a.groupId === firebaseAuth.userId ? '' : `go('group', '${a.owner}')`}"><i class="${a.owner === firebaseAuth.userId ? 'fas fa-user' : 'fas fa-users'}"></i><p>${app.escapeHTML(ownerName[a.owner])}</p></div>
+						<div onclick="${a.owner === firebaseAuth.userId ? '' : `go('group', '${a.owner}')`}"><i class="${a.owner === firebaseAuth.userId ? 'fas fa-user' : 'fas fa-users'}"></i><p>${app.escapeHTML(ownerName[a.owner])}</p></div>
 						<div class="space"></div>
 						<div title="${gl('delete')}" onclick="pg.delete('${a.type}', '${a.owner}', '${rowId}')"><i class="fas fa-trash"></i></div>
 						<div title="${gl('edit')}" onclick="go('${a.type}Form', '${rowId}')"><i class="fas fa-pen"></i></div>
