@@ -14,7 +14,6 @@ var AttachmentForm = {
 		this.buildElement();
 	},
 	gl: (k, p) => gl(k, p, 'AttachmentForm'),
-	generateId: () => `${firebaseAuth.userId}-${new Date().getTime().toString(36)}`,
 
 	buildElement: function () {
 		//implement this.attachments into this.area
@@ -28,24 +27,21 @@ var AttachmentForm = {
 			if (typeof a.originalFilename === 'string') {
 				//this is file
 				el.setAttribute('onclick', `AttachmentForm.fileOption(this)`);
-				el.setAttribute('data-fileRefPath', `attachment/${this.ownerId}/${a.attachmentId}`);
 				el.innerHTML = `<i class="fas fa-file"></i>
 				<p>${app.escapeHTML(a.originalFilename)}</p>`;
-				//this.area.insertBefore(el, this.addBtn);
 				this.area.appendChild(el);
 			}
 			else {
 				//this is image
 				el.setAttribute('onclick', `AttachmentForm.imageOption(this)`);
-				el.setAttribute('data-photoRefPath', `attachment/${this.ownerId}/${a.attachmentId}_thumb`);
-				el.setAttribute('data-fullPhotoRefPath', `attachment/${this.ownerId}/${a.attachmentId}`);
+				//el.setAttribute('data-photoRefPath', a.attachmentId);
+				//el.setAttribute('data-photoRefPath', a.attachmentId);
 				el.innerHTML = `<i class="fas fa-image"></i>`;
-				//this.area.insertBefore(el, this.addBtn);
 				this.area.appendChild(el);
 			}
 		}
 
-		photoLoader.autoLoad(this.area);
+		//TODO: load image
 	},
 
 	status: {
@@ -96,26 +92,23 @@ var AttachmentForm = {
 
 		for (var i = 0; i < files.length && i + this.attachments.length < this.limit; i++) {
 			var file = files[i];
-			var attachmentId = this.generateId();
 
 			//compress
-			var thumb = await compressorjsWrapper(file, 200, 200, 0.6, true);
-			var compressed = await compressorjsWrapper(file, 2560, 2560, 0.6, true);
+			var thumb = await compressorjsWrapper(file, 200, 200, 0.6);
+			var compressed = await compressorjsWrapper(file, 2560, 2560, 0.6);
 
-			var fThumb = await dat.server.uploadAttachment(thumb);
-			var f = await dat.server.uploadAttachment(compressed);
-
-			if (fThumb.status === 201 && f.status === 201) {
+			var f = await dat.server.uploadAttachment(compressed.file, null, thumb.file);
+			if (f.status === 201) {
 				photoLoader.removeSpinner(els[i]);
 				photoLoader.set(els[i], compressed.base64, true);
 
 				this.attachments.push({
-					attachmentId: attachmentId,
+					attachmentId: f.b.attachmentId,
 				});
 			}
 			else {
-				//TODO
-				ui.float.error(this.gl('uploadError', `${fThumb.status} - ${f.status}`));
+				this.area.removeChild(els[i]);
+				ui.float.error(this.gl('uploadError', f.status));
 			}
 		}
 
@@ -143,23 +136,20 @@ var AttachmentForm = {
 
 		for (var i = 0; i < files.length && i + this.attachments.length < this.limit; i++) {
 			var file = files[i];
-			var attachmentId = this.generateId();
 
-			//upload
-			try {
-				await firebase.storage().ref(`temp_attachment/${this.uploadDate.format('YYYY/MM/DD')}/${firebaseAuth.userId}/${attachmentId}`).put(file);
-
+			var f = await dat.server.uploadAttachment(file, file.name);
+			if (f.status === 201) {
 				photoLoader.removeSpinner(els[i]);
+				photoLoader.set(els[i], compressed.base64, true);
 
 				this.attachments.push({
-					attachmentId: attachmentId,
+					attachmentId: f.b.attachmentId,
 					originalFilename: file.name,
 				});
 			}
-			catch (err) {
-				//https://firebase.google.com/docs/storage/web/handle-errors
-				ui.float.error(this.gl('uploadError', err.code));
-				console.error(err);
+			else {
+				this.area.removeChild(els[i]);
+				ui.float.error(this.gl('uploadError', f.status));
 			}
 		}
 

@@ -81,10 +81,11 @@ dat.server = {
 		this.status.remove(channel);
 	},
 
-	uploadAttachment: function (file) {
+	uploadAttachment: function (file, originalFilename, thumbnail) {
 		var form = new FormData()
 		form.append('file', file)
-		if (nonImage) form.append('originalFilename', file.name)
+		if (typeof originalFilename === 'string') form.append('originalFilename', originalFilename)
+		if (thumbnail != null) form.append('thumbnail', thumbnail)
 		var options = {
 			method: 'POST',
 			body: form,
