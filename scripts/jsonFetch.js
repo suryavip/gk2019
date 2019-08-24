@@ -6,7 +6,8 @@ var jsonFetch = {
 		//options.credentials = 'include';
 		if (options.headers == null) options.headers = {};
 		options.headers['Accept'] = 'application/json';
-		options.headers['Content-Type'] = 'application/json';
+		if (options.headers['Content-Type'] == null) options.headers['Content-Type'] = 'application/json';
+		else if (options.headers['Content-Type'] === false) delete options.headers['Content-Type'];
 
 		console.log(options);
 		try {

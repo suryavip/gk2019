@@ -1,5 +1,22 @@
 var FilePicker = {
 
+	test: async function () {
+		//THIS IS HOW TO UPLOAD A FILE
+		this.result = async function (files, nonImage) {
+			var form = new FormData()
+			form.append('file', files[0])
+			if (nonImage) form.append('originalFilename', files[0].name)
+			var options = {
+				method: 'POST',
+				body: form,
+				headers: {},
+			};
+			options.headers['Content-Type'] = false;
+			var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/temp_attachment`, options);
+		};
+		this.pick(false, true);
+	},
+
 	result: function (files, nonImage) {
 		//replace this function
 	},
