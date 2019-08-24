@@ -56,7 +56,7 @@ dat.server = {
 		this.status.remove(channel);
 		return f;
 	},
-	
+
 	request: async function (method, channel, body, callBack, failedCallBack) {
 		var timestamp = parseInt(new Date().getTime() / 1000);
 
@@ -81,6 +81,19 @@ dat.server = {
 		this.status.remove(channel);
 	},
 
+	uploadAttachment: function (file) {
+		var form = new FormData()
+		form.append('file', file)
+		if (nonImage) form.append('originalFilename', file.name)
+		var options = {
+			method: 'POST',
+			body: form,
+			headers: {},
+		};
+		options.headers['Content-Type'] = false;
+		return jsonFetch.doWithIdToken(`${app.baseAPIAddress}/temp_attachment`, options);
+	},
+
 	pending: {
 		retrying: false,
 		doAll: async function () {
@@ -91,11 +104,11 @@ dat.server = {
 			dat.server.pending.assignment.post();
 			dat.server.pending.assignment.put();
 			dat.server.pending.assignment.delete();
-		
+
 			dat.server.pending.exam.post();
 			dat.server.pending.exam.put();
 			dat.server.pending.exam.delete();
-		
+
 			var doPendingOpinion = async () => {
 				var count = await dat.db.assignment.where('source').anyOf(['local-new', 'local']).count();
 				count += await dat.db.exam.where('source').anyOf(['local-new', 'local']).count();

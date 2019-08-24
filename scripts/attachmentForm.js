@@ -10,8 +10,6 @@ var AttachmentForm = {
 		}*/
 		this.limit = limit || 10;
 
-		this.uploadDate = moment.utc();
-
 		this.addBtn.classList.add('activable');
 		this.buildElement();
 	},
@@ -101,18 +99,13 @@ var AttachmentForm = {
 			var attachmentId = this.generateId();
 
 			//compress
-			var thumb = await compressorjsWrapper(file, 200, 200, 0.6);
-			var compressed = await compressorjsWrapper(file, 2560, 2560, 0.6);
+			var thumb = await compressorjsWrapper(file, 200, 200, 0.6, true);
+			var compressed = await compressorjsWrapper(file, 2560, 2560, 0.6, true);
 
-			//upload
-			var metadata = { contentType: 'image/jpeg' };
-			var thumbNoHead = thumb.base64.split('base64,')[1];
-			var compressedNoHead = compressed.base64.split('base64,')[1];
-			try {
-				await firebase.storage().ref(`temp_attachment/${this.uploadDate.format('YYYY/MM/DD')}/${firebaseAuth.userId}/${attachmentId}_thumb`).putString(thumbNoHead, 'base64', metadata);
+			var fThumb = await dat.server.uploadAttachment(thumb);
+			var f = await dat.server.uploadAttachment(compressed);
 
-				await firebase.storage().ref(`temp_attachment/${this.uploadDate.format('YYYY/MM/DD')}/${firebaseAuth.userId}/${attachmentId}`).putString(compressedNoHead, 'base64', metadata);
-
+			if (fThumb.status === 201 && f.status === 201) {
 				photoLoader.removeSpinner(els[i]);
 				photoLoader.set(els[i], compressed.base64, true);
 
@@ -120,10 +113,9 @@ var AttachmentForm = {
 					attachmentId: attachmentId,
 				});
 			}
-			catch (err) {
-				//https://firebase.google.com/docs/storage/web/handle-errors
-				ui.float.error(this.gl('uploadError', err.code));
-				console.error(err);
+			else {
+				//TODO
+				ui.float.error(this.gl('uploadError', `${fThumb.status} - ${f.status}`));
 			}
 		}
 

@@ -1,10 +1,17 @@
-var compressorjsWrapper = (blobOrFile, maxWidth, maxHeight, quality) => new Promise(async (resolve, reject) => {
+var compressorjsWrapper = (blobOrFile, maxWidth, maxHeight, quality, exportFile) => new Promise(async (resolve, reject) => {
 	new Compressor(blobOrFile, {
 		maxWidth: maxWidth,
 		maxHeight: maxHeight,
 		quality: quality,
 		mimeType: 'image/jpeg',
 		success(r) {
+			if (exportFile) {
+				resolve({
+					file: r,
+					size: r.size,
+				});
+				return;
+			}
 			//convert to base64
 			var FR = new FileReader();
 			var err = (e) => { };
