@@ -15,12 +15,6 @@ var firebaseAuth = {
 
 	isSignedIn: () => typeof firebaseAuth.userId === 'string',
 
-	cachedIdToken: '',
-	getIdToken: async (forceNewToken) => {
-		firebaseAuth.cachedIdToken = await firebase.auth().currentUser.getIdToken(forceNewToken);
-		return firebaseAuth.cachedIdToken;
-	},
-
 	authCheck: required => {
 		if (required) {
 			if (!firebaseAuth.isSignedIn()) {
@@ -63,8 +57,6 @@ window.addEventListener('firebase-ready', () => {
 			//else go('verify', null, true);
 			vipLoading.remove('firebaseAuth-firsttimesignedin', true);
 		}, 300);
-
-		firebaseAuth.getIdToken();
 	};
 
 	var signedin = user => {
@@ -100,7 +92,7 @@ window.addEventListener('firebase-ready', () => {
 		vipLoading.remove('firebaseAuth-signout');
 	};
 	
-	firebase.auth().onAuthStateChanged(user => {
+	firebase.auth().onAuthStateChanged(async user => {
 		console.log(`firebase auth stated ${new Date()}`);
 		firebaseAuth.stated = true;
 		if (user) signedin(user);
