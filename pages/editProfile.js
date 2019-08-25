@@ -25,7 +25,7 @@ vipPaging.pageTemplate['editProfile'] = {
 		}
 		else {
 			//just load normal photo
-			photoLoader.load(pg.getEl('photo'), `profile_pic/${firebaseAuth.userId}_small.jpg`, `profile_pic/${firebaseAuth.userId}.jpg`);
+			photoLoader.load(pg.getEl('photo'), `profile_pic/${firebaseAuth.userId}_thumb`, `profile_pic/${firebaseAuth.userId}`);
 		}
 	},
 	innerHTML: () => `

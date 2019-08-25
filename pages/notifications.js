@@ -125,7 +125,7 @@ vipPaging.pageTemplate['notifications'] = {
 
 			return `<div class="container">
 				<div class="list feedback">
-					<div class="photo"><div data-photoRefPath="profile_pic/${n.data.performerUserId}_small.jpg" data-fullPhotoRefPath="profile_pic/${n.data.performerUserId}.jpg"><i class="fas fa-user"></i></div></div>
+					<div class="photo"><div data-photoRefPath="profile_pic/${n.data.performerUserId}_thumb" data-fullPhotoRefPath="profile_pic/${n.data.performerUserId}"><i class="fas fa-user"></i></div></div>
 					<div class="content" onclick="${onclick}">
 						<p>${notifText}</p>
 						<h5>${moment(n.time * 1000).fromNow()}</h5>

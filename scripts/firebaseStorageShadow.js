@@ -1,23 +1,16 @@
+//for non cordova, this just refPath to real URL translator and tester
+//return url will be null if failed
+
 var fss = {
-	knownURL: {},
 	get: async (refPath, callBack) => {
-		var knownURL = fss.knownURL[refPath];
-		if (knownURL === 'blank') callBack.apply(this, [null]);
-		else if (knownURL != null) callBack.apply(this, [knownURL]);
-
 		await firebaseAuth.waitStated();
-
-		var ref = firebase.storage().ref(refPath);
-		ref.getDownloadURL().then(url => {
-			fss.knownURL[refPath] = url;
-			if (url !== knownURL) callBack.apply(this, [url]);
-		}).catch(error => {
-			fss.knownURL[refPath] = `blank`;
-			callBack.apply(this, [null]);
-			if (error.code !== 'storage/object-not-found') console.error(error);
-		});
+		var url = `${app.baseAPIAddress}/storage/${refPath}?r=${firebaseAuth.userId}`;
+		var testImg = document.createElement('img');
+		testImg.onload = () => { callBack.apply(this, [url]); };
+		testImg.onerror = () => { callBack.apply(this, [null]); };
+		testImg.src = url;
 	},
-	delete: refPath => {//this is just a wrapper, not actually needed on non cordova
-		fss.knownURL[refPath] = null;
+	delete: refPath => {
+		//this is just a wrapper, not actually needed on non cordova
 	},
 };

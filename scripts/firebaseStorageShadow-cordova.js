@@ -64,49 +64,53 @@ var fss = {
 	},
 
 	get: async (refPath, callBack) => {
+		//return and test local
+		var localUrl = `${fss.root}${fss.shadowDir}/${refPath}?${new Date().getTime()}`;
+		var localTest = document.createElement('img');
+		localTest.onload = () => { callBack.apply(this, [localUrl]); };
+		localTest.onerror = () => { callBack.apply(this, [null]); };
+		localTest.src = localUrl;
+
+		//return and test online
 		await firebaseAuth.waitStated();
-		var ref = firebase.storage().ref(refPath);
-		var localUpdateTime = localJSON.get(fss.shadowDir, refPath);
+		var url = `${app.baseAPIAddress}/storage/${refPath}?r=${firebaseAuth.userId}&d=${new Date().getTime()}`;
 
-		if (localUpdateTime === 'blank') callBack.apply(this, [null]);
-		else if (localUpdateTime != null) callBack.apply(this, [`${fss.root}${fss.shadowDir}/${refPath}?${new Date().getTime()}`]);
+		try {
+			var r = await fetch(url);
+		}
+		catch (err) {
+			//connection error. just fine with local result
+			return;
+		}
 
-		var errorHandler = error => {
-			console.error(error);
+		if (r.status === 404) {
+			//not found or deleted. return null and delete local
 			callBack.apply(this, [null]);
 			fss.delete(refPath, true);
-		};
+			return;
+		}
+		else if (r.status !== 200) {
+			//server error (maybe?). just fine with local result
+			return;
+		}
 
-		var metadata, downloadURL;
-		var whenBothCollected = () => {
-			if (metadata == null || downloadURL == null) return;
-			if (metadata.updated == localUpdateTime) return;
-
+		var localLastModified = localJSON.get(fss.shadowDir, refPath);
+		var serverLastModified = r.headers.get('Last-Modified');
+		if (localLastModified !== serverLastModified) {
+			//newer image on server. return url and update local
+			//callBack.apply(this, [url]);
+			//update local
+			var blob = await r.blob();
 			fss.util.fileEntry(null, `${fss.shadowDir}/${refPath}`, true, (fileEntry) => {
-				var oReq = new XMLHttpRequest();
-				oReq.open('GET', downloadURL, true);
-				oReq.responseType = 'blob';
-				oReq.onload = (oEvent) => {
-					var blob = oReq.response;
-					if (blob) fss.util.writeFile(fileEntry, blob, () => {
-						callBack.apply(this, [`${fss.root}${fss.shadowDir}/${refPath}?${new Date().getTime()}`]);
-						localJSON.put(fss.shadowDir, refPath, metadata.updated);
-						console.log(`download from fss complete: ${fileEntry.toURL()}`);
-					});
-					else console.error('we didnt get an XHR response!');
-				};
-				oReq.send(null);
+				if (blob) fss.util.writeFile(fileEntry, blob, () => {
+					callBack.apply(this, [`${fss.root}${fss.shadowDir}/${refPath}?${new Date().getTime()}`]);
+					localJSON.put(fss.shadowDir, refPath, serverLastModified);
+					console.log(`download from fss complete: ${fileEntry.toURL()}`);
+				});
+				else console.error('we didnt get an XHR response!');
 			});
-		};
-
-		ref.getMetadata().then(m => {
-			metadata = m;
-			whenBothCollected();
-		}).catch(errorHandler);
-		ref.getDownloadURL().then(d => {
-			downloadURL = d;
-			whenBothCollected();
-		}).catch(errorHandler);
+		}
+			
 	},
 
 	delete: (refPath, setBlank) => {

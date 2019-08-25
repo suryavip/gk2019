@@ -50,7 +50,7 @@ var photoLoader = {
 			);
 		}
 	},
-	load: function (target, refPath, fullRefPath) {
+	load: async function (target, refPath, fullRefPath) {
 		if (!Array.isArray(target) && target != null) target = [target];
 		if (target[0].getAttribute == null) target = Array.prototype.slice.call(target);
 
@@ -68,15 +68,8 @@ var photoLoader = {
 				for (var i = 0; i < target.length; i++) this.blank(target[i]);
 			}
 			else {
-				//test
-				var testImg = document.createElement('img');
-				testImg.onload = () => {
-					for (var i = 0; i < target.length; i++) this.notBlank(target[i], url);
-				};
-				testImg.onerror = () => {
-					for (var i = 0; i < target.length; i++) this.blank(target[i]);
-				};
-				testImg.src = url;
+				//test will be done by fss
+				for (var i = 0; i < target.length; i++) this.notBlank(target[i], url);
 			}
 		});
 	},

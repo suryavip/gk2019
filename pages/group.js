@@ -195,7 +195,7 @@ vipPaging.pageTemplate['group'] = {
 					}
 
 					out += `<div class="list feedback">
-						<div class="photo"><div data-photoRefPath="profile_pic/${m.userId}_small.jpg" data-fullPhotoRefPath="profile_pic/${m.userId}.jpg"><i class="fas fa-user"></i></div></div>
+						<div class="photo"><div data-photoRefPath="profile_pic/${m.userId}_thumb" data-fullPhotoRefPath="profile_pic/${m.userId}"><i class="fas fa-user"></i></div></div>
 						<div class="content" onclick="pg.showProfile('${m.userId}')">
 							<h4>${app.escapeHTML(m.name)}</h4>
 							<h5>${gl(m.level)}</h5>
@@ -252,7 +252,7 @@ vipPaging.pageTemplate['group'] = {
 				});
 			};
 			var id = vipPaging.popUp.show('profile', popUpBuild, u, popUpCallBack);
-			photoLoader.load(document.querySelector(`#vipPaging-popUp-${id} .profilePhoto`), `profile_pic/${uid}_small.jpg`, `profile_pic/${uid}.jpg`);
+			photoLoader.load(document.querySelector(`#vipPaging-popUp-${id} .profilePhoto`), `profile_pic/${uid}_thumb`, `profile_pic/${uid}`);
 		},
 
 		ask: () => {
