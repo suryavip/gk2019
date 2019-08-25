@@ -5,7 +5,7 @@ var reauth = {
 		vipLoading.add('reauth');
 		await firebaseAuth.waitStated();
 		firebase.auth().currentUser.reauthenticateWithCredential(credential)
-			.then(() => firebase.auth().currentUser.getIdToken(true))
+			.then(() => firebaseAuth.getIdToken(true))
 			.then(idToken => {
 				vipLoading.remove('reauth');
 				resolve(idToken);

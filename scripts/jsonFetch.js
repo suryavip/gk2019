@@ -44,7 +44,7 @@ var jsonFetch = {
 	doWithIdToken: async (url, options, forceNewToken) => {
 		await firebaseAuth.waitStated();
 		try {
-			var idToken = await firebase.auth().currentUser.getIdToken(forceNewToken);
+			var idToken = await firebaseAuth.getIdToken(forceNewToken);
 		}
 		catch (e) {
 			console.log('failed to get token');

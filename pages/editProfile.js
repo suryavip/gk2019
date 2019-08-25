@@ -163,7 +163,7 @@ vipPaging.pageTemplate['editProfile'] = {
 				return;
 			}
 
-			await firebase.auth().currentUser.getIdToken(true);
+			await firebaseAuth.getIdToken(true);
 
 			ui.float.success(gl('saved'));
 			window.history.go(-1);
