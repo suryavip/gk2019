@@ -4,7 +4,7 @@
 var fss = {
 	get: async (refPath, callBack) => {
 		await firebaseAuth.waitStated();
-		var url = `${app.baseAPIAddress}/storage/${refPath}?r=${firebaseAuth.userId}`;
+		var url = `${app.baseAPIAddress}/storage/${refPath}?r=${firebaseAuth.userId}&d=${new Date().getTime()}`;
 		var testImg = document.createElement('img');
 		testImg.onload = () => { callBack.apply(this, [url]); };
 		testImg.onerror = () => { callBack.apply(this, [null]); };
