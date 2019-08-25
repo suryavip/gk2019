@@ -2,7 +2,7 @@ var GroundLevel = {
 
 	init: function () {
 		enableAllTippy();
-		photoLoader.load(pg.getEl('groundLevelProfilePhoto'), `profile_pic/${firebaseAuth.userId}_small.jpg`, `profile_pic/${firebaseAuth.userId}.jpg`);
+		photoLoader.load(pg.getEl('groundLevelProfilePhoto'), `profile_pic/${firebaseAuth.userId}_thumb`, `profile_pic/${firebaseAuth.userId}`);
 	},
 
 	gl: (l, p) => gl(l, p, 'GroundLevel'),
@@ -50,7 +50,7 @@ var GroundLevel = {
 				<button onclick="window.history.go(-1)">${this.gl('close')}</button>
 			</div>`;
 		var id = vipPaging.popUp.show('profile', popUpBuild);
-		photoLoader.load(document.querySelector(`#vipPaging-popUp-${id} .profilePhoto`), `profile_pic/${firebaseAuth.userId}_small.jpg`, `profile_pic/${firebaseAuth.userId}.jpg`);
+		photoLoader.load(document.querySelector(`#vipPaging-popUp-${id} .profilePhoto`), `profile_pic/${firebaseAuth.userId}_thumb`, `profile_pic/${firebaseAuth.userId}`);
 		ProfileResolver.fillData(document.querySelector(`#vipPaging-popUp-${id}`));
 	},
 
