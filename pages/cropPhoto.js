@@ -28,9 +28,9 @@ vipPaging.pageTemplate['cropPhoto'] = {
 				circle: false,
 			});
 			var compressedBig = await compressorjsWrapper(blob, 600, 600, 0.8);
-			app.state.cropPhoto.big = compressedBig.base64;
+			app.state.cropPhoto.big = compressedBig;
 			var compressedSmall = await compressorjsWrapper(blob, 200, 200, 0.6);
-			app.state.cropPhoto.small = compressedSmall.base64;
+			app.state.cropPhoto.small = compressedSmall;
 			app.state.cropPhoto.justFinish = true;
 			window.history.go(-1);
 		});

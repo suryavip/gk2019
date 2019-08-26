@@ -2,7 +2,7 @@ vipPaging.pageTemplate['editProfile'] = {
 	import: [
 		'scripts/reauth.js',
 		'scripts/FilePicker.js',
-		'scripts/profilePhotoUploader.js',
+		'scripts/ProfilePhotoController.js',
 		'scripts/ProfileResolver.js',
 	],
 	preopening: () => firebaseAuth.authCheck(true),
@@ -20,7 +20,7 @@ vipPaging.pageTemplate['editProfile'] = {
 		ProfileResolver.resolve([firebaseAuth.userId], pg.loadData);
 
 		if (app.state.cropPhoto.justFinish) {
-			photoLoader.set(pg.getEl('photo'), app.state.cropPhoto.small, true);
+			photoLoader.set(pg.getEl('photo'), app.state.cropPhoto.small.base64, true);
 			delete app.state.cropPhoto.justFinish;
 		}
 		else {
@@ -117,15 +117,14 @@ vipPaging.pageTemplate['editProfile'] = {
 			try {
 				if (photo.getAttribute('data-imageChanged') === 'true') {
 					if (photo.getAttribute('data-hideIcon') === 'true') {
-						await profilePhotoUploader(firebaseAuth.userId, app.state.cropPhoto.small, app.state.cropPhoto.big);
+						await ProfilePhotoController.upload(app.state.cropPhoto.big.file, app.state.cropPhoto.small.file);
 					}
 					else {
 						//delete
-						await firebase.storage().ref(`profile_pic/${firebaseAuth.userId}_small.jpg`).delete();
-						await firebase.storage().ref(`profile_pic/${firebaseAuth.userId}.jpg`).delete();
+						await ProfilePhotoController.delete();
 					}
 					//delete fss for full photo
-					fss.delete(`profile_pic/${firebaseAuth.userId}.jpg`);
+					fss.delete(`profile_pic/${firebaseAuth.userId}`);
 				}
 				if (nameAndSchool) {
 					var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/user`, {

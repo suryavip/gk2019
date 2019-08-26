@@ -7,7 +7,7 @@ vipPaging.pageTemplate['signup-photo'] = {
 		enableAllTippy();
 		if (app.state.cropPhoto == null) app.state.cropPhoto = {};
 		if (app.state.cropPhoto.justFinish) {
-			photoLoader.set(pg.getEl('photo'), app.state.cropPhoto.small, true);
+			photoLoader.set(pg.getEl('photo'), app.state.cropPhoto.small.base64, true);
 			delete app.state.cropPhoto.justFinish;
 		}
 	},
@@ -45,11 +45,10 @@ vipPaging.pageTemplate['signup-photo'] = {
 		},
 		done: () => {
 			var photo = pg.getEl('photo');
-			if (photo.getAttribute('data-hideIcon') === 'true') {
-				localJSON.put('signupPhoto', 'small', app.state.cropPhoto.small);
-				localJSON.put('signupPhoto', 'big', app.state.cropPhoto.big);
+			if (photo.getAttribute('data-hideIcon') !== 'true') {
+				delete app.state.cropPhoto.small;
+				delete app.state.cropPhoto.big;
 			}
-			else localJSON.drop('signupPhoto');
 			go(`signup-password`, pg.parameter);
 		},
 	},

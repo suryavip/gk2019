@@ -1,6 +1,6 @@
 vipPaging.pageTemplate['signup-password'] = {
 	import: [
-		'scripts/profilePhotoUploader.js',
+		'scripts/ProfilePhotoController.js',
 	],
 	preopening: () => firebaseAuth.authCheck(false),
 	opening: () => {

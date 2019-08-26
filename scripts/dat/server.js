@@ -92,7 +92,7 @@ dat.server = {
 			headers: {},
 		};
 		options.headers['Content-Type'] = false;
-		return jsonFetch.doWithIdToken(`${app.baseAPIAddress}/temp_attachment`, options);
+		return jsonFetch.doWithIdToken(`${app.baseAPIAddress}/storage/attachment`, options);
 	},
 
 	pending: {
