@@ -54,7 +54,6 @@ vipPaging.pageTemplate['signup-password'] = {
 `,
 	functions: {
 		done: async () => {
-			var photo = app.state.signupPhoto;
 			var name = pg.parameter[1];
 			var school = pg.parameter[2];
 			if (school === '') school = null;
@@ -104,10 +103,10 @@ vipPaging.pageTemplate['signup-password'] = {
 					if (app.state.signupPhoto !== false) {
 						await ProfilePhotoController.upload(app.state.signupPhoto.big.file, app.state.signupPhoto.small.file);
 					}
-					userCredential.user.sendEmailVerification();
 					delete app.state.signupPhoto;
 				}
 				catch { }
+				userCredential.user.sendEmailVerification();
 			}
 			else {
 				ui.btnLoading.off(pg.getEl('btn'));
