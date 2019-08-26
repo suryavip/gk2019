@@ -81,20 +81,6 @@ dat.server = {
 		this.status.remove(channel);
 	},
 
-	uploadAttachment: function (file, originalFilename, thumbnail) {
-		var form = new FormData()
-		form.append('file', file)
-		if (typeof originalFilename === 'string') form.append('originalFilename', originalFilename)
-		if (thumbnail != null) form.append('thumbnail', thumbnail)
-		var options = {
-			method: 'POST',
-			body: form,
-			headers: {},
-		};
-		options.headers['Content-Type'] = false;
-		return jsonFetch.doWithIdToken(`${app.baseAPIAddress}/storage/attachment`, options);
-	},
-
 	pending: {
 		retrying: false,
 		doAll: async function () {

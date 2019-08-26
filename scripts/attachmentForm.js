@@ -96,7 +96,7 @@ var AttachmentForm = {
 			var thumb = await compressorjsWrapper(file, 200, 200, 0.6);
 			var compressed = await compressorjsWrapper(file, 2560, 2560, 0.6);
 
-			var f = await dat.server.uploadAttachment(compressed.file, null, thumb.file);
+			var f = await this.uploadAttachment(compressed.file, null, thumb.file);
 			if (f.status === 201) {
 				photoLoader.removeSpinner(els[i]);
 				photoLoader.set(els[i], compressed.base64, true);
@@ -136,7 +136,7 @@ var AttachmentForm = {
 		for (var i = 0; i < files.length && i + this.attachments.length < this.limit; i++) {
 			var file = files[i];
 
-			var f = await dat.server.uploadAttachment(file, file.name);
+			var f = await this.uploadAttachment(file, file.name);
 			if (f.status === 201) {
 				photoLoader.removeSpinner(els[i]);
 				photoLoader.set(els[i], compressed.base64, true);
