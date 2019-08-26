@@ -74,15 +74,10 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 		},
 		downloadFileAttachment: async (refPath) => {
 			vipLoading.add('downloadFileAttachment');
-			try {
-				var ref = firebase.storage().ref(refPath);
-				var url = await ref.getDownloadURL();
-				window.open(url, '_blank');
-				vipLoading.remove('downloadFileAttachment');
-			}
-			catch (err) {
-				vipLoading.remove('downloadFileAttachment');
-			}
+			await firebaseAuth.waitStated();
+			var url = `${app.baseAPIAddress}/storage/${refPath}?r=${firebaseAuth.userId}&download=true`;
+			window.open(url, '_blank');
+			vipLoading.remove('downloadFileAttachment');
 		},
 		attachmentRefPaths: {}, //group by assignment / exam id
 		attachmentProcessor: (parentId, owner, attachment) => {
@@ -90,13 +85,13 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 			for (i in attachment) {
 				if (typeof attachment[i].originalFilename !== 'string') {
 					attachment[i]['imageIndex'] = pg.attachmentRefPaths[parentId].length;
-					pg.attachmentRefPaths[parentId].push(`attachment/${owner}/${attachment[i].attachmentId}`);
+					pg.attachmentRefPaths[parentId].push(`attachment/${attachment[i].attachmentId}`);
 				}
 			}
 			var out = [];
 			for (i in attachment) {
 				var at = attachment[i];
-				var refPath = `attachment/${owner}/${at.attachmentId}`;
+				var refPath = `attachment/${at.attachmentId}`;
 				if (typeof at.originalFilename === 'string') {
 					out.push(`<div class="attachment" onclick="pg.downloadFileAttachment('${refPath}')">
 						<i class="fas fa-file"></i>
@@ -104,8 +99,8 @@ vipPaging.pageTemplate['assignmentsAndExams'] = {
 					</div>`)
 				}
 				else {
-					var photoRefPath = `attachment/${owner}/${at.attachmentId}_thumb`;
-					out.push(`<div class="attachment" data-photoRefPath="${photoRefPath}" onclick="photoswipeController.showFirebase(pg.attachmentRefPaths['${parentId}'], ${at.imageIndex}, true)">
+					var photoRefPath = `attachment/${at.attachmentId}_thumb`;
+					out.push(`<div class="attachment" data-photoRefPath="${photoRefPath}" onclick="photoswipeController.showFromPath(pg.attachmentRefPaths['${parentId}'], ${at.imageIndex}, true)">
 						<i class="fas fa-image"></i>
 					</div>`);
 				}

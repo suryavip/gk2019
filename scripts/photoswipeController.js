@@ -59,12 +59,20 @@ var photoswipeController = {
 				index: startIndex,
 				errorMsg: `<div class="pswp__error-msg">${gl('failedToLoadImage', null, 'photoswipeController')}</div>`,
 				pinchToClose: false,
-				downloadCallBack: src => {
-					if (isCordova) return photoswipeDownload(src);
-					var a = document.createElement('a');
-					a.download = new Date().getTime();
-					a.href = src;
-					a.click();
+				downloadCallBack: async src => {
+					if (src.startsWith('cdvfile')) {
+						await firebaseAuth.waitStated();
+						var refPath = src.replace(`${fss.root}${fss.shadowDir}/`, '');
+						refPath = refPath.split('?')[0];
+						var url = `${app.baseAPIAddress}/storage/${refPath}?r=${firebaseAuth.userId}&download=true`;
+						window.open(url, '_blank');
+					}
+					else if (src.startsWith(app.baseAPIAddress)) {
+						await firebaseAuth.waitStated();
+						var baseAddress = src.split('?')[0];
+						var url = `${baseAddress}?r=${firebaseAuth.userId}&download=true`;
+						window.open(url, '_blank');
+					}
 				},
 			};
 			photoswipeController.photoSwipe = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
@@ -113,11 +121,10 @@ var photoswipeController = {
 			})(i, testImg);
 		}
 	},
-	showFirebase: async (refPath, startIndex, downloadBtn) => {
+	showFromPath: async (refPath, startIndex, downloadBtn) => {
 		if (typeof refPath === 'string') refPath = [refPath];
 
 		vipLoading.add('photoswipeController-showFirebase');
-		await firebaseAuth.waitStated();
 
 		var urls = []; var count = 0;
 		var done = () => {
@@ -138,7 +145,7 @@ var photoswipeController = {
 						count++;
 						done();
 					}
-				});
+				}, true);
 			})(i, refPath[i]);
 		}
 	},

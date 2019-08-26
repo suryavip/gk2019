@@ -2,7 +2,7 @@
 //return url will be null if failed
 
 var fss = {
-	get: async (refPath, callBack) => {
+	get: async (refPath, callBack, dontReturnFailedLocal) => {
 		await firebaseAuth.waitStated();
 		var url = `${app.baseAPIAddress}/storage/${refPath}?r=${firebaseAuth.userId}&d=${new Date().getTime()}`;
 		var testImg = document.createElement('img');

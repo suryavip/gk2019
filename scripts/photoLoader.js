@@ -101,6 +101,6 @@ var photoLoader = {
 		var im = await photoLoader.importPhotoSwipe();
 		if (im === false) return false;
 		//open photoSwipe
-		photoswipeController.showFirebase(refPath);
+		photoswipeController.showFromPath(refPath);
 	},
 };

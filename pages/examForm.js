@@ -198,17 +198,15 @@ vipPaging.pageTemplate['examForm'] = {
 
 			ui.btnLoading.on(pg.getEl('btn'));
 
-			var uploadDate = AttachmentForm.uploadDate.format('YYYY-MM-DD');
-
 			if (pg.selectedOwner === firebaseAuth.userId) {
 				//do local first because private exam
 				if (typeof pg.parameter === 'string') {
-					await dat.local.private.exam.put(pg.parameter, date, time, note.value, AttachmentForm.attachments, uploadDate);
+					await dat.local.private.exam.put(pg.parameter, date, time, note.value, AttachmentForm.attachments);
 					ui.float.success(gl('saved'));
 					window.history.go(-1);
 				}
 				else {
-					await dat.local.private.exam.post(subject.value, date, time, note.value, AttachmentForm.attachments, uploadDate);
+					await dat.local.private.exam.post(subject.value, date, time, note.value, AttachmentForm.attachments);
 					ui.float.success(gl('created'));
 					window.history.go(-1);
 				}
@@ -224,7 +222,6 @@ vipPaging.pageTemplate['examForm'] = {
 				examDate: date,
 				examTime: time,
 				attachment: AttachmentForm.attachments,
-				attachmentUploadDate: uploadDate,
 			};
 			var success = gl('created');
 

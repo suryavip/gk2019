@@ -14,7 +14,7 @@ window.addEventListener('firebase-signout', () => {
 });
 
 var fss = {
-	root: 'cdvfile://localhost/persistent/',
+	root: 'cdvfile://localhost/temporary/',
 	shadowDir: 'fss',
 
 	util: {
@@ -63,12 +63,14 @@ var fss = {
 		},
 	},
 
-	get: async (refPath, callBack) => {
+	get: async (refPath, callBack, dontReturnFailedLocal) => {
 		//return and test local
 		var localUrl = `${fss.root}${fss.shadowDir}/${refPath}?${new Date().getTime()}`;
 		var localTest = document.createElement('img');
 		localTest.onload = () => { callBack.apply(this, [localUrl]); };
-		localTest.onerror = () => { callBack.apply(this, [null]); };
+		localTest.onerror = () => {
+			if (dontReturnFailedLocal !== true) callBack.apply(this, [null]);
+		};
 		localTest.src = localUrl;
 
 		//return and test online

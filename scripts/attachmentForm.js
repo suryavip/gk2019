@@ -33,14 +33,13 @@ var AttachmentForm = {
 			else {
 				//this is image
 				el.setAttribute('onclick', `AttachmentForm.imageOption(this)`);
-				//el.setAttribute('data-photoRefPath', a.attachmentId);
-				//el.setAttribute('data-photoRefPath', a.attachmentId);
+				el.setAttribute('data-photoRefPath', `attachment/${a.attachmentId}_thumb`);
 				el.innerHTML = `<i class="fas fa-image"></i>`;
 				this.area.appendChild(el);
 			}
 		}
 
-		//TODO: load image
+		photoLoader.autoLoad(this.area);
 	},
 
 	status: {
@@ -139,7 +138,6 @@ var AttachmentForm = {
 			var f = await this.uploadAttachment(file, file.name);
 			if (f.status === 201) {
 				photoLoader.removeSpinner(els[i]);
-				photoLoader.set(els[i], compressed.base64, true);
 
 				this.attachments.push({
 					attachmentId: f.b.attachmentId,
@@ -176,30 +174,10 @@ var AttachmentForm = {
 		for (var i = 0; i < attachments.length; i++) if (attachments[i] == targetEl) index = i;
 		console.log(`image at index ${index}`);
 
-		var options = [];
-		options.push({
-			title: this.gl('viewImage'),
-			icon: 'fas fa-eye',
-			callBackParam: 'view',
-		});
-		options.push({
-			title: this.gl('deleteImage'),
-			icon: 'fas fa-trash',
-			callBackParam: 'delete',
-		});
-		ui.popUp.option(options, (action) => {
-			if (typeof action !== 'string') return;
-			if (action === 'view') {
-				var fullPhotoRefPath = targetEl.getAttribute('data-fullPhotoRefPath');
-				photoLoader.view(fullPhotoRefPath);
-			}
-			if (action === 'delete') {
-				ui.popUp.confirm(this.gl('deleteImageConfirm'), v => {
-					if (!v) return;
-					this.area.removeChild(targetEl);
-					this.attachments.splice(index, 1);
-				});
-			}
+		ui.popUp.confirm(this.gl('deleteImageConfirm'), v => {
+			if (!v) return;
+			this.area.removeChild(targetEl);
+			this.attachments.splice(index, 1);
 		});
 	},
 
@@ -221,8 +199,6 @@ var AttachmentForm = {
 
 vipLanguage.lang['AttachmentForm'] = {
 	en: {
-		viewImage: 'View image',
-		deleteImage: 'Delete image',
 		deleteImageConfirm: 'Delete this image?',
 
 		deleteFileConfirm: 'Delete this file?',
@@ -230,8 +206,6 @@ vipLanguage.lang['AttachmentForm'] = {
 		uploadError: p => `Failed to upload (${p})`,
 	},
 	id: {
-		viewImage: 'Lihat gambar',
-		deleteImage: 'Hapus gambar',
 		deleteImageConfirm: 'Hapus gambar ini?',
 
 		deleteFileConfirm: 'Hapus file ini?',

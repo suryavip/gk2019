@@ -10,42 +10,6 @@ window.addEventListener('vipHistoryCloseApp', () => {
 	return navigator.app.exitApp();
 });
 
-function photoswipeDownload(src) {
-	var path = `Download/${new Date().getTime()}.jpg`;
-	window.resolveLocalFileSystemURL(`cdvfile://localhost/sdcard/`, (parent) => {
-		fss.util.fileEntry(parent, path, true, (fileEntry) => {
-			var oReq = new XMLHttpRequest();
-			oReq.open('GET', src, true);
-			oReq.responseType = 'blob';
-			oReq.onload = (oEvent) => {
-				var blob = oReq.response;
-				if (blob) fss.util.writeFile(fileEntry, blob, () => {
-					console.log(`download from fss complete: ${fileEntry.toURL()}`);
-					ui.float.success(gl('downloaded', path, 'cordovaOnly'));
-				});
-				else {
-					console.error('we didnt get an XHR response!');
-					ui.float.error(gl('downloadFailed', null, 'cordovaOnly'));
-				}
-			};
-			oReq.send(null);
-		});
-	});
-}
-
-window.addEventListener('vipLanguageInit', () => {
-	vipLanguage.lang['cordovaOnly'] = {
-		en: {
-			downloaded: p => `Image saved to ${p}`,
-			downloadFailed: 'Failed to save image',
-		},
-		id: {
-			downloaded: p => `Berhasil di simpan ke ${p}`,
-			downloadFailed: 'Gagal meng-download',
-		},
-	};
-});
-
 window.addEventListener('vipHistoryInit', () => {
 	cordova.plugins.firebase.dynamiclinks.onDynamicLink(function(data) {
 		//sample

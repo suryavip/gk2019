@@ -182,17 +182,15 @@ vipPaging.pageTemplate['assignmentForm'] = {
 
 			ui.btnLoading.on(pg.getEl('btn'));
 
-			var uploadDate = AttachmentForm.uploadDate.format('YYYY-MM-DD');
-
 			if (pg.selectedOwner === firebaseAuth.userId) {
 				//do local first because private assignment
 				if (typeof pg.parameter === 'string') {
-					await dat.local.private.assignment.put(pg.parameter, date, note.value, AttachmentForm.attachments, uploadDate);
+					await dat.local.private.assignment.put(pg.parameter, date, note.value, AttachmentForm.attachments);
 					ui.float.success(gl('saved'));
 					window.history.go(-1);
 				}
 				else {
-					await dat.local.private.assignment.post(subject.value, date, note.value, AttachmentForm.attachments, uploadDate);
+					await dat.local.private.assignment.post(subject.value, date, note.value, AttachmentForm.attachments);
 					ui.float.success(gl('created'));
 					window.history.go(-1);
 				}
@@ -207,7 +205,6 @@ vipPaging.pageTemplate['assignmentForm'] = {
 				note: note.value,
 				dueDate: date,
 				attachment: AttachmentForm.attachments,
-				attachmentUploadDate: uploadDate,
 			};
 			var success = gl('created');
 
