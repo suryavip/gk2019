@@ -106,7 +106,7 @@ var AttachmentForm = {
 			}
 			else {
 				this.area.removeChild(els[i]);
-				ui.float.error(this.gl('uploadError', f.status));
+				ui.popUp.alert(this.gl('uploadImageError', f.status));
 			}
 		}
 
@@ -146,7 +146,10 @@ var AttachmentForm = {
 			}
 			else {
 				this.area.removeChild(els[i]);
-				ui.float.error(this.gl('uploadError', f.status));
+				if (f.status === 400 && f.b.code === 'unknown type') {
+					ui.popUp.alert(this.gl('rejectedType', file.name));
+				}
+				else ui.popUp.alert(this.gl('uploadFileError', file.name));
 			}
 		}
 
@@ -203,13 +206,17 @@ vipLanguage.lang['AttachmentForm'] = {
 
 		deleteFileConfirm: 'Delete this file?',
 
-		uploadError: p => `Failed to upload (${p})`,
+		uploadImageError: p => `Failed to upload (${p})`,
+		uploadFileError: p => `Failed to upload ${app.escapeHTML(p)}`,
+		rejectedType: p => `Unsupported file type: ${app.escapeHTML(p)}`,
 	},
 	id: {
 		deleteImageConfirm: 'Hapus gambar ini?',
 
 		deleteFileConfirm: 'Hapus file ini?',
 
-		uploadError: p => `Gagal mengupload (${p})`,
+		uploadImageError: p => `Gagal mengupload (${p})`,
+		uploadFileError: p => `Gagal mengupload ${app.escapeHTML(p)}`,
+		rejectedType: p => `Tidak mendukung file sejenis ini: ${app.escapeHTML(p)}`,
 	},
 };
