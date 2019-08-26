@@ -22,7 +22,7 @@ dat.local = {
 
 				if (splitted[0] === 'group') {
 					await dat.db.group.clear();
-					await dat.db.group.bulkPut(data.groups);
+					await dat.db.group.bulkPut(data);
 				}
 				else if (splitted[0] === 'notification') {
 					await dat.db.notification.clear();
@@ -63,8 +63,6 @@ dat.local = {
 					await dat.db.exam.bulkPut(data);
 				}
 			});
-
-		if (channel === 'group') await firebase.auth().signInWithCustomToken(data.customToken);
 
 		if (dat.server.status.ongoing.indexOf(channel) < 2) dat.triggerChange(channel);
 	},
