@@ -6,6 +6,12 @@ vipPaging.pageTemplate['signup-password'] = {
 	opening: () => {
 		ui.btnLoading.install();
 
+		if (typeof app.state.signupPhoto === 'undefined') {
+			//back to signup-photo
+			window.history.go(-1);
+			return;
+		}
+
 		app.listenForChange(['password', 'repassword'], () => {
 			pg.getEl('btn').disabled = pg.getEl('password').value === '' ||
 				pg.getEl('repassword').value === '';
@@ -48,7 +54,7 @@ vipPaging.pageTemplate['signup-password'] = {
 `,
 	functions: {
 		done: async () => {
-			var photo = localJSON.get('signupPhoto');
+			var photo = app.state.signupPhoto;
 			var name = pg.parameter[1];
 			var school = pg.parameter[2];
 			if (school === '') school = null;
@@ -95,11 +101,11 @@ vipPaging.pageTemplate['signup-password'] = {
 					return;
 				}
 				try {
-					if (typeof photo.small === 'string' && typeof photo.big === 'string') {
-						await profilePhotoUploader(userCredential.user.uid, photo.small, photo.big);
+					if (app.state.signupPhoto !== false) {
+						await ProfilePhotoController.upload(app.state.signupPhoto.big.file, app.state.signupPhoto.small.file);
 					}
 					userCredential.user.sendEmailVerification();
-					localJSON.drop('signupPhoto');
+					delete app.state.signupPhoto;
 				}
 				catch { }
 			}

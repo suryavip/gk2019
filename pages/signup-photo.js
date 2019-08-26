@@ -45,10 +45,8 @@ vipPaging.pageTemplate['signup-photo'] = {
 		},
 		done: () => {
 			var photo = pg.getEl('photo');
-			if (photo.getAttribute('data-hideIcon') !== 'true') {
-				delete app.state.cropPhoto.small;
-				delete app.state.cropPhoto.big;
-			}
+			if (photo.getAttribute('data-hideIcon') !== 'true') app.state.signupPhoto = false;
+			else app.state.signupPhoto = app.state.cropPhoto;
 			go(`signup-password`, pg.parameter);
 		},
 	},
