@@ -36,7 +36,7 @@ vipPaging.pageTemplate['examForm'] = {
 				pg.getEl('btn').disabled = pg.getEl('subject').value === '';
 			});
 
-			AttachmentForm.init(pg.getEl('attachments'), pg.getEl('attachmentAddBtn'), null, []);
+			AttachmentForm.init(pg.getEl('attachments'), pg.getEl('attachmentAddBtn'), []);
 
 			pg.loadOwner();
 			pg.getEl('subject').focus();
@@ -173,7 +173,7 @@ vipPaging.pageTemplate['examForm'] = {
 				pg.getEl('clearTimeBtn').setAttribute('data-active', true);
 			}
 
-			AttachmentForm.init(pg.getEl('attachments'), pg.getEl('attachmentAddBtn'), pg.exam.owner, pg.exam.attachment);
+			AttachmentForm.init(pg.getEl('attachments'), pg.getEl('attachmentAddBtn'), pg.exam.attachment);
 		},
 
 		done: async () => {

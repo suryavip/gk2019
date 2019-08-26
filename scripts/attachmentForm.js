@@ -1,9 +1,8 @@
 var AttachmentForm = {
 
-	init: function (area, addBtn, ownerId, initialAttachments, limit) {
+	init: function (area, addBtn, initialAttachments, limit) {
 		this.area = area; //area element which will contain attachment elements
 		this.addBtn = addBtn; //element button that will be disabled if attachment reach it's limit
-		this.ownerId = ownerId; //group or user id
 		this.attachments = initialAttachments.slice(); /*{
 			attachmentId: string. null for new file/image
 			originalFilename: optional if this attachment is file
@@ -154,6 +153,20 @@ var AttachmentForm = {
 		}
 
 		this.status.remove(batchId);
+	},
+
+	uploadAttachment: function (file, originalFilename, thumbnail) {
+		var form = new FormData()
+		form.append('file', file)
+		if (typeof originalFilename === 'string') form.append('originalFilename', originalFilename)
+		if (thumbnail != null) form.append('thumbnail', thumbnail)
+		var options = {
+			method: 'POST',
+			body: form,
+			headers: {},
+		};
+		options.headers['Content-Type'] = false;
+		return jsonFetch.doWithIdToken(`${app.baseAPIAddress}/storage/attachment`, options);
 	},
 
 	imageOption: function (targetEl) {

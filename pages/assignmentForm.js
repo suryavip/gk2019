@@ -36,7 +36,7 @@ vipPaging.pageTemplate['assignmentForm'] = {
 				pg.getEl('btn').disabled = pg.getEl('subject').value === '';
 			});
 
-			AttachmentForm.init(pg.getEl('attachments'), pg.getEl('attachmentAddBtn'), null, []);
+			AttachmentForm.init(pg.getEl('attachments'), pg.getEl('attachmentAddBtn'), []);
 
 			pg.loadOwner();
 			pg.getEl('subject').focus();
@@ -159,7 +159,7 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			pg.getEl('date').setAttribute('data-date', pg.assignment.dueDate);
 			pg.getEl('date').value = app.displayDate(pg.assignment.dueDate);
 
-			AttachmentForm.init(pg.getEl('attachments'), pg.getEl('attachmentAddBtn'), pg.assignment.owner, pg.assignment.attachment);
+			AttachmentForm.init(pg.getEl('attachments'), pg.getEl('attachmentAddBtn'), pg.assignment.attachment);
 		},
 
 		done: async () => {
