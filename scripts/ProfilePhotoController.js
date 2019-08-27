@@ -12,11 +12,7 @@ var ProfilePhotoController = {
 		return jsonFetch.doWithIdToken(`${app.baseAPIAddress}/storage/profile_pic`, options);
 	},
 	delete: () => {
-		var options = {
-			method: 'DELETE',
-			headers: {},
-		};
-		options.headers['Content-Type'] = false;
+		var options = { method: 'DELETE' };
 		return jsonFetch.doWithIdToken(`${app.baseAPIAddress}/storage/profile_pic`, options);
 	},
 };
