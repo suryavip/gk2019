@@ -79,7 +79,7 @@ var FilePicker = {
 		var input = document.createElement('input');
 		input.multiple = multiple == true;
 		input.type = 'file';
-		input.accept = source === 'image' ? 'image/*' : acceptedTypes.join(',');
+		input.accept = source === 'image' ? 'image/*' : isCordova ? '' : acceptedTypes.join(',');
 		input.value = '';
 		input.addEventListener('change', async (e) => { FilePicker.result(input.files, source !== 'image'); });
 		document.body.appendChild(input);
