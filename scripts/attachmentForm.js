@@ -64,56 +64,12 @@ var AttachmentForm = {
 	add: function () {
 		FilePicker.result = (files, nonImage) => {
 			console.log(files);
-			if (nonImage) AttachmentForm.filesIntake(files);
-			else AttachmentForm.imagesIntake(files);
+			AttachmentForm.intake(files, nonImage);
 		};
 		FilePicker.pick(true, true);
 	},
 
-	imagesIntake: async function (files) {
-		var batchId = new Date().getTime().toString(36);
-		this.status.add(batchId);
-
-		this.addBtn.setAttribute('data-active', this.attachments.length + files.length < this.limit);
-
-		//create loading items
-		var els = [];
-		for (var i = 0; i < files.length && i + this.attachments.length < this.limit; i++) {
-			var el = document.createElement('div');
-			el.setAttribute('onclick', `AttachmentForm.imageOption(this)`);
-			el.classList.add('smallAttachment');
-			el.innerHTML = `<i class="fas fa-image"></i>`;
-			this.area.appendChild(el);
-			photoLoader.setSpinner(el);
-			els.push(el);
-		}
-
-		for (var i = 0; i < files.length && i + this.attachments.length < this.limit; i++) {
-			var file = files[i];
-
-			//compress
-			var thumb = await compressorjsWrapper(file, 200, 200, 0.6);
-			var compressed = await compressorjsWrapper(file, 2560, 2560, 0.6);
-
-			var f = await this.uploadAttachment(compressed.file, null, thumb.file);
-			if (f.status === 201) {
-				photoLoader.removeSpinner(els[i]);
-				photoLoader.set(els[i], compressed.base64, true);
-
-				this.attachments.push({
-					attachmentId: f.b.attachmentId,
-				});
-			}
-			else {
-				this.area.removeChild(els[i]);
-				ui.popUp.alert(this.gl('uploadImageError', f.status));
-			}
-		}
-
-		this.status.remove(batchId);
-	},
-
-	filesIntake: async function (files) {
+	intake: async function (files, nonImage) {
 		var batchId = new Date().getTime().toString(36);
 		this.status.add(batchId);
 
@@ -124,37 +80,63 @@ var AttachmentForm = {
 		for (var i = 0; i < files.length && i + this.attachments.length < this.limit; i++) {
 			var file = files[i];
 			var el = document.createElement('div');
-			el.setAttribute('onclick', `AttachmentForm.fileOption(this)`);
 			el.classList.add('smallAttachment');
-			el.innerHTML = `<i class="fas fa-file"></i><p>${app.escapeHTML(file.name)}</p>`;
+			if (nonImage) {
+				el.setAttribute('onclick', `AttachmentForm.fileOption(this)`);
+				el.innerHTML = `<i class="fas fa-file"></i><p>${app.escapeHTML(file.name)}</p>`;
+			}
+			else {
+				el.setAttribute('onclick', `AttachmentForm.imageOption(this)`);
+				el.innerHTML = `<i class="fas fa-image"></i>`;
+			}
 			this.area.appendChild(el);
 			photoLoader.setSpinner(el);
 			els.push(el);
 		}
 
-		for (var i = 0; i < files.length && i + this.attachments.length < this.limit; i++) {
+		rejected = [];
+		failed = [];
+
+		for (var i = 0; i < files.length && i < els.length; i++) {
 			var file = files[i];
 
-			var f = await this.uploadAttachment(file, file.name);
+			if (nonImage) var f = await this.uploadAttachment(file, file.name);
+			else {
+				var thumb = await compressorjsWrapper(file, 200, 200, 0.6);
+				var compressed = await compressorjsWrapper(file, 2560, 2560, 0.6);
+				var f = await this.uploadAttachment(compressed.file, null, thumb.file);
+			}
+
 			if (f.status === 201) {
 				photoLoader.removeSpinner(els[i]);
-
-				this.attachments.push({
-					attachmentId: f.b.attachmentId,
-					originalFilename: file.name,
-				});
+				var newA = { attachmentId: f.b.attachmentId };
+				if (nonImage) newA['originalFilename'] = file.name;
+				else photoLoader.set(els[i], compressed.base64, true);
+				
+				this.attachments.push(newA);
 			}
 			else {
 				this.area.removeChild(els[i]);
-				if (f.status === 400 && f.b.code === 'unknown type') {
-					ui.popUp.alert(this.gl('rejectedType', file.name));
-				}
-				else ui.popUp.alert(this.gl('uploadFileError', file.name));
+				if (f.status === 400 && f.b.code === 'unknown type') rejected.push(file.name);
+				else failed.push(file.name);
 			}
+
+			await this.delay(500);
 		}
 
 		this.status.remove(batchId);
+
+		//show rejected and failed files
+		var showFailed = () => {
+			if (failed.length > 0) ui.popUp.alert(this.gl('uploadFileError', failed.join(', ')));
+		};
+		if (rejected.length > 0) ui.popUp.alert(this.gl('rejectedType', rejected.join(', ')), showFailed);
+		else showFailed();
+
+		this.addBtn.setAttribute('data-active', this.attachments.length < this.limit);
 	},
+
+	delay: (ms) => new Promise((resolve) => { setTimeout(() => { resolve(); }, ms); }),
 
 	uploadAttachment: function (file, originalFilename, thumbnail) {
 		var form = new FormData()
