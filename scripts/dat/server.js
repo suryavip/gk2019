@@ -52,7 +52,7 @@ dat.server = {
 		//fetch data
 		this.status.add(channel);
 		var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/${channel}`);
-		if (f.status === 200) await dat.local.update(channel, lastTimestamp, f.b);
+		if (f.status === 200) await dat.local.update(lastTimestamp, f.b);
 		this.status.remove(channel);
 		return f;
 	},
@@ -72,8 +72,8 @@ dat.server = {
 		});
 
 		if (f.status === 201 || f.status === 200) {
-			await dat.local.update(channel, timestamp, f.b);
-			callBack(f, body);
+			await dat.local.update(timestamp, f.b); //f.b (body) here is response body
+			callBack(f, body); //body here is request body
 		}
 		else failedCallBack(f.status === 'connectionError', f);
 
@@ -155,6 +155,7 @@ dat.server = {
 					var a = assignments[i];
 					await dat.server.request('DELETE', `assignment/${firebaseAuth.userId}`, a, (f, b) => {
 						//delete from deletedAssignment if success
+						//b here is request body. so it does contains assignmentId
 						dat.db.deletedAssignment.delete(b.assignmentId);
 					}, dat.server.pending.failed);
 				}
@@ -181,6 +182,7 @@ dat.server = {
 					var a = exams[i];
 					await dat.server.request('DELETE', `exam/${firebaseAuth.userId}`, a, (f, b) => {
 						//delete from deletedExam if success
+						//b here is request body. so it does contains examId
 						dat.db.deletedExam.delete(b.examId);
 					}, dat.server.pending.failed);
 				}

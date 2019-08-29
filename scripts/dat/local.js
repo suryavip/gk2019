@@ -1,7 +1,8 @@
 if (typeof dat === 'undefined') var dat = {};
 
 dat.local = {
-	update: async function (channel, timestamp, data) {
+	update: async function (timestamp, body) {
+		var channel = body.channel; //this response channel is where the local should store the data returned
 		await dat.db.transaction(
 			'rw',
 			dat.db.lastTimestamp,
@@ -22,45 +23,45 @@ dat.local = {
 
 				if (splitted[0] === 'group') {
 					await dat.db.group.clear();
-					await dat.db.group.bulkPut(data);
+					await dat.db.group.bulkPut(body.data);
 				}
 				else if (splitted[0] === 'notification') {
 					await dat.db.notification.clear();
-					await dat.db.notification.bulkPut(data);
+					await dat.db.notification.bulkPut(body.data);
 				}
 				else if (splitted[0] === 'opinion') {
 					await dat.db.opinion.where({ source: 'server' }).delete();
-					for (i in data) data[i]['source'] = 'server';
-					await dat.db.opinion.bulkPut(data);
+					for (i in body.data) body.data[i]['source'] = 'server';
+					await dat.db.opinion.bulkPut(body.data);
 				}
 				else if (splitted[0] === 'member') {
 					await dat.db.member.where({ groupId: splitted[1] }).delete();
-					for (i in data) data[i]['groupId'] = splitted[1];
-					await dat.db.member.bulkPut(data);
+					for (i in body.data) body.data[i]['groupId'] = splitted[1];
+					await dat.db.member.bulkPut(body.data);
 				}
 				else if (splitted[0] === 'schedule') {
 					await dat.db.schedule.where({ owner: splitted[1], source: 'server' }).delete();
-					for (i in data) {
-						data[i]['owner'] = splitted[1];
-						data[i]['source'] = 'server';
+					for (i in body.data) {
+						body.data[i]['owner'] = splitted[1];
+						body.data[i]['source'] = 'server';
 					}
-					await dat.db.schedule.bulkPut(data);
+					await dat.db.schedule.bulkPut(body.data);
 				}
 				else if (splitted[0] === 'assignment') {
 					await dat.db.assignment.where({ owner: splitted[1], source: 'server' }).delete();
-					for (i in data) {
-						data[i]['owner'] = splitted[1];
-						data[i]['source'] = 'server';
+					for (i in body.data) {
+						body.data[i]['owner'] = splitted[1];
+						body.data[i]['source'] = 'server';
 					}
-					await dat.db.assignment.bulkPut(data);
+					await dat.db.assignment.bulkPut(body.data);
 				}
 				else if (splitted[0] === 'exam') {
 					await dat.db.exam.where({ owner: splitted[1], source: 'server' }).delete();
-					for (i in data) {
-						data[i]['owner'] = splitted[1];
-						data[i]['source'] = 'server';
+					for (i in body.data) {
+						body.data[i]['owner'] = splitted[1];
+						body.data[i]['source'] = 'server';
 					}
-					await dat.db.exam.bulkPut(data);
+					await dat.db.exam.bulkPut(body.data);
 				}
 			});
 
