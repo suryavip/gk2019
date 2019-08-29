@@ -47,7 +47,7 @@ dat.rdb = {
 			//load current groups list
 			var g = await dat.db.group.toArray();
 			var oldGroups = {};
-			for (i in g) oldGroups[g[i].groupId] = true;
+			for (i in g) oldGroups[g[i].groupId] = g[i].level;
 		}
 
 		var isFirstLoadAndGroupChannel = channel === 'group' && Object.keys(dat.rdb.groups).length === 0;
@@ -65,7 +65,7 @@ dat.rdb = {
 			}
 			if (channel === 'group') {
 				var newGroups = {};
-				for (i in f.b.data) newGroups[f.b.data[i].groupId] = true;
+				for (i in f.b.data) newGroups[f.b.data[i].groupId] = f.b.data[i].level;
 			}
 		}
 		else {
@@ -84,12 +84,12 @@ dat.rdb = {
 	updateGroups: async function (oldGroups, newGroups) {
 		if (oldGroups == null) oldGroups = {};
 		//push private data
-		newGroups[firebaseAuth.userId] = true;
-		oldGroups[firebaseAuth.userId] = true;
+		newGroups[firebaseAuth.userId] = 'admin';
+		oldGroups[firebaseAuth.userId] = 'admin';
 		//compare oldGroups || this.groups vs newGroups
 		var added = {};
 		for (gid in newGroups) {
-			if (oldGroups[gid] == null || this.groups[gid] == null) added[gid] = true;
+			if (oldGroups[gid] == null || this.groups[gid] == null) added[gid] = newGroups[gid];
 		}
 		var removed = {};
 		for (gid in oldGroups) {
