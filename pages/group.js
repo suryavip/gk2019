@@ -64,15 +64,22 @@ vipPaging.pageTemplate['group'] = {
 </div>
 `,
 	functions: {
+		previouslyAnonymous: false,
 		load: async () => {
 			var currentPage = `${pg.thisPage.id}`;
 			var g = await dat.db.group.where({ groupId: pg.parameter }).first();
 			if (pg.thisPage.id !== currentPage) return;
 
 			if (g == null) pg.loadAnonymous();
-			else pg.loadFromDB(g);
+			else {
+				pg.loadFromDB(g);
+				pg.previouslyAnonymous = false;
+			}
 		},
 		loadAnonymous: async () => {
+			if (pg.previouslyAnonymous) return;
+			pg.previouslyAnonymous = true;
+
 			vipPaging.bodyState('loading');
 
 			pg.thisPage.querySelector('.body').classList.add('body-center');
