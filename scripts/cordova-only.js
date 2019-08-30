@@ -17,6 +17,11 @@ window.addEventListener('vipHistoryInit', () => {
 		console.log(data);
 		var pageId = data.deepLink.replace(`${app.baseAPPAddress}/?`, '');
 		var sourceAndParameter = vipPaging.getSourceAndParameter(pageId);
-		if (pg.thisPage.id !== pageId) go(sourceAndParameter.source, sourceAndParameter.parameter, true); //make this the first page open so the behaviour will be the same as on browser
+		var currentPage = null;
+		try {
+			currentPage = pg.thisPage.id;
+		}
+		catch {}
+		if (currentPage !== pageId) go(sourceAndParameter.source, sourceAndParameter.parameter, true); //make this the first page open so the behaviour will be the same as on browser
 	});
 });
