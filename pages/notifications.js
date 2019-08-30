@@ -33,12 +33,12 @@ vipPaging.pageTemplate['notifications'] = {
 			var oldestLimit = app.comparableDate(moment().subtract(3, 'd'));
 			var currentPage = `${pg.thisPage.id}`;
 			var groups = await dat.db.group.toArray();
-			var notifications = await dat.db.notification.orderBy('time').filter(n => app.comparableDate(n.time) >= oldestLimit).toArray();
+			var notifications = await dat.db.notification.orderBy('time').filter(n => app.comparableDate(n.time * 1000) >= oldestLimit).toArray();
 			if (pg.thisPage.id !== currentPage) return;
 
 			//make groupName dict by groupId
 			pg.groupName = {};
-			for (i in groups) pg.groupName[groups[i].groupId] = groups[i].groupName;
+			for (i in groups) pg.groupName[groups[i].groupId] = groups[i].name;
 
 			//reverse sort
 			notifications.reverse();
@@ -47,22 +47,33 @@ vipPaging.pageTemplate['notifications'] = {
 			var tagItem = {};
 			for (i in notifications) {
 				var n = notifications[i];
+				console.log(n);
 
-				if (n.data.groupId != null && n.data.groupId in pg.groupName !== true) continue; //not in group
-
-				if (app.comparableDate(n.time * 1000) < oldestLimit) continue;
+				if (n.data.groupId != null && n.data.groupId in pg.groupName !== true) {
+					console.log('not in group');
+					continue; //not in group
+				}
 
 				//skip if not the latest
 				if (n.type.startsWith('assignment')) {
-					if (tagItem[n.data.assignmentId] === true) continue;
+					if (tagItem[n.data.assignmentId] === true) {
+						console.log('not the latest');
+						continue;
+					}
 					tagItem[n.data.assignmentId] = true;
 				}
 				if (n.type.startsWith('exam')) {
-					if (tagItem[n.data.examId] === true) continue;
+					if (tagItem[n.data.examId] === true) {
+						console.log('not the latest');
+						continue;
+					}
 					tagItem[n.data.examId] = true;
 				}
 				if (n.type.startsWith('schedule')) {
-					if (tagItem[n.data.scheduleId] === true) continue;
+					if (tagItem[n.data.scheduleId] === true) {
+						console.log('not the latest');
+						continue;
+					}
 					tagItem[n.data.scheduleId] = true;
 				}
 
@@ -121,7 +132,10 @@ vipPaging.pageTemplate['notifications'] = {
 			if (n.data.day != null) n.data.dayName = `<strong>${moment(n.data.day, 'd').format('dddd')}</strong>`;
 
 			var notifText = gl(n.type, n.data);
-			if (notifText == null) return '';
+			if (notifText == null) {
+				console.log('notif text not supported');
+				return '';
+			}
 
 			return `<div class="container">
 				<div class="list feedback">
