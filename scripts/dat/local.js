@@ -28,6 +28,8 @@ dat.local = {
 				else if (splitted[0] === 'notification') {
 					await dat.db.notification.clear();
 					await dat.db.notification.bulkPut(body.data);
+					console.log('newIndicator notification update');
+					localJSON.put('newIndicator', 'notification', true);
 				}
 				else if (splitted[0] === 'opinion') {
 					await dat.db.opinion.where({ source: 'server' }).delete();

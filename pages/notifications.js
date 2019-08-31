@@ -36,6 +36,14 @@ vipPaging.pageTemplate['notifications'] = {
 			var notifications = await dat.db.notification.orderBy('time').filter(n => app.comparableDate(n.time * 1000) >= oldestLimit).toArray();
 			if (pg.thisPage.id !== currentPage) return;
 
+			//clear newIndicator
+			setTimeout(() => {
+				if (pg.thisPage.id !== currentPage) return;
+				localJSON.put('newIndicator', 'notification', false);
+				console.log('newIndicator notification clear')
+				pg.getEl('groundLevelNotifNewIndicator').setAttribute('data-active', false);
+			}, 2000);
+
 			//make groupName dict by groupId
 			pg.groupName = {};
 			for (i in groups) pg.groupName[groups[i].groupId] = groups[i].name;

@@ -1,8 +1,16 @@
 var GroundLevel = {
 
 	init: function () {
+		console.log('GroundLevel init');
 		enableAllTippy();
 		photoLoader.load(pg.getEl('groundLevelProfilePhoto'), `profile_pic/${firebaseAuth.userId}_thumb`, `profile_pic/${firebaseAuth.userId}`);
+
+		dat.attachListener(() => {
+			//show notification newIndicator
+			var newNotif = localJSON.get('newIndicator', 'notification') === true;
+			console.log('newIndicator notification READ', newNotif);
+			pg.getEl('groundLevelNotifNewIndicator').setAttribute('data-active', newNotif);
+		}, ['notification']);
 	},
 
 	gl: (l, p) => gl(l, p, 'GroundLevel'),
@@ -20,7 +28,7 @@ var GroundLevel = {
 			<div data-active="${pageId === 'home'}" onclick="GroundLevel.go('home')" title="${this.gl('home')}"><i class="fas fa-home"></i></div>
 			<div data-active="${pageId === 'notifications'}" onclick="GroundLevel.go('notifications')" title="${this.gl('notifications')}">
 				<i class="fas fa-bell"></i>
-				<div class="dotIndicator"></div>
+				<div id="groundLevelNotifNewIndicator" class="activable dotIndicator"></div>
 			</div>
 			<div onclick="GroundLevel.add()" class="theme-primary"><i class="fas fa-plus"></i></div>
 			<div data-active="${pageId === 'schedules'}" onclick="GroundLevel.go('schedules')" title="${this.gl('schedules')}"><i class="fas fa-clock"></i></div>
