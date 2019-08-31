@@ -413,6 +413,25 @@ $actionBarInnerSize: 45px;
 			color: $b-10;
 			@extend %lightFeedback;
 		}
+		& .count {
+			position: absolute;
+			top: 0;
+			right: 0;
+			line-height: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 20px;
+			min-width: 20px;
+			padding-left: 5px;
+			padding-right: 5px;
+			border-radius: 20px;
+			background-color: $b-12;
+			color: $f-12;
+			@extend %h6;
+			font-weight: bold;
+			opacity: 1;
+		}
 	}
 	&.dual > div {
 		width: 50%;

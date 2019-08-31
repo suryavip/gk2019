@@ -18,7 +18,10 @@ var GroundLevel = {
 	foot: function (pageId) {
 		return `<div class="tabBar five maxWidthWrap-640">
 			<div data-active="${pageId === 'home'}" onclick="GroundLevel.go('home')" title="${this.gl('home')}"><i class="fas fa-home"></i></div>
-			<div data-active="${pageId === 'notifications'}" onclick="GroundLevel.go('notifications')" title="${this.gl('notifications')}"><i class="fas fa-bell"></i></div>
+			<div data-active="${pageId === 'notifications'}" onclick="GroundLevel.go('notifications')" title="${this.gl('notifications')}">
+				<i class="fas fa-bell"></i>
+				<div class="count">9+</div>
+			</div>
 			<div onclick="GroundLevel.add()" class="theme-primary"><i class="fas fa-plus"></i></div>
 			<div data-active="${pageId === 'schedules'}" onclick="GroundLevel.go('schedules')" title="${this.gl('schedules')}"><i class="fas fa-clock"></i></div>
 			<div data-active="${pageId === 'assignmentsAndExams'}" onclick="GroundLevel.go('assignmentsAndExams')" title="${this.gl('assignmentsAndExams')}"><i class="fas fa-tasks"></i></div>
