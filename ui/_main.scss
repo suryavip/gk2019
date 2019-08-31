@@ -413,24 +413,17 @@ $actionBarInnerSize: 45px;
 			color: $b-10;
 			@extend %lightFeedback;
 		}
-		& .count {
+		& .dotIndicator {
 			position: absolute;
-			top: 0;
-			right: 0;
+			left: calc(50% - 2px);
 			line-height: 1;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			height: 20px;
-			min-width: 20px;
-			padding-left: 5px;
-			padding-right: 5px;
-			border-radius: 20px;
+			height: 4px;
+			width: 4px;
+			border-radius: 4px;
 			background-color: $b-12;
-			color: $f-12;
-			@extend %h6;
-			font-weight: bold;
-			opacity: 1;
 		}
 	}
 	&.dual > div {
