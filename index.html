@@ -91,13 +91,12 @@
 					`lib/font-awesome-${fontawesomeVersion}/css/fontawesome.min.css`,
 				]);
 
-				var firebaseVersion = '6.0.4';
+				var firebaseVersion = '6.5.0';
 				var importFirebase = isLocal ? part => `lib/firebase-${firebaseVersion}/firebase-${part}.min.js` : part => `https://www.gstatic.com/firebasejs/${firebaseVersion}/firebase-${part}.js`;
 				importResources([importFirebase('app')], () => {
 					importResources([
 						importFirebase('auth'),
 						importFirebase('database'),
-						importFirebase('storage'),
 					], () => {
 						var fbConfig = {
 							apiKey: "AIzaSyDKoUXXyKeagJmlBhX-n66OS_BR36-aatc",
