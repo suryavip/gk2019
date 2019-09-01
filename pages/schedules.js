@@ -109,8 +109,6 @@ vipPaging.pageTemplate['schedules'] = {
 				</div>`);
 			}
 			pg.getEl('content').innerHTML = out.join('');
-
-			GroundLevel.doHighlight();
 		},
 	},
 	lang: {

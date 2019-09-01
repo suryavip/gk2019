@@ -53,7 +53,7 @@ vipPaging.pageTemplate['home'] = {
 				</div>
 			</div>
 			<div class="vSpace-10"></div>
-			<div class="card aPadding-20 feedback" onclick="GroundLevel.highlight('schedules', 'a${pg.groupId}schedule${moment().add(1, 'days').format('d')}')">
+			<div class="card aPadding-20 feedback" onclick="GroundLevel.highlight('schedules', pg.selectedDay.format('d'))">
 				<div class="table">
 					<div class="childSingleLine" id="quickScheduleSubjects"></div>
 					<div class="childSingleLine" style="width: 80px; text-align: right" id="quickScheduleHours"></div>
@@ -159,8 +159,13 @@ vipPaging.pageTemplate['home'] = {
 			pg.getEl('toggleDayContainer').setAttribute('data-active', !isFresh);
 		},
 		loadQuickSchedule: async (s) => {
-			//filter to only tomorrow's schedule
-			var schedules = s.data || [];
+			var schedules = [];
+			for (i in s) schedules = schedules.concat(s[i].data);
+			schedules.sort((a, b) => {
+				if (a.time < b.time) return -1;
+				if (a.time > b.time) return 1;
+				return 0;
+			});
 
 			//build schedule
 			var subjects = [];
@@ -189,11 +194,15 @@ vipPaging.pageTemplate['home'] = {
 				var note = ''
 				if (a.note !== '') note = `<h5>${app.escapeHTML(app.multiToSingleLine(a.note))}</h5>`;
 
+				var attachment = '';
+				if (a.attachment.length > 0) attachment = `<h6><i>${gl('attachmentCount', a.attachment.length)}</i></h6>`;
+
 				out.push(`<div class="card list feedback">
 					<div class="iconCircle">${checkBtn}</div>
 					<div class="content childSingleLine" onclick="GroundLevel.highlight('assignmentsAndExams', '${a.assignmentId}')">
 						<h4>${app.escapeHTML(a.subject)}</h4>
 						${note}
+						${attachment}
 					</div>
 				</div>`);
 			}
@@ -217,12 +226,16 @@ vipPaging.pageTemplate['home'] = {
 				var note = ''
 				if (e.note !== '' && time == '') note = `<h5>${app.escapeHTML(app.multiToSingleLine(e.note))}</h5>`;
 
+				var attachment = '';
+				if (e.attachment.length > 0) attachment = `<h6><i>${gl('attachmentCount', e.attachment.length)}</i></h6>`;
+
 				out.push(`<div class="card list feedback">
 					<div class="iconCircle">${checkBtn}</div>
 					<div class="content childSingleLine" onclick="GroundLevel.highlight('assignmentsAndExams', '${e.examId}')">
 						<h4>${app.escapeHTML(e.subject)}</h4>
 						${time}
 						${note}
+						${attachment}
 					</div>
 				</div>`);
 			}
@@ -261,6 +274,8 @@ vipPaging.pageTemplate['home'] = {
 
 			seeToday: `See what's for today`,
 			seeTomorrow: `See what's for tomorrow`,
+
+			attachmentCount: p => `(${p} attachment${p > 1 ? 's' : ''})`,
 		},
 		id: {
 			welcome: 'Selamat datang...',
@@ -290,6 +305,8 @@ vipPaging.pageTemplate['home'] = {
 
 			seeToday: `Lihat untuk hari ini`,
 			seeTomorrow: `Lihat untuk besok`,
+
+			attachmentCount: p => `(${p} lampiran)`,
 		},
 	},
 };
