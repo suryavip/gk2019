@@ -270,7 +270,7 @@ vipPaging.pageTemplate['assignmentForm'] = {
 			note: 'Catatan:',
 			notePlaceholder: 'Bisa sampai 500 karakter...',
 
-			addAttachment: 'Tambah sisipan',
+			addAttachment: 'Tambah lampiran',
 
 			uploadInProgress: 'Upload sedang dalam proses. Harap tunggu sampai proses selesai.',
 

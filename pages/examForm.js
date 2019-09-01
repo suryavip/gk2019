@@ -299,7 +299,7 @@ vipPaging.pageTemplate['examForm'] = {
 			date: 'Tanggal dikumpul:',
 			timePlaceholder: 'Pilih waktu (opsional)',
 
-			addAttachment: 'Tambah sisipan',
+			addAttachment: 'Tambah lampiran',
 
 			uploadInProgress: 'Upload sedang dalam proses. Harap tunggu sampai proses selesai.',
 
