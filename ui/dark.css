@@ -1,0 +1,1374 @@
+.timePickerScroll > div:first-child > div > div, .timePickerScroll > div:last-child > div > div, h1 {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+h2, .actionBar > .title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+h3, button:not(.pswp__button), .inputLabel, .tabBar > div {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+h4 {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+h5 {
+  font-size: 12px;
+  font-weight: normal;
+  opacity: .6;
+}
+
+.calendarRow, h6 {
+  font-size: 11px;
+  font-weight: normal;
+  opacity: .6;
+}
+
+.lightFeedback, .vipPaging-floatingButton > div, button.primary:not(.pswp__button):not([data-loading=true]), button.negative:not(.pswp__button):not([data-loading=true]), .profilePhoto, .list > .photo > div, .profilePhoto.circleCenter-120 + .clearPhotoButton, .list > .photo > div.circleCenter-120 + .clearPhotoButton, .tabBar > div[data-active=true], .attachment, .smallAttachment, .darkFeedback, .feedback, .calendarHead > div:not(.title), .calendarRow > div > div, button:not(.pswp__button):not([data-loading=true]), .circleButton, .inputWithButton > div:last-child, .actionBar > .button, .tabBar > div, .scrollableTab > div, .bottomAction > div:not(.space), .highlightable {
+  position: relative;
+  z-index: 1;
+}
+
+.lightFeedback:after, .vipPaging-floatingButton > div:after, button.primary:not([data-loading=true]):not(.pswp__button):after, button.negative:not([data-loading=true]):not(.pswp__button):after, .profilePhoto:after, .list > .photo > div:after, .profilePhoto.circleCenter-120 + .clearPhotoButton:after, .list > .photo > div.circleCenter-120 + .clearPhotoButton:after, .tabBar > div[data-active=true]:after, .attachment:after, .smallAttachment:after, .darkFeedback:after, .feedback:after, .calendarHead > div:not(.title):after, .calendarRow > div > div:after, button:not([data-loading=true]):not(.pswp__button):after, .circleButton:after, .inputWithButton > div:last-child:after, .actionBar > .button:after, .tabBar > div:after, .scrollableTab > div:after, .bottomAction > div:not(.space):after, .highlightable:after {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
+  width: 100%;
+  height: 100%;
+  content: '.';
+  color: transparent;
+  opacity: 0;
+  z-index: 99;
+  -webkit-transition: opacity 300ms;
+  transition: opacity 300ms;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.lightFeedback, .vipPaging-floatingButton > div, button.primary:not(.pswp__button):not([data-loading=true]), button.negative:not(.pswp__button):not([data-loading=true]), .profilePhoto, .list > .photo > div, .profilePhoto.circleCenter-120 + .clearPhotoButton, .list > .photo > div.circleCenter-120 + .clearPhotoButton, .tabBar > div[data-active=true], .attachment, .smallAttachment, .darkFeedback, .feedback, .calendarHead > div:not(.title), .calendarRow > div > div, button:not(.pswp__button):not([data-loading=true]), .circleButton, .inputWithButton > div:last-child, .actionBar > .button, .tabBar > div, .scrollableTab > div, .bottomAction > div:not(.space) {
+  cursor: pointer;
+}
+
+.lightFeedback:active:after, .vipPaging-floatingButton > div:active:after, button.primary:not([data-loading=true]):not(.pswp__button):active:after, button.negative:not([data-loading=true]):not(.pswp__button):active:after, .profilePhoto:active:after, .list > .photo > div:active:after, .profilePhoto.circleCenter-120 + .clearPhotoButton:active:after, .list > .photo > div.circleCenter-120 + .clearPhotoButton:active:after, .tabBar > div[data-active=true]:active:after, .attachment:active:after, .smallAttachment:active:after, .darkFeedback:active:after, .feedback:active:after, .calendarHead > div:not(.title):active:after, .calendarRow > div > div:active:after, button:not([data-loading=true]):not(.pswp__button):active:after, .circleButton:active:after, .inputWithButton > div:last-child:active:after, .actionBar > .button:active:after, .tabBar > div:active:after, .scrollableTab > div:active:after, .bottomAction > div:not(.space):active:after {
+  -webkit-transition: none;
+  transition: none;
+  opacity: 1;
+}
+
+.highlightable.highlight:after {
+  -webkit-transition: none;
+  transition: none;
+  opacity: 1;
+}
+
+.lightFeedback:after, .vipPaging-floatingButton > div:after, button.primary:not([data-loading=true]):not(.pswp__button):after, button.negative:not([data-loading=true]):not(.pswp__button):after, .profilePhoto:after, .list > .photo > div:after, .profilePhoto.circleCenter-120 + .clearPhotoButton:after, .list > .photo > div.circleCenter-120 + .clearPhotoButton:after, .tabBar > div[data-active=true]:after, .attachment:after, .smallAttachment:after {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.darkFeedback:after {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.feedback:after, .calendarHead > div:not(.title):after, .calendarRow > div > div:after, button:not([data-loading=true]):not(.pswp__button):after, .circleButton:after, .inputWithButton > div:last-child:after, .actionBar > .button:after, .tabBar > div:after, .scrollableTab > div:after, .bottomAction > div:not(.space):after {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.highlightable:after {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.strongShadow {
+  -webkit-box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+          box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+}
+
+body {
+  background-color: #000;
+  color: #fff;
+}
+
+#vipLoading {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+}
+
+.vipPaging-vLayout > .body:not([class*="backColor-"]) {
+  background-color: #000;
+  color: #eee;
+}
+
+.vipPaging-vLayout > .head, .vipPaging-vLayout > .foot {
+  background-color: #131313;
+  color: #eee;
+  -webkit-box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+          box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+}
+
+.vipPaging-floatingButton > div {
+  background-color: #1D89E8;
+  color: #fff;
+  -webkit-box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+          box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+}
+
+.vipPaging-closeTrigger {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+#vipPaging-floatBar > div {
+  -webkit-box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+          box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+}
+
+#vipPaging-floatBar > div > div {
+  background-color: #131313;
+  color: #eee;
+}
+
+#vipPaging-floatBar > div > div.error {
+  background-color: #DE2A42;
+  color: #fff;
+}
+
+#vipPaging-floatBar > div > div.success {
+  background-color: #17BF63;
+  color: #fff;
+}
+
+.vipPaging-menu {
+  background-color: #000;
+  color: #eee;
+  -webkit-box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+          box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+}
+
+.vipPaging-popUp > div {
+  border-radius: 10px;
+  -webkit-box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.3);
+          box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.3);
+  background-color: #000;
+  color: #eee;
+  padding: 10px;
+}
+
+.alert > div,
+.confirm > div,
+.prompt > div,
+.profile > div,
+.timePicker > div {
+  padding: 20px;
+  text-align: center;
+}
+
+.datePicker > div {
+  text-align: center;
+}
+
+.calendarHead {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+  width: 100%;
+}
+
+.calendarHead > div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  height: 45px;
+}
+
+.calendarHead > div:not(.title) {
+  border-radius: 45px;
+  width: 45px;
+}
+
+.calendarHead > div.title {
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-flex: 99;
+      -ms-flex-positive: 99;
+          flex-grow: 99;
+  width: calc(100% - 45px - 45px);
+}
+
+.calendarRow {
+  width: 100%;
+  opacity: 1;
+}
+
+.calendarRow.dayName {
+  font-weight: bold;
+}
+
+.calendarRow > div {
+  width: 14%;
+  height: 35px;
+}
+
+.calendarRow > div:first-child, .calendarRow > div:last-child {
+  width: 15%;
+}
+
+.calendarRow > div > div {
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.calendarRow > div > div.today {
+  border: solid 2px #1D89E8;
+  color: #1D89E8;
+}
+
+.calendarRow > div > div.selected {
+  background-color: #1D89E8;
+  color: #fff;
+}
+
+.timePickerScroll {
+  width: 100%;
+  max-width: 180px;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.timePickerScroll > div:first-child {
+  padding-right: 10px;
+}
+
+.timePickerScroll > div:last-child {
+  padding-left: 10px;
+}
+
+.timePickerScroll > div:first-child, .timePickerScroll > div:last-child {
+  width: 50%;
+  height: 120px;
+  max-height: 120px;
+  overflow: hidden;
+  position: relative;
+}
+
+.timePickerScroll > div:first-child::before, .timePickerScroll > div:first-child::after, .timePickerScroll > div:last-child::before, .timePickerScroll > div:last-child::after {
+  content: ' ';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 40px;
+  pointer-events: none;
+}
+
+.timePickerScroll > div:first-child::before, .timePickerScroll > div:last-child::before {
+  top: 0;
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(40%, #000), to(transparent));
+  background-image: linear-gradient(#000 40%, transparent 100%);
+  z-index: 1;
+}
+
+.timePickerScroll > div:first-child::after, .timePickerScroll > div:last-child::after {
+  bottom: 0;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(60%, #000));
+  background-image: linear-gradient(transparent 0%, #000 60%);
+}
+
+.timePickerScroll > div:first-child > div, .timePickerScroll > div:last-child > div {
+  position: relative;
+  top: -40px;
+}
+
+.timePickerScroll > div:first-child > div > div, .timePickerScroll > div:last-child > div > div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  height: 40px;
+  pointer-events: none;
+}
+
+.tippy-tooltip.base-theme {
+  background-color: #1D89E8;
+  color: #fff;
+}
+
+.tippy-popper[x-placement^=top] [x-arrow] {
+  border-top-color: #1D89E8 !important;
+}
+
+.tippy-popper[x-placement^=bottom] [x-arrow] {
+  border-bottom-color: #1D89E8 !important;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+}
+
+p {
+  font-size: 12px;
+  font-weight: normal;
+}
+
+textarea {
+  line-height: 1.8 !important;
+}
+
+i.fab, i.fal, i.far, i.fas {
+  line-height: 1 !important;
+}
+
+* {
+  color: inherit;
+  border-color: inherit;
+}
+
+.activable:not([data-active=true]), #dat-syncIndicator:not([data-active=true]) {
+  display: none !important;
+}
+
+.singleLine, .childSingleLine > *, .calendarHead > div.title > *, .actionBar > .title, .attachment > p, .smallAttachment > p {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
+
+.singleLine > br, .childSingleLine > * > br, .calendarHead > div.title > * > br, .actionBar > .title > br, .attachment > p > br, .smallAttachment > p > br {
+  display: none;
+}
+
+.vSpace-30 {
+  padding-top: 30px;
+}
+
+.vSpace-20 {
+  padding-top: 20px;
+}
+
+.vSpace-10 {
+  padding-top: 10px;
+}
+
+.table, .calendarRow, .tabBar {
+  display: table;
+  width: 100%;
+}
+
+.table > div, .calendarRow > div, .tabBar > div {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.table.center > div, .center.calendarRow > div, .center.tabBar > div {
+  text-align: center;
+}
+
+.table.dual-10 > div, .dual-10.calendarRow > div, .dual-10.tabBar > div {
+  width: 50%;
+}
+
+.table.dual-10 > div:first-child, .dual-10.calendarRow > div:first-child, .dual-10.tabBar > div:first-child {
+  padding-right: 5px;
+}
+
+.table.dual-10 > div:last-child, .dual-10.calendarRow > div:last-child, .dual-10.tabBar > div:last-child {
+  padding-left: 5px;
+}
+
+.table.dual-20 > div, .dual-20.calendarRow > div, .dual-20.tabBar > div {
+  width: 50%;
+}
+
+.table.dual-20 > div:first-child, .dual-20.calendarRow > div:first-child, .dual-20.tabBar > div:first-child {
+  padding-right: 10px;
+}
+
+.table.dual-20 > div:last-child, .dual-20.calendarRow > div:last-child, .dual-20.tabBar > div:last-child {
+  padding-left: 10px;
+}
+
+.table.startToEnd > div:first-child, .startToEnd.calendarRow > div:first-child, .startToEnd.tabBar > div:first-child {
+  width: 50%;
+  padding-right: 20px;
+}
+
+.table.startToEnd > div:last-child, .startToEnd.calendarRow > div:last-child, .startToEnd.tabBar > div:last-child {
+  width: 50%;
+  padding-left: 20px;
+}
+
+.maxWidthWrap-640 {
+  margin: 0 auto;
+  max-width: 640px;
+  width: 100%;
+}
+
+.maxWidthWrap-480 {
+  margin: 0 auto;
+  max-width: 480px;
+  width: 100%;
+}
+
+.maxWidthWrap-360 {
+  margin: 0 auto;
+  max-width: 360px;
+  width: 100%;
+}
+
+a.underline, a.showMore, a.showLess {
+  text-decoration: underline;
+  cursor: pointer;
+  color: #1D89E8;
+}
+
+button:not(.pswp__button) {
+  padding: 0;
+  line-height: 1.8;
+  border: none;
+  border-radius: 45px;
+  min-height: 45px;
+  outline: none;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  display: block;
+  font-family: "Roboto", sans-serif;
+  background-color: #181818;
+  color: #eee;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+button:not(.pswp__button):disabled {
+  opacity: .5;
+}
+
+button:not(.pswp__button) > .loading > div {
+  background-color: #1D89E8;
+}
+
+button:not(.pswp__button).primary {
+  background-color: #1D89E8;
+  color: #fff;
+}
+
+button:not(.pswp__button).primary > .loading > div {
+  background-color: #fff;
+}
+
+button:not(.pswp__button).negative {
+  background-color: #DE2A42;
+  color: #fff;
+}
+
+button:not(.pswp__button).negative > .loading > div {
+  background-color: #fff;
+}
+
+button:not(.pswp__button) > .loading {
+  opacity: 0;
+  pointer-events: none;
+  -webkit-transition: opacity 300ms;
+  transition: opacity 300ms;
+  z-index: 99;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: inherit;
+}
+
+button:not(.pswp__button) > .loading > div {
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  -webkit-transform: scale(0.1);
+          transform: scale(0.1);
+  -webkit-animation: btnLoading 600ms infinite;
+          animation: btnLoading 600ms infinite;
+}
+
+button:not(.pswp__button) > .loading > div + div {
+  margin-left: 10px;
+}
+
+button:not(.pswp__button) > .loading > div:nth-child(2) {
+  -webkit-animation-delay: 200ms;
+          animation-delay: 200ms;
+}
+
+button:not(.pswp__button) > .loading > div:nth-child(3) {
+  -webkit-animation-delay: 400ms;
+          animation-delay: 400ms;
+}
+
+button:not(.pswp__button)[data-loading=true] {
+  pointer-events: none;
+}
+
+button:not(.pswp__button)[data-loading=true] > .loading {
+  opacity: 1;
+}
+
+@-webkit-keyframes btnLoading {
+  0% {
+    -webkit-transform: scale(0.1);
+            transform: scale(0.1);
+  }
+  50% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  100% {
+    -webkit-transform: scale(0.1);
+            transform: scale(0.1);
+  }
+}
+
+@keyframes btnLoading {
+  0% {
+    -webkit-transform: scale(0.1);
+            transform: scale(0.1);
+  }
+  50% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  100% {
+    -webkit-transform: scale(0.1);
+            transform: scale(0.1);
+  }
+}
+
+.circleCenter-35, .profilePhoto.circleCenter-120 + .clearPhotoButton, .list > .photo > div.circleCenter-120 + .clearPhotoButton, .circleButton, .list > .iconCircle > div {
+  width: 35px;
+  height: 35px;
+  border-radius: 35px;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-position: center;
+  background-size: cover;
+}
+
+.circleCenter-35 > i, .profilePhoto.circleCenter-120 + .clearPhotoButton > i, .list > .photo > div.circleCenter-120 + .clearPhotoButton > i, .circleButton > i, .list > .iconCircle > div > i {
+  font-size: 17.5px;
+}
+
+.circleCenter-35[data-hideIcon] > i, .profilePhoto.circleCenter-120 + .clearPhotoButton[data-hideIcon] > i, .list > .photo > div.circleCenter-120 + .clearPhotoButton[data-hideIcon] > i, .circleButton[data-hideIcon] > i, .list > .iconCircle > div[data-hideIcon] > i {
+  opacity: 0;
+}
+
+.circleCenter-50, .profilePhoto, .list > .photo > div {
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-position: center;
+  background-size: cover;
+}
+
+.circleCenter-50 > i, .profilePhoto > i, .list > .photo > div > i {
+  font-size: 25px;
+}
+
+.circleCenter-50[data-hideIcon] > i, .profilePhoto[data-hideIcon] > i, .list > .photo > div[data-hideIcon] > i {
+  opacity: 0;
+}
+
+.circleCenter-120 {
+  width: 120px;
+  height: 120px;
+  border-radius: 120px;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-position: center;
+  background-size: cover;
+}
+
+.circleCenter-120 > i {
+  font-size: 60px;
+}
+
+.circleCenter-120[data-hideIcon] > i {
+  opacity: 0;
+}
+
+.profilePhoto, .list > .photo > div {
+  background-color: #1D89E8;
+  color: #fff;
+}
+
+.profilePhoto.circleCenter-120 + .clearPhotoButton, .list > .photo > div.circleCenter-120 + .clearPhotoButton {
+  position: relative;
+  top: 25px;
+  margin-left: -35px;
+  background-color: #DE2A42;
+  color: #fff;
+  -webkit-box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+          box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+}
+
+.profilePhoto:not([data-hideIcon=true]) + .clearPhotoButton, .list > .photo > div:not([data-hideIcon=true]) + .clearPhotoButton {
+  display: none;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus input:-webkit-autofill {
+  background: transparent;
+  -webkit-transition: background-color 5000s linear 5000s;
+  transition: background-color 5000s linear 5000s;
+  -webkit-text-fill-color: #eee !important;
+}
+
+input[type=text], input[type=number], input[type=tel], input[type=email], input[type=password], textarea {
+  width: 100%;
+  padding: 0 15px;
+  min-height: 45px;
+  outline: none;
+  background-color: #181818;
+  color: #eee;
+  border: none;
+  border-radius: 10px;
+}
+
+input[type=text]::-webkit-input-placeholder, input[type=number]::-webkit-input-placeholder, input[type=tel]::-webkit-input-placeholder, input[type=email]::-webkit-input-placeholder, input[type=password]::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+input[type=text] + .inputLabel, input[type=number] + .inputLabel, input[type=tel] + .inputLabel, input[type=email] + .inputLabel, input[type=password] + .inputLabel, textarea + .inputLabel {
+  margin-top: 25px;
+}
+
+::-webkit-input-placeholder {
+  font-style: italic;
+}
+
+textarea {
+  padding: 15px;
+  overflow: scroll;
+  resize: none;
+  font-family: "Roboto", sans-serif;
+}
+
+.inputLabel {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.inputHint {
+  margin-top: -10px;
+  margin-bottom: 15px;
+}
+
+.inputWithButton {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+}
+
+.inputWithButton > div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.inputWithButton > div:first-child {
+  -webkit-box-flex: 99;
+      -ms-flex-positive: 99;
+          flex-grow: 99;
+}
+
+.inputWithButton > div:first-child > input {
+  padding-right: 45px;
+}
+
+.inputWithButton > div:last-child {
+  margin-left: -45px;
+  width: 45px;
+  min-width: 45px;
+  height: 45px;
+  border-radius: 45px;
+}
+
+.inputWithButton > div:last-child > i {
+  font-size: 15px;
+}
+
+.inputWithButton + .inputLabel {
+  margin-top: 25px;
+}
+
+.actionBar {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+  padding: 5px;
+}
+
+.actionBar > div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  min-height: 45px;
+}
+
+.actionBar > .title {
+  -webkit-box-flex: 99;
+      -ms-flex-positive: 99;
+          flex-grow: 99;
+  overflow: hidden;
+  padding: 0 10px;
+}
+
+.actionBar > .title:not(.center) {
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+
+.actionBar > .button {
+  width: 45px;
+  min-width: 45px;
+  border-radius: 45px;
+}
+
+.actionBar > .button > i {
+  font-size: 15px;
+}
+
+.tabBar {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 5px;
+}
+
+.tabBar > div {
+  text-align: center;
+  min-height: 45px;
+  height: 45px;
+  white-space: nowrap;
+  border-radius: 45px;
+}
+
+.tabBar > div[data-active=true] {
+  background-color: #000;
+  color: #1D89E8;
+}
+
+.tabBar > div .dotIndicator {
+  position: absolute;
+  left: calc(50% - 2px);
+  line-height: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  height: 4px;
+  width: 4px;
+  border-radius: 4px;
+  background-color: #DE2A42;
+}
+
+.tabBar.dual > div {
+  width: 50%;
+}
+
+.tabBar.five > div {
+  width: 20%;
+}
+
+.scrollableTab {
+  overflow-x: scroll;
+  white-space: nowrap;
+  width: 100%;
+  padding: 5px;
+}
+
+.scrollableTab > div {
+  vertical-align: top;
+}
+
+.scrollableTab > div + div {
+  margin-left: 5px;
+  /*PLEASE DONT PUT SPACE/TAB/NEW-LINE BETWEEN THIS DIVs AS IT WILL GIVE A SPACE BETWEEN IT TWO*/
+}
+
+.scrollableTab > div {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  height: 45px;
+  min-width: 45px;
+  border-radius: 45px;
+}
+
+.scrollableTab > div > i {
+  width: 45px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.scrollableTab > div > h3 {
+  display: none;
+  margin-right: 20px;
+}
+
+.scrollableTab > div[data-active=true] {
+  background-color: #000;
+  color: #1D89E8;
+}
+
+.scrollableTab > div[data-active=true] > h3 {
+  display: block;
+}
+
+@media only screen and (min-width: 1060px) {
+  .scrollableTab > div > h3 {
+    display: block;
+  }
+}
+
+.card {
+  background-color: #131313;
+  color: #eee;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.container {
+  border-bottom: solid 1px #252525;
+}
+
+.container-20 {
+  padding: 20px;
+  border-bottom: solid 1px #252525;
+}
+
+.list {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+  width: 100%;
+}
+
+.list > div {
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 20px 10px;
+}
+
+.list > div:first-child {
+  padding-left: 20px;
+}
+
+.list > div:last-child {
+  padding-right: 20px;
+}
+
+/*.list.noOutside > div {
+	padding-top: 0;
+	padding-bottom: 0;
+	&:first-child { padding-left: 0; }
+	&:last-child { padding-right: 0; }
+}*/
+.list > .icon > i {
+  font-size: 15px;
+  width: 25px;
+  text-align: center;
+}
+
+.list > .iconCircle {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-sizing: content-box;
+          box-sizing: content-box;
+  min-width: 35px;
+  width: 35px;
+}
+
+.list > .iconCircle > div {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  background-color: #181818;
+  color: #eee;
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+}
+
+.list > .photo {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-sizing: content-box;
+          box-sizing: content-box;
+  min-width: 50px;
+  width: 50px;
+}
+
+.list > .photo > div {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+}
+
+.list > .content {
+  -webkit-box-flex: 99;
+      -ms-flex-positive: 99;
+          flex-grow: 99;
+  overflow: hidden;
+}
+
+.bottomAction {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+  width: 100%;
+}
+
+.bottomAction > .space {
+  -webkit-box-flex: 99;
+      -ms-flex-positive: 99;
+          flex-grow: 99;
+}
+
+.bottomAction > div:not(.space) {
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  min-width: 35px;
+  height: 35px;
+  border-radius: 35px;
+  background-color: #131313;
+  color: #1D89E8;
+}
+
+.bottomAction > div:not(.space):not(:last-child) {
+  margin-right: 5px;
+}
+
+.bottomAction > div:not(.space) > i {
+  font-size: 15px;
+  width: 35px;
+  text-align: center;
+}
+
+.bottomAction > div:not(.space) > p, .bottomAction > div:not(.space) > h4 {
+  margin-right: 15px;
+}
+
+#dat-syncIndicator {
+  pointer-events: none;
+  z-index: 99;
+  position: relative;
+  height: 4px;
+  display: block;
+  width: 100%;
+  background-clip: padding-box;
+  overflow: hidden;
+}
+
+#dat-syncIndicator > div {
+  background-color: #1D89E8;
+}
+
+#dat-syncIndicator > div:before, #dat-syncIndicator > div:after {
+  content: '';
+  position: absolute;
+  background-color: inherit;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  will-change: left, right;
+  -webkit-animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+          animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+}
+
+#dat-syncIndicator > div:before {
+  -webkit-animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+          animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+}
+
+#dat-syncIndicator > div:after {
+  -webkit-animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+          animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+  -webkit-animation-delay: 1.15s;
+          animation-delay: 1.15s;
+}
+
+@-webkit-keyframes indeterminate {
+  0% {
+    left: -35%;
+    right: 100%;
+  }
+  60% {
+    left: 100%;
+    right: -90%;
+  }
+  100% {
+    left: 100%;
+    right: -90%;
+  }
+}
+
+@keyframes indeterminate {
+  0% {
+    left: -35%;
+    right: 100%;
+  }
+  60% {
+    left: 100%;
+    right: -90%;
+  }
+  100% {
+    left: 100%;
+    right: -90%;
+  }
+}
+
+@-webkit-keyframes indeterminate-short {
+  0% {
+    left: -200%;
+    right: 100%;
+  }
+  60% {
+    left: 107%;
+    right: -8%;
+  }
+  100% {
+    left: 107%;
+    right: -8%;
+  }
+}
+
+@keyframes indeterminate-short {
+  0% {
+    left: -200%;
+    right: 100%;
+  }
+  60% {
+    left: 107%;
+    right: -8%;
+  }
+  100% {
+    left: 107%;
+    right: -8%;
+  }
+}
+
+@-webkit-keyframes photoLoading {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  50% {
+    -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+@keyframes photoLoading {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  50% {
+    -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+.photoLoading {
+  -webkit-animation: photoLoading 1500ms infinite;
+          animation: photoLoading 1500ms infinite;
+}
+
+.horizontalOverflow {
+  padding-bottom: 5px;
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.horizontalOverflow::-webkit-scrollbar {
+  height: 10px;
+}
+
+.horizontalOverflow::-webkit-scrollbar-thumb {
+  background-color: #181818;
+  border-radius: 10px;
+}
+
+.horizontalOverflow > div {
+  vertical-align: top;
+}
+
+.horizontalOverflow > div + div {
+  margin-left: 10px;
+  /*PLEASE DONT PUT SPACE/TAB/NEW-LINE BETWEEN THIS DIVs AS IT WILL GIVE A SPACE BETWEEN IT TWO*/
+}
+
+.horizontalOverflow > .card {
+  display: inline-block;
+  width: 50%;
+  min-width: 180px;
+}
+
+.horizontalOverflow > .arrow {
+  display: inline-block;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.horizontalOverflow > .arrow > i {
+  font-size: 20px;
+}
+
+.grid {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+.attachment, .smallAttachment {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: #131313;
+  color: #eee;
+  width: 160px;
+  height: 120px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 2px;
+}
+
+.attachment > i, .smallAttachment > i {
+  font-size: 20px;
+}
+
+.attachment[data-hideIcon] > i, .smallAttachment[data-hideIcon] > i {
+  opacity: 0;
+}
+
+.attachment > p, .smallAttachment > p {
+  margin-top: 5px;
+}
+
+.smallAttachment {
+  width: 120px;
+  height: 90px;
+}
+
+.theme-1 {
+  background-color: #131313;
+  color: #eee;
+}
+
+.theme-2 {
+  background-color: #181818;
+  color: #eee;
+}
+
+.theme-primary {
+  background-color: #1D89E8 !important;
+  color: #fff !important;
+}
+
+.theme-positive {
+  background-color: #17BF63 !important;
+  color: #fff !important;
+}
+
+.theme-negative {
+  background-color: #DE2A42 !important;
+  color: #fff !important;
+}
+
+.aPadding-30 {
+  padding: 30px;
+}
+
+.vPadding-30 {
+  padding: 30px 0;
+}
+
+.aPadding-20 {
+  padding: 20px;
+}
+
+.aPadding-20-tandem {
+  padding: 20px;
+  padding-top: 0;
+}
+
+.aPadding-10 {
+  padding: 10px;
+}
+/*# sourceMappingURL=dark.css.map */

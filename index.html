@@ -33,8 +33,9 @@
 		function getTheme() {
 			var a = localJSON.get('settings', 'theme');
 			var b = 'default';
-			//list the theme other than 'light' here...
-			//if (a === 'dark') b = a;
+			//list the theme other than 'default' here...
+			if (a === 'light') b = a;
+			if (a === 'dark') b = a;
 			return b;
 		}
 
@@ -61,7 +62,7 @@
 
 				isCordova ? `scripts/fcmHandler.js` : null,
 
-				`ui/default.css?${appVersion}`,
+				`ui/${getTheme()}.css?${appVersion}`,
 				`ui/popUp.js?${appVersion}`,
 				`ui/float.js?${appVersion}`,
 				`ui/btnLoading.js?${appVersion}`,

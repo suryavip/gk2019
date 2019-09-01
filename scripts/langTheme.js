@@ -31,9 +31,19 @@ var langTheme = {
 		var theme = getTheme();
 		var options = [
 			{
+				title: gl('light', null, 'langTheme'),
+				callBackParam: 'light',
+				icon: theme === 'light' ? 'fas fa-check' : '',
+			},
+			{
 				title: gl('dim', null, 'langTheme'),
 				callBackParam: 'default',
 				icon: theme === 'default' ? 'fas fa-check' : '',
+			},
+			{
+				title: gl('dark', null, 'langTheme'),
+				callBackParam: 'dark',
+				icon: theme === 'dark' ? 'fas fa-check' : '',
 			},
 		];
 		ui.popUp.option(options, theme => {
@@ -58,9 +68,13 @@ var langTheme = {
 
 vipLanguage.lang['langTheme'] = {
 	en: {
+		light: 'Bright',
 		dim: 'Dim',
+		dark: 'Dark',
 	},
 	id: {
+		light: 'Terang',
 		dim: 'Redup',
+		dark: 'Gelap',
 	},
 };

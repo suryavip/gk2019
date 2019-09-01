@@ -1,0 +1,34 @@
+//set the color map here
+
+$themeName: 'light';
+
+$b-0: #fff;
+$f-0: #222;
+$fh-0: rgba(0, 0, 0, .6);
+
+$b-1: #f0f0f0;
+$f-1: #222;
+
+$b-2: #e8e8e8;
+$f-2: #222;
+
+$b-10: #1D89E8;
+$f-10: #fff;
+
+$b-11: #17BF63;
+$f-11: #fff;
+
+$b-12: #DE2A42;
+$f-12: #fff;
+
+$borderColor: #e2e2e2;
+
+$lightFeedback: rgba(255, 255, 255, .1);
+$darkFeedback: rgba(0, 0, 0, .1);
+$feedback: $darkFeedback;
+
+$closeTriggerColor: rgba(16, 20, 30, .8);
+$strongShadow: 0 0 10px 0 rgba(0, 0, 0, .4);
+$popUpGlow: 0 0 10px 0 rgba(0, 0, 0, .4);
+
+@import 'main';
