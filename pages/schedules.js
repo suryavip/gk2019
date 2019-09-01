@@ -9,6 +9,7 @@ vipPaging.pageTemplate['schedules'] = {
 		if (typeof GroundLevel.pendingHighlight === 'string') {
 			var sid = GroundLevel.pendingHighlight;
 			pg.selectedDay = sid[sid.length - 1];
+			delete GroundLevel.pendingHighlight;
 		}
 		dat.attachListener(pg.load, ['schedule']);
 	},
