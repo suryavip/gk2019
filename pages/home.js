@@ -224,7 +224,7 @@ vipPaging.pageTemplate['home'] = {
 				if (e.examTime != null) time = `<h5>${e.examTime}</h5>`;
 
 				var note = ''
-				if (e.note !== '' && time == '') note = `<h5>${app.escapeHTML(app.multiToSingleLine(e.note))}</h5>`;
+				if (e.note !== '') note = `<h5>${app.escapeHTML(app.multiToSingleLine(e.note))}</h5>`;
 
 				var attachment = '';
 				if (e.attachment.length > 0) attachment = `<h6><i>${gl('attachmentCount', e.attachment.length)}</i></h6>`;
