@@ -7,6 +7,13 @@ vipPaging.pageTemplate['home'] = {
 	opening: () => {
 		GroundLevel.init();
 		dat.attachListener(pg.load, ['group', 'schedule', 'assignment', 'exam', 'opinion']);
+
+		var dynamicLinkPageId = sessionStorage.getItem('dynamicLinkPageId');
+		if (typeof dynamicLinkPageId === 'string') {
+			sessionStorage.removeItem('dynamicLinkPageId');
+			var sourceAndParameter = vipPaging.getSourceAndParameter(dynamicLinkPageId);
+			go(sourceAndParameter.source, sourceAndParameter.parameter);
+		}
 	},
 	innerHTML: d => `
 <div class="vipPaging-vLayout">

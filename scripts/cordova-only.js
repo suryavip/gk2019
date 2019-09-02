@@ -13,7 +13,7 @@ window.addEventListener('vipHistoryCloseApp', () => {
 window.addEventListener('vipHistoryInit', () => {
 	cordova.plugins.firebase.dynamiclinks.onDynamicLink(function(data) {
 		//sample
-		//{"deepLink":"https://adapr.boostedcode.com/?group=.....","clickTimestamp":1554448614908,"minimumAppVersion":0}
+		//{"deepLink":"https://grupkelas.boostedcode.com/?group=.....","clickTimestamp":1554448614908,"minimumAppVersion":0}
 		console.log(data);
 		var pageId = data.deepLink.replace(`${app.baseAPPAddress}/?`, '');
 		var sourceAndParameter = vipPaging.getSourceAndParameter(pageId);
