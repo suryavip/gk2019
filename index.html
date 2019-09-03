@@ -7,7 +7,7 @@
 	<title>Grup Kelas</title>
 	<link rel="manifest" href="manifest.json">
 	<link rel="icon" href="icon/mdpi.png" sizes="48x48">
-	<meta name="theme-color" content="#1D89E8">
+	<meta id="theThemeColor" name="theme-color" content="#1D89E8">
 	<script src="lib/bowser-1.9.4/bowser.min.js"></script>
 	<script src="scripts/localJSON.js"></script>
 	<script src="vipFramework/import.js"></script>
@@ -25,18 +25,27 @@
 		}
 	</style>
 	<script>
-		var appVersion = `0.0.1`;
+		var appVersion = `0.0.2`;
 		var projectId = 'gk2019';
 		var isCordova = navigator.userAgent.match(/(Cordova)/) != null;
 		var isLocal = location.protocol !== 'https:';
 
 		function getTheme() {
 			var a = localJSON.get('settings', 'theme');
-			var b = 'default';
-			//list the theme other than 'default' here...
-			if (a === 'light') b = a;
-			if (a === 'dark') b = a;
-			return b;
+			var b = {
+				'default': '#1C2938',
+				'light': '#f0f0f0',
+				'dark': '#131313',
+			};
+
+			if (a in b) {
+				document.getElementById('theThemeColor').setAttribute('content', b[a]);
+				return a;
+			}
+			else {
+				document.getElementById('theThemeColor').setAttribute('content', b['default']);
+				return 'default';
+			}
 		}
 
 		function loadStage1() {
