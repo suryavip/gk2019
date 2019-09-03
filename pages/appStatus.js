@@ -1,7 +1,7 @@
 vipPaging.pageTemplate['appStatus'] = {
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
-		//
+		dat.attachListener(pg.load, ['schedule', 'assignment', 'exam', 'opinion']);
 	},
 	innerHTML: () => `
 <div class="vipPaging-vLayout">
@@ -25,6 +25,8 @@ vipPaging.pageTemplate['appStatus'] = {
 		</div>
 
 		<div class="container-20">
+			<p style="text-align:center">${gl('pendingCount')}: <a id="pendingCount">0</a></p>
+			<div class="vSpace-20"></div>
 			<button onclick="pg.resetSync()">${gl('resetSync')}</button>
 			<div class="vSpace-20 activable" data-active="${isCordova}"></div>
 			<button class="activable" data-active="${isCordova}" onclick="pg.testPushNotif()">${gl('testPushNotif')}</button>
@@ -35,6 +37,14 @@ vipPaging.pageTemplate['appStatus'] = {
 
 `,
 	functions: {
+		load: async () => {
+			var count = await dat.db.assignment.where('source').anyOf(['local-new', 'local']).count();
+			count += await dat.db.exam.where('source').anyOf(['local-new', 'local']).count();
+			count += await dat.db.schedule.where('source').anyOf(['local']).count();
+			count += await dat.db.opinion.where('source').anyOf(['local']).count();
+
+			pg.getEl('pendingCount').textContent = count;
+		},
 		resetSync: () => {
 			ui.popUp.confirm(gl('resetSyncConfirm'), async a => {
 				if (!a) return;
@@ -65,7 +75,8 @@ vipPaging.pageTemplate['appStatus'] = {
 			version: 'Version:',
 			by: 'by Boosted Code',
 			madeIn: 'Bekasi, Indonesia',
-			resetSyncConfirm: 'Warning! All pending or unsynced data will be lost. Clear data and re-sync?',
+			resetSyncConfirm: 'Warning! All unsynced data will be lost. Clear data and re-sync?',
+			pendingCount: 'Unsynced data',
 		},
 		id: {
 			title: 'Informasi Aplikasi',
@@ -74,7 +85,8 @@ vipPaging.pageTemplate['appStatus'] = {
 			version: 'Versi:',
 			by: 'oleh Boosted Code',
 			madeIn: 'Bekasi, Indonesia',
-			resetSyncConfirm: 'Peringatan! Semua data yang pending atau belum tersinkronisasi akan hilang. Jadi bersihkan data dan sinkron ulang?',
+			resetSyncConfirm: 'Peringatan! Semua data yang belum tersinkronisasi akan hilang. Jadi bersihkan data dan sinkron ulang?',
+			pendingCount: 'Data yang belum tersinkron',
 		},
 	},
 };
