@@ -1,5 +1,6 @@
 vipPaging.pageTemplate['examForm'] = {
 	import: [
+		'scripts/subjectAutoFill.js',
 		'scripts/AttachmentForm.js',
 		'scripts/FilePicker.js',
 		'scripts/compressorjsWrapper.js',
@@ -34,6 +35,16 @@ vipPaging.pageTemplate['examForm'] = {
 			//new
 			app.listenForChange(['subject'], () => {
 				pg.getEl('btn').disabled = pg.getEl('subject').value === '';
+				//get recommended date
+				var recommendedDate = subjectAutoFill.getRecommendedDate(pg.getEl('subject').value);
+				if (recommendedDate != null) {
+					pg.getEl('date').value = app.displayDate(recommendedDate);
+					pg.getEl('date').setAttribute('data-date', recommendedDate.format('YYYY-MM-DD'));
+				}
+				//get recommended time
+				var recommendedTime = subjectAutoFill.getRecommendedTime(pg.getEl('subject').value);
+				if (recommendedTime != null) pg.timePicked(recommendedTime);
+				else pg.clearTime();
 			});
 
 			AttachmentForm.init(pg.getEl('attachments'), pg.getEl('attachmentAddBtn'), []);
@@ -104,7 +115,7 @@ vipPaging.pageTemplate['examForm'] = {
 			}
 
 			pg.getEl('selectedOwnerName').textContent = group.name;
-			pg.loadSubjectAutoFill();
+			subjectAutoFill.load(pg.selectedOwner, pg.getEl('subjects'));
 		},
 		chooseOwner: async () => {
 			var currentPage = `${pg.thisPage.id}`;
@@ -125,26 +136,9 @@ vipPaging.pageTemplate['examForm'] = {
 				if (groupId == null) return;
 				if (groupId === pg.selectedOwner) return;
 				pg.selectedOwner = groupId;
+				pg.getEl('subject').value = '';
 				pg.loadOwner();
 			});
-		},
-		loadSubjectAutoFill: async () => {
-			var currentPage = `${pg.thisPage.id}`;
-			var schedules = await dat.db.schedule.where({ owner: pg.selectedOwner }).toArray();
-			if (pg.thisPage.id !== currentPage) return;
-
-			var subjects = [];
-			for (i in schedules) {
-				for (ii in schedules[i].data) {
-					var subject = schedules[i].data[ii].subject;
-					if (subjects.indexOf(subject) < 0) subjects.push(subject);
-				}
-			}
-
-			subjects.sort();
-			var out = '';
-			for (i in subjects) out += `<option value="${app.escapeHTML(subjects[i])}">`;
-			pg.getEl('subjects').innerHTML = out;
 		},
 
 		loadData: async () => {
