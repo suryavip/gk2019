@@ -92,7 +92,7 @@ vipPaging.pageTemplate['signin'] = {
 			passwordPlaceholder: 'Password kamu...',
 			done: 'Masuk',
 			forgotPassword: 'Lupa password',
-			rongPassword: 'Password salah',
+			wrongPassword: 'Password salah',
 			sent: 'Buka email dari kami dan ikuti petunjuk di dalamnya',
 		},
 	},
