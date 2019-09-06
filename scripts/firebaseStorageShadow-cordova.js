@@ -86,9 +86,19 @@ var fss = {
 		}
 
 		if (r.status === 404) {
-			//not found or deleted. return null and delete local
-			callBack.apply(this, [null]);
-			fss.delete(refPath, true);
+			//check headers. if application/json and contain {"code": "not found"}: return null and delete local
+			//else, just false 404
+			if (r.headers.get('Content-Type') === 'application/json') try {
+				var b = await r.json();
+				if (b.code === 'not found') {
+					console.log('FSS: requested image from server resulted NOT FOUND');
+					callBack.apply(this, [null]);
+					fss.delete(refPath, true);
+					return;
+				}
+			}
+			catch { }
+			console.log('FSS: requested image from server resulted unexpected/false 404');
 			return;
 		}
 		else if (r.status !== 200) {
