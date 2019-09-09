@@ -425,6 +425,9 @@ $actionBarInnerSize: 45px;
 			border-radius: 4px;
 			background-color: $b-12;
 		}
+		& > i {
+			font-size: 15px;
+		}
 	}
 	&.dual > div {
 		width: 50%;

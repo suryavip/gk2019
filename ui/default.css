@@ -877,6 +877,10 @@ textarea {
   background-color: #DE2A42;
 }
 
+.tabBar > div > i {
+  font-size: 15px;
+}
+
 .tabBar.dual > div {
   width: 50%;
 }
