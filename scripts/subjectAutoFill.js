@@ -8,6 +8,8 @@ var subjectAutoFill = {
 		var schedules = await dat.db.schedule.where({ owner: owner }).toArray();
 		if (pg.thisPage.id !== currentPage) return;
 
+		this.subjects = [];
+
 		for (i in schedules) {
 			for (ii in schedules[i].data) {
 				var s = schedules[i].data[ii];
