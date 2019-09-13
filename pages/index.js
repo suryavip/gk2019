@@ -1,4 +1,5 @@
 vipPaging.pageTemplate['index'] = {
+	import: ['scripts/langTheme.js'],
 	preopening: () => firebaseAuth.authCheck(false),
 	opening: () => {
 		ui.btnLoading.install();
@@ -13,6 +14,8 @@ vipPaging.pageTemplate['index'] = {
 
 		pg.getEl('email').focus();
 		pg.noticeSent = false;
+
+		enableAllTippy();
 	},
 	innerHTML: () => `
 <div class="vipPaging-vLayout">
@@ -20,10 +23,14 @@ vipPaging.pageTemplate['index'] = {
 		<div class="actionBar">
 			${app.dynamicBackButton(true)}
 			<div class="title"></div>
+			<div class="button" onclick="langTheme.theme()" title="${gl('theme')}"><i class="fas fa-palette"></i></div>
+			<div class="button" onclick="langTheme.lang()" title="${gl('language')}"><i class="fas fa-language"></i></div>
 		</div>
 	</div></div>
 	<div class="body body-center"><div><div class="maxWidthWrap-480 aPadding-30" style="text-align: center">
 
+		<img src="icon/xxxhdpi.png" width="96" style="border-radius: 20px;">
+		<div class="vSpace-10"></div>
 		<h1>Grup Kelas</h1>
 		<h6>v${appVersion}${location.pathname === '/sdcard/gk2019/index.html' ? ' devSD' : ''}</h6>
 		<div class="vSpace-20"></div>
@@ -74,6 +81,8 @@ vipPaging.pageTemplate['index'] = {
 	},
 	lang: {
 		en: {
+			language: 'Language',
+			theme: 'Theme',
 			email: 'Email:',
 			emailPlaceholder: 'example@email.com',
 			continue: 'Continue',
@@ -81,6 +90,8 @@ vipPaging.pageTemplate['index'] = {
 			tospp: `To use this app, you must understand and agree with our <a class="underline" onclick="window.open('${app.baseAPPAddress}/doc/terms_of_use', '_blank')">Terms of Use</a> and <a class="underline" onclick="window.open('${app.baseAPPAddress}/doc/privacy_policy', '_blank')">Privacy Policy</a>`,
 		},
 		id: {
+			language: 'Bahasa (Language)',
+			theme: 'Tema warna',
 			email: 'Email:',
 			emailPlaceholder: 'contoh@email.com',
 			continue: 'Lanjutkan',
