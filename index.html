@@ -25,7 +25,7 @@
 		}
 	</style>
 	<script>
-		var appVersion = `1.0.5`;
+		var appVersion = `1.0.6`;
 		var projectId = 'gk2019';
 		var isCordova = navigator.userAgent.match(/(Cordova)/) != null;
 		var isLocal = location.protocol !== 'https:';
@@ -101,7 +101,7 @@
 					`lib/font-awesome-${fontawesomeVersion}/css/fontawesome.min.css`,
 				]);
 
-				var firebaseVersion = '6.5.0';
+				var firebaseVersion = '6.6.0';
 				var importFirebase = isLocal ? part => `lib/firebase-${firebaseVersion}/firebase-${part}.min.js` : part => `https://www.gstatic.com/firebasejs/${firebaseVersion}/firebase-${part}.js`;
 				importResources([importFirebase('app')], () => {
 					importResources([
