@@ -10,6 +10,8 @@ var fcmHandler = {
 
 		fcmHandler.sendTokenBusy = true;
 
+		var lang = localJSON.get('settings', 'language') || 'id';
+
 		var data = {
 			new: newToken,
 			old: '',
@@ -17,7 +19,7 @@ var fcmHandler = {
 			devicePlatform: device.platform,
 			deviceVersion: device.version,
 			appVersion: appVersion,
-			clientLanguage: 'id',
+			clientLanguage: lang,
 		};
 
 		if (typeof oldToken === 'string') {
