@@ -83,9 +83,6 @@ dat.rdb = {
 	],
 	updateGroups: async function (oldGroups, newGroups) {
 		if (oldGroups == null) oldGroups = {};
-		//push private data
-		newGroups[firebaseAuth.userId] = 'admin';
-		oldGroups[firebaseAuth.userId] = 'admin';
 		//compare oldGroups || this.groups vs newGroups
 		var added = {};
 		for (gid in newGroups) {
@@ -135,6 +132,9 @@ window.addEventListener('firebase-status-signedin', () => {
 	dat.rdb.add('group');
 	dat.rdb.add('notification');
 	dat.rdb.add('opinion');
+
+	var ep = dat.rdb.endpoints(firebaseAuth.userId);
+	for (i in ep) dat.rdb.add(ep[i]);
 });
 
 window.addEventListener('firebase-signout', () => {
