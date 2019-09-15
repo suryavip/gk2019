@@ -14,7 +14,7 @@ vipPaging.pageTemplate['appStatus'] = {
 	<div class="body"><div><div class="maxWidthWrap-640">
 
 		<div class="container-20" style="text-align:center">
-			<img src="icon/xxxhdpi.png" width="96">
+			<img src="icon/xxxhdpi.png" width="96" style="border-radius: 20px;">
 			<div class="vSpace-10"></div>
 			<h1>Grup Kelas</h1>
 			<div class="vSpace-10"></div>
