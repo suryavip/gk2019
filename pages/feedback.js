@@ -94,7 +94,7 @@ vipPaging.pageTemplate['feedback'] = {
 	},
 	lang: {
 		en: {
-			title: 'Feedback',
+			title: 'Give Feedback',
 			feedbackQuestion: 'Do you like this app?',
 			dontLikeIt: `I don't like it`,
 			likeIt: 'I like it',
@@ -110,7 +110,7 @@ vipPaging.pageTemplate['feedback'] = {
 			done: 'Done',
 		},
 		id: {
-			title: 'Pendapat',
+			title: 'Beri Tanggapan',
 			feedbackQuestion: 'Apakah kamu menyukai aplikasi ini?',
 			dontLikeIt: 'Tidak suka',
 			likeIt: 'Suka',
