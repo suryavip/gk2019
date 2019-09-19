@@ -1,6 +1,7 @@
 vipPaging.pageTemplate['feedback'] = {
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {
+		ui.btnLoading.install();
 		pg.lastState = null;
 	},
 	innerHTML: () => `
@@ -32,8 +33,8 @@ vipPaging.pageTemplate['feedback'] = {
 			<div class="vSpace-10"></div>	
 			<p>${gl('positiveThanks')}</p>
 			<div class="vSpace-30"></div>
-			<button onclick="">${gl('rateOnGooglePlay')}</button>
-			<div class="vSpace-20"></div>
+			<button class="activable" data-active="${isCordova}" onclick="window.open('https://play.google.com/store/apps/details?id=com.boostedcode.gk2019', '_blank')">${gl('rateOnGooglePlay')}</button>
+			<div class="activable vSpace-20" data-active="${isCordova}"></div>
 			<button onclick="pg.giveSuggestion()">${gl('giveSuggestion')}</button>
 		</div>
 		<div id="suggestion" class="activable container-20" style="text-align:center">
@@ -46,7 +47,7 @@ vipPaging.pageTemplate['feedback'] = {
 			<textarea id="suggestion2" maxlength="500" placeholder="${gl('suggestionPlaceholder')}" rows="4"></textarea>
 		</div>
 		<div id="done" class="activable container-20">
-			<button class="primary" onclick="pg.done()">${gl('done')}</button>
+			<button id="doneBtn" class="primary" onclick="pg.done()">${gl('done')}</button>
 		</div>
 
 	</div></div></div>
@@ -88,8 +89,47 @@ vipPaging.pageTemplate['feedback'] = {
 			pg.getEl('suggestion').setAttribute('data-active', true);
 			pg.getEl('suggestion1').focus();
 		},
-		done: () => {
-			//
+		done: async () => {
+			ui.btnLoading.on(pg.getEl('doneBtn'));
+			await firebaseAuth.waitStated();
+
+			var lang = localJSON.get('settings', 'language') || 'id';
+
+			if (typeof device === 'undefined') var device = {
+				manufacturer: bowser.name,
+				model: bowser.version,
+				platform: bowser.osname,
+				version: bowser.osversion,
+			};
+
+			var data = {
+				liked: pg.lastState,
+				suggestion: pg.lastState === true ? pg.getEl('suggestion1').value : pg.getEl('suggestion2').value,
+				deviceModel: `${device.manufacturer} ${device.model}`,
+				devicePlatform: device.platform,
+				deviceVersion: device.version,
+				appVersion: appVersion,
+				clientLanguage: lang,
+			};
+
+			var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/feedback`, {
+				method: 'POST',
+				body: JSON.stringify(data),
+			});
+
+			if (f.status === 201) {
+				ui.float.success(gl('saved'));
+				window.history.go(-1);
+			}
+			else {
+				ui.btnLoading.off(pg.getEl('doneBtn'));
+				if (f.status === 'connectionError') {
+					ui.float.error(gl('connectionError', null, 'app'));
+				}
+				else {
+					ui.float.error(gl('unexpectedError', `${f.status}: ${f.b.code}`, 'app'));
+				}
+			}
 		},
 	},
 	lang: {
@@ -108,6 +148,7 @@ vipPaging.pageTemplate['feedback'] = {
 			negativeThanks: `Thank you for your feedback. We'll improve this app further.`,
 
 			done: 'Done',
+			saved: 'Thank you',
 		},
 		id: {
 			title: 'Beri Tanggapan',
@@ -124,6 +165,7 @@ vipPaging.pageTemplate['feedback'] = {
 			negativeThanks: `Terima kasih atas tanggapannya. Kami akan terus melakukan peningkatan kualitas aplikasi.`,
 
 			done: 'Selesai',
+			saved: 'Terima kasih. Tanggapan anda sudah kami terima.',
 		},
 	},
 };
