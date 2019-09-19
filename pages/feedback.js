@@ -93,24 +93,23 @@ vipPaging.pageTemplate['feedback'] = {
 			ui.btnLoading.on(pg.getEl('doneBtn'));
 			await firebaseAuth.waitStated();
 
-			var lang = localJSON.get('settings', 'language') || 'id';
-
-			if (typeof device === 'undefined') var device = {
-				manufacturer: bowser.name,
-				model: bowser.version,
-				platform: bowser.osname,
-				version: bowser.osversion,
-			};
-
-			var data = {
-				liked: pg.lastState,
-				suggestion: pg.lastState === true ? pg.getEl('suggestion1').value : pg.getEl('suggestion2').value,
+			if (isCordova) var data = {
 				deviceModel: `${device.manufacturer} ${device.model}`,
 				devicePlatform: device.platform,
 				deviceVersion: device.version,
-				appVersion: appVersion,
-				clientLanguage: lang,
 			};
+			else var data = {
+				deviceModel: `${bowser.name} ${bowser.version}`,
+				devicePlatform: bowser.osname,
+				deviceVersion: bowser.osversion,
+			};
+
+			var lang = localJSON.get('settings', 'language') || 'id';
+
+			data['liked'] = pg.lastState;
+			data['suggestion'] = pg.lastState === true ? pg.getEl('suggestion1').value : pg.getEl('suggestion2').value;
+			data['appVersion'] = appVersion;
+			data['clientLanguage'] = lang;
 
 			var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/feedback`, {
 				method: 'POST',
