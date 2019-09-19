@@ -2,6 +2,7 @@ vipPaging.pageTemplate['home'] = {
 	import: [
 		'scripts/GroundLevel.js',
 		'scripts/ProfileResolver.js',
+		isCordova ? 'scripts/FeedbackPopUp.js' : null,
 	],
 	preopening: () => firebaseAuth.authCheck(true),
 	opening: () => {

@@ -55,13 +55,6 @@ vipPaging.pageTemplate['settings'] = {
 				<div class="icon"><i class="fas fa-user-shield"></i></div>
 				<div class="content"><h4>${gl('pp')}</h4></div>
 			</div>
-		</div>
-
-		<div class="container">
-			<div class="list feedback" onclick="go('feedback')">
-				<div class="icon"><i class="fas fa-comment"></i></div>
-				<div class="content"><h4>${gl('feedback')}</h4></div>
-			</div>
 			<div class="list feedback" onclick="go('appStatus')">
 				<div class="icon"><i class="fas fa-chart-bar"></i></div>
 				<div class="content"><h4>${gl('appStatus')}</h4></div>
