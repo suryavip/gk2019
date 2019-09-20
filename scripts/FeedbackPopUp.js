@@ -1,8 +1,39 @@
 var FeedbackPopUp = {
 
-	init: function () {
+	init: async function () {
 		//this will be called on launch or on opening home
 		//decide here is it the right time to ask feedback
+		var launchCount = localJSON.get('launchCount', appVersion) || 0;
+		if (launchCount < 10) {
+			console.log('not asking for feedback: less than 10 launches on this version');
+			return;
+		}
+
+		var firstLaunch = localJSON.get('firstLaunch', appVersion) || new Date().getTime();
+		var minimum = firstLaunch + (3 * 24 * 60 * 60 * 1000);
+		if (new Date().getTime() > minimum) {
+			console.log('not asking for feedback: less than 3 days on this version');
+			return;
+		}
+
+		var feedbackAsked = localJSON.get('feedbackAsked', appVersion) === true;
+		if (feedbackAsked) {
+			console.log('not asking for feedback: already asked');
+			return;
+		}
+
+		var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/feedback?appVersion=${encodeURIComponent(appVersion)}`);
+		if (f.status !== 200) {
+			console.log('not asking for feedback: cannot ask server');
+			return;
+		}
+
+		if (f.b.exist === true) {
+			console.log('not asking for feedback: server says it already asked for this version');
+			return;
+		}
+
+		console.log('asking for feedback');
 		this.popUp1();
 	},
 
@@ -28,6 +59,7 @@ var FeedbackPopUp = {
 				<button onclick="window.history.go(-1)">${this.gl('close')}</button>
 			</div>`;
 		vipPaging.popUp.show(null, popUpBuild, null, (liked) => {
+			localJSON.put('feedbackAsked', appVersion, true);
 			if (typeof liked !== 'boolean') return;
 			if (liked) {
 				this.popUp2(); //ask for rating on store
