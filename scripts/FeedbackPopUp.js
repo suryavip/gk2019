@@ -5,14 +5,15 @@ var FeedbackPopUp = {
 		//decide here is it the right time to ask feedback
 		var launchCount = localJSON.get('launchCount', appVersion) || 0;
 		if (launchCount < 10) {
-			console.log('not asking for feedback: less than 10 launches on this version');
+			console.log('not asking for feedback: less than 10 launches on this version', launchCount);
 			return;
 		}
 
 		var firstLaunch = localJSON.get('firstLaunch', appVersion) || new Date().getTime();
 		var minimum = firstLaunch + (3 * 24 * 60 * 60 * 1000);
-		if (new Date().getTime() > minimum) {
-			console.log('not asking for feedback: less than 3 days on this version');
+		var now = new Date().getTime();
+		if (now < minimum) {
+			console.log('not asking for feedback: less than 3 days on this version', now - minimum);
 			return;
 		}
 
@@ -30,6 +31,7 @@ var FeedbackPopUp = {
 
 		if (f.b.exist === true) {
 			console.log('not asking for feedback: server says it already asked for this version');
+			localJSON.put('feedbackAsked', appVersion, true);
 			return;
 		}
 
