@@ -14,7 +14,10 @@ vipPaging.pageTemplate['home'] = {
 			sessionStorage.removeItem('dynamicLinkPageId');
 			var sourceAndParameter = vipPaging.getSourceAndParameter(dynamicLinkPageId);
 			go(sourceAndParameter.source, sourceAndParameter.parameter);
+			return;
 		}
+
+		if (isCordova) FeedbackPopUp.init();
 	},
 	innerHTML: d => `
 <div class="vipPaging-vLayout">

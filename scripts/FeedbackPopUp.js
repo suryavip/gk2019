@@ -1,8 +1,9 @@
 var FeedbackPopUp = {
 
-	arm: () => {
-		//this arm will be called on launch or on opening home
+	init: function () {
+		//this will be called on launch or on opening home
 		//decide here is it the right time to ask feedback
+		this.popUp1();
 	},
 
 	gl: (l, p) => gl(l, p, 'FeedbackPopUp'),
@@ -26,11 +27,13 @@ var FeedbackPopUp = {
 				<div class="vSpace-30"></div>
 				<button onclick="window.history.go(-1)">${this.gl('close')}</button>
 			</div>`;
-		vipPaging.popUp.show(null, popUpBuild, null, (v) => {
-			if (typeof v !== 'boolean') return;
-			if (v) this.popUp2(); //ask for rating on store
-			else this.popUp3(); //ask for feedback
-			//send feedback (POST)
+		vipPaging.popUp.show(null, popUpBuild, null, (liked) => {
+			if (typeof liked !== 'boolean') return;
+			if (liked) {
+				this.popUp2(); //ask for rating on store
+				this.sendFeedback(liked);
+			}
+			else this.popUp3(liked); //ask for feedback
 		});
 	},
 
@@ -49,8 +52,8 @@ var FeedbackPopUp = {
 		});
 	},
 
-	popUp3: function () {
-		var popUpBuild = () => `<div style="padding: 20px; text-align: center;">
+	popUp3: function (liked) {
+		var popUpBuild = (id) => `<div style="padding: 20px; text-align: center;">
 				<div class="vSpace-10"></div>
 				<h3>${this.gl('suggestionQuestion')}</h3>
 				<div class="vSpace-30"></div>
@@ -58,13 +61,42 @@ var FeedbackPopUp = {
 				<div class="vSpace-20"></div>
 				<div class="table dual-10">
 					<div><button onclick="window.history.go(-1)">${this.gl('skip')}</button></div>
-					<div><button onclick="vipPaging.popUp.close(true)" class="primary">${this.gl('submit')}</button></div>
+					<div><button onclick="vipPaging.popUp.close(document.querySelector('#vipPaging-popUp-${id} textarea').value)" class="primary">${this.gl('submit')}</button></div>
 				</div>
 			</div>`;
-		vipPaging.popUp.show(null, popUpBuild, null, (v) => {
-			if (v !== true) return;
-			//update feedback (PUT)
+		vipPaging.popUp.show(null, popUpBuild, null, (suggestion) => {
+			if (typeof suggestion === 'string') this.sendFeedback(liked, suggestion);
+			else this.sendFeedback(liked);
 		});
+	},
+
+	sendFeedback: function (liked, suggestion) {
+		if (suggestion == null) suggestion = '';
+
+		var lang = localJSON.get('settings', 'language') || 'id';
+
+		var data = {
+			deviceModel: `${device.manufacturer} ${device.model}`,
+			devicePlatform: device.platform,
+			deviceVersion: device.version,
+			liked: liked,
+			suggestion: suggestion,
+			appVersion: appVersion,
+			clientLanguage: lang,
+		};
+		
+		var send = async function (body) {
+			var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/feedback`, {
+				method: 'POST',
+				body: body,
+			});
+
+			if (f.status === 'connectionError') {
+				setTimeout(() => { send(body); }, 10000);
+			}
+		};
+
+		send(JSON.stringify(data));
 	},
 
 };
@@ -91,7 +123,7 @@ vipLanguage.lang['FeedbackPopUp'] = {
 		likeIt: 'Suka',
 		close: 'Tutup',
 
-		storeRatingQuestion: 'Maukah kamu memberi rating kami di Google Play Store?',
+		storeRatingQuestion: 'Maukah kamu memberi kami rating di Google Play Store?',
 		no: 'Tidak',
 		sure: 'Tentu',
 
