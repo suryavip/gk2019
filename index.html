@@ -131,6 +131,10 @@
 				vipPaging.init();
 				vipHistory.init();
 				moment.locale(lang);
+
+				var launchCount = localJSON.get('launchCount', appVersion) || 0;
+				if (launchCount === 0) localJSON.put('firstLaunch', appVersion, new Date().getTime());
+				localJSON.put('launchCount', appVersion, launchCount + 1);
 			});
 		}
 		window.addEventListener('load', () => {
