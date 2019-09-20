@@ -18,8 +18,9 @@ vipPaging.pageTemplate['appStatus'] = {
 			<div class="vSpace-10"></div>
 			<h1>Grup Kelas</h1>
 			<div class="vSpace-10"></div>
-			<h4>${gl('version')} ${appVersion}${location.pathname === '/sdcard/gk2019/index.html' ? ' devSD' : ''}</h4>
-
+			<h3>${gl('version')} ${appVersion}${location.pathname === '/sdcard/gk2019/index.html' ? ' devSD' : ''}</h3>
+			<div class="vSpace-20"></div>
+			<p><a href="mailto:contact@boostedcode.com" target="_blank">contact@boostedcode.com</a></p>
 			<p>${gl('by')}</p>
 			<p>${gl('madeIn')}</p>
 		</div>
