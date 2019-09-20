@@ -102,7 +102,7 @@ vipPaging.pageTemplate['editProfile'] = {
 			}
 			if (email.value !== email.getAttribute('data-original')) {
 				changes++;
-				try { await reauth.prompt(); } catch { }
+				try { await reauth.prompt(); } catch (e) { }
 			}
 
 			if (changes === 0) {

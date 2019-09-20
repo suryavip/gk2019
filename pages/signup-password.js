@@ -105,7 +105,7 @@ vipPaging.pageTemplate['signup-password'] = {
 					}
 					delete app.state.signupPhoto;
 				}
-				catch { }
+				catch (e) { }
 				userCredential.user.sendEmailVerification();
 			}
 			else {

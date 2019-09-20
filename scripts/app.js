@@ -50,7 +50,7 @@ var app = {
 					if (lastValue[i] != null && el.value !== lastValue[i]) isChange = true;
 					lastValue[i] = el.value;
 				}
-				catch { }
+				catch (e) { }
 			}
 			if (isChange) callBack();
 			setTimeout(pooling, 100);

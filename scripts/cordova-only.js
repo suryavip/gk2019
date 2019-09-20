@@ -21,7 +21,7 @@ window.addEventListener('vipHistoryInit', () => {
 		try {
 			currentPage = pg.thisPage.id;
 		}
-		catch {}
+		catch (e) {}
 		if (currentPage !== pageId) go(sourceAndParameter.source, sourceAndParameter.parameter, true); //make this the first page open so the behaviour will be the same as on browser
 	});
 });

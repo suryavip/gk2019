@@ -91,7 +91,7 @@ var photoLoader = {
 			vipLoading.remove('photoSwipe');
 			return true;
 		}
-		catch {
+		catch (e) {
 			console.log(`Cannot load photoSwipe`);
 			vipLoading.remove('photoSwipe');
 			return false;

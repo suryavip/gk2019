@@ -52,7 +52,8 @@
 			var isSupported = isCordova ||
 				bowser.check({ chrome: '70' }, true) ||
 				bowser.check({ firefox: '63' }, true) ||
-				bowser.check({ safari: '11' }, true);
+				bowser.check({ safari: '11' }, true) ||
+				bowser.check({ msedge: '17' }, true);
 
 			if (!isSupported) {
 				alert('Your browser is not supported yet. We recommend to use latest Google Chrome, Firefox, or Safari');

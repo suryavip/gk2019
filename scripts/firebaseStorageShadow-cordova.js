@@ -97,7 +97,7 @@ var fss = {
 					return;
 				}
 			}
-			catch { }
+			catch (e) { }
 			console.log('FSS: requested image from server resulted unexpected/false 404');
 			return;
 		}
