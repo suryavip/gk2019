@@ -22,7 +22,7 @@ var FeedbackPopUp = {
 			return;
 		}
 
-		var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/feedback?appVersion=${encodeURIComponent(appVersion)}`);
+		var f = await jsonFetch.doWithIdToken(`${app.baseAPIAddress}/feedback/${appVersion}`);
 		if (f.status !== 200) {
 			console.log('not asking for feedback: cannot ask server');
 			return;
