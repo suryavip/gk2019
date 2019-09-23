@@ -428,9 +428,16 @@ $actionBarInnerSize: 45px;
 ////////////////////////////////////////////////////////////
 
 .card {
-	background-color: $b-1;
-	color: $f-1;
-	//box-shadow: $strongShadow;
+	
+	@if $themeName == 'light' {
+		background-color: $b-0;
+		color: $f-0;
+		box-shadow: $cardShadow;
+	}
+	@else {
+		background-color: $b-1;
+		color: $f-1;
+	}
 	border-radius: 10px;
 	overflow: hidden;
 }

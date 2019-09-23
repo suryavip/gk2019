@@ -108,7 +108,7 @@ body {
 }
 
 .vipPaging-vLayout > .head, .vipPaging-vLayout > .foot {
-  background-color: #f0f0f0;
+  background-color: #f2f2f2;
   color: #222;
   -webkit-box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
           box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
@@ -131,7 +131,7 @@ body {
 }
 
 #vipPaging-floatBar > div > div {
-  background-color: #f0f0f0;
+  background-color: #f2f2f2;
   color: #222;
 }
 
@@ -470,7 +470,7 @@ button:not(.pswp__button) {
   margin: 0 auto;
   display: block;
   font-family: "Roboto", sans-serif;
-  background-color: #e8e8e8;
+  background-color: #eaeaea;
   color: #222;
   position: relative;
   z-index: 1;
@@ -696,7 +696,7 @@ input[type=text], input[type=number], input[type=tel], input[type=email], input[
   padding: 0 15px;
   min-height: 45px;
   outline: none;
-  background-color: #e8e8e8;
+  background-color: #eaeaea;
   color: #222;
   border: none;
   border-radius: 10px;
@@ -874,8 +874,10 @@ textarea {
 }
 
 .card {
-  background-color: #f0f0f0;
+  background-color: #fff;
   color: #222;
+  -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+          box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -943,7 +945,7 @@ textarea {
 .list > .iconCircle > div {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  background-color: #e8e8e8;
+  background-color: #eaeaea;
   color: #222;
   display: -webkit-box !important;
   display: -ms-flexbox !important;
@@ -1004,7 +1006,7 @@ textarea {
   min-width: 35px;
   height: 35px;
   border-radius: 35px;
-  background-color: #f0f0f0;
+  background-color: #f2f2f2;
   color: #1D89E8;
 }
 
@@ -1168,7 +1170,7 @@ textarea {
 }
 
 .horizontalOverflow::-webkit-scrollbar-thumb {
-  background-color: #e8e8e8;
+  background-color: #eaeaea;
   border-radius: 10px;
 }
 
@@ -1222,7 +1224,7 @@ textarea {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  background-color: #f0f0f0;
+  background-color: #f2f2f2;
   color: #222;
   width: 160px;
   height: 120px;

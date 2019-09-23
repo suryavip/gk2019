@@ -6,10 +6,10 @@ $b-0: #fff;
 $f-0: #222;
 $inputPlaceholderColor: rgba(0, 0, 0, .6);
 
-$b-1: #f0f0f0;
+$b-1: #f2f2f2;
 $f-1: #222;
 
-$b-2: #e8e8e8;
+$b-2: #eaeaea;
 $f-2: #222;
 
 $b-10: #1D89E8;
@@ -29,6 +29,7 @@ $feedback: $darkFeedback;
 
 $closeTriggerColor: rgba(16, 20, 30, .8);
 $strongShadow: 0 0 10px 0 rgba(0, 0, 0, .4);
+$cardShadow: 0 0 5px 0 rgba(0, 0, 0, .2);
 $popUpGlow: 0 0 10px 0 rgba(0, 0, 0, .4);
 
 @import 'main';
