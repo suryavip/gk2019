@@ -80,17 +80,6 @@ vipPaging.pageTemplate['home'] = {
 			<button onclick="GroundLevel.go('assignmentsAndExams')">${gl('seeAssignmentAndExam')}</button>
 		</div>
 
-		<div class="container-20 activable" id="quickAssignment">
-			<div class="table">
-				<div style="width:100%"><h3 id="quickAssignmentTitle"></h3></div>
-				<div>
-					<div class="circleButton" onclick="GroundLevel.go('assignmentsAndExams')"><i class="fas fa-ellipsis-h"></i></div>
-				</div>
-			</div>
-			<div class="vSpace-10"></div>
-			<div id="quickAssignmentContent"></div>
-		</div>
-
 		<div class="container-20 activable" id="quickExam">
 			<div class="table">
 				<div style="width:100%"><h3 id="quickExamTitle"></h3></div>
@@ -100,6 +89,17 @@ vipPaging.pageTemplate['home'] = {
 			</div>
 			<div class="vSpace-10"></div>
 			<div id="quickExamContent"></div>
+		</div>
+
+		<div class="container-20 activable" id="quickAssignment">
+			<div class="table">
+				<div style="width:100%"><h3 id="quickAssignmentTitle"></h3></div>
+				<div>
+					<div class="circleButton" onclick="GroundLevel.go('assignmentsAndExams')"><i class="fas fa-ellipsis-h"></i></div>
+				</div>
+			</div>
+			<div class="vSpace-10"></div>
+			<div id="quickAssignmentContent"></div>
 		</div>
 
 		<div class="container aPadding-30 activable" id="toggleDayContainer">
