@@ -141,15 +141,6 @@ $font-family: 'Roboto', sans-serif;
 }
 @include maxWidthWrap(640);
 @include maxWidthWrap(480);
-@include maxWidthWrap(360);
-
-///////////////////////////////////////////////////
-
-a.underline, a.showMore, a.showLess {
-	text-decoration: underline;
-	cursor: pointer;
-	color: $b-10;
-}
 
 ///////////////////////////////////////////////////
 
@@ -298,7 +289,7 @@ input[type=text], input[type=number], input[type=tel], input[type=email], input[
 	border-radius: 10px;
 	//border-bottom: 1px solid $b-10;
 	&::-webkit-input-placeholder {
-		color: $fh-0;
+		color: $inputPlaceholderColor;
 	}
 	& + .inputLabel {
 		margin-top: 25px;
@@ -429,57 +420,8 @@ $actionBarInnerSize: 45px;
 			font-size: 15px;
 		}
 	}
-	&.dual > div {
-		width: 50%;
-	}
 	&.five > div {
 		width: 20%;
-	}
-}
-
-.scrollableTab {
-	overflow-x: scroll;
-	white-space: nowrap;
-	width: 100%;
-	padding: 5px;
-	& > div {
-		vertical-align: top;
-		& + div {
-			margin-left: 5px;
-			/*PLEASE DONT PUT SPACE/TAB/NEW-LINE BETWEEN THIS DIVs AS IT WILL GIVE A SPACE BETWEEN IT TWO*/
-		}
-	}
-	& > div {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		height: $actionBarInnerSize;
-		min-width: $actionBarInnerSize;
-		border-radius: $actionBarInnerSize;
-		@extend %feedback;
-		& > i {
-			width: 45px;
-			text-align: center;
-			font-size: 15px;
-		}
-		& > h3 {
-			display: none;
-			margin-right: 20px;
-		}
-	}
-	& > div[data-active=true] {
-		background-color: $b-0;
-		color: $b-10;
-		& > h3 {
-			display: block;
-		}
-	}
-}
-
-@media only screen and (min-width: 1060px) {
-	//tab text will always visible on wide screen
-	.scrollableTab > div > h3 {
-		display: block;
 	}
 }
 
@@ -518,13 +460,6 @@ $listPadding: 20px;
 		&:last-child { padding-right: $listPadding; }
 	}
 }
-
-/*.list.noOutside > div {
-	padding-top: 0;
-	padding-bottom: 0;
-	&:first-child { padding-left: 0; }
-	&:last-child { padding-right: 0; }
-}*/
 
 .list > .icon > i {
 	font-size: 15px;
@@ -750,16 +685,6 @@ $listPadding: 20px;
 
 /////////////////////////////////////////////////////////////
 
-.theme-1 {
-	background-color: $b-1;
-	color: $f-1;
-}
-
-.theme-2 {
-	background-color: $b-2;
-	color: $f-2;
-}
-
 .theme-primary {
 	background-color: $b-10 !important;
 	color: $f-10 !important;
@@ -770,13 +695,7 @@ $listPadding: 20px;
 	color: $f-11 !important;
 }
 
-.theme-negative {
-	background-color: $b-12 !important;
-	color: $f-12 !important;
-}
-
 .aPadding-30 { padding: 30px; }
-.vPadding-30 { padding: 30px 0; }
 .aPadding-20 { padding: 20px; }
 .aPadding-20-tandem {
 	padding: 20px;
