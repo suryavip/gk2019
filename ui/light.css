@@ -30,12 +30,12 @@ h5 {
   opacity: .6;
 }
 
-.lightFeedback, .vipPaging-floatingButton > div, button.primary:not(.pswp__button):not([data-loading=true]), button.negative:not(.pswp__button):not([data-loading=true]), .profilePhoto, .list > .photo > div, .profilePhoto.circleCenter-120 + .clearPhotoButton, .list > .photo > div.circleCenter-120 + .clearPhotoButton, .tabBar > div[data-active=true], .attachment, .smallAttachment, .darkFeedback, .feedback, .calendarHead > div:not(.title), .calendarRow > div > div, button:not(.pswp__button):not([data-loading=true]), .circleButton, .inputWithButton > div:last-child, .actionBar > .button, .tabBar > div, .bottomAction > div:not(.space), .highlightable {
+.lightFeedback, .vipPaging-floatingButton > div, button.primary:not(.pswp__button):not([data-loading=true]), button.negative:not(.pswp__button):not([data-loading=true]), .profilePhoto, .list > .photo > div, .profilePhoto.circleCenter-120 + .clearPhotoButton, .list > .photo > div.circleCenter-120 + .clearPhotoButton, .attachment, .smallAttachment, .darkFeedback, .feedback, .calendarHead > div:not(.title), .calendarRow > div > div, button:not(.pswp__button):not([data-loading=true]), .circleButton, .inputWithButton > div:last-child, .actionBar > .button, .tabBar > div, .bottomAction > div:not(.space), .highlightable {
   position: relative;
   z-index: 1;
 }
 
-.lightFeedback:after, .vipPaging-floatingButton > div:after, button.primary:not([data-loading=true]):not(.pswp__button):after, button.negative:not([data-loading=true]):not(.pswp__button):after, .profilePhoto:after, .list > .photo > div:after, .profilePhoto.circleCenter-120 + .clearPhotoButton:after, .list > .photo > div.circleCenter-120 + .clearPhotoButton:after, .tabBar > div[data-active=true]:after, .attachment:after, .smallAttachment:after, .darkFeedback:after, .feedback:after, .calendarHead > div:not(.title):after, .calendarRow > div > div:after, button:not([data-loading=true]):not(.pswp__button):after, .circleButton:after, .inputWithButton > div:last-child:after, .actionBar > .button:after, .tabBar > div:after, .bottomAction > div:not(.space):after, .highlightable:after {
+.lightFeedback:after, .vipPaging-floatingButton > div:after, button.primary:not([data-loading=true]):not(.pswp__button):after, button.negative:not([data-loading=true]):not(.pswp__button):after, .profilePhoto:after, .list > .photo > div:after, .profilePhoto.circleCenter-120 + .clearPhotoButton:after, .list > .photo > div.circleCenter-120 + .clearPhotoButton:after, .attachment:after, .smallAttachment:after, .darkFeedback:after, .feedback:after, .calendarHead > div:not(.title):after, .calendarRow > div > div:after, button:not([data-loading=true]):not(.pswp__button):after, .circleButton:after, .inputWithButton > div:last-child:after, .actionBar > .button:after, .tabBar > div:after, .bottomAction > div:not(.space):after, .highlightable:after {
   display: block;
   position: absolute;
   top: 0;
@@ -55,11 +55,11 @@ h5 {
   pointer-events: none;
 }
 
-.lightFeedback, .vipPaging-floatingButton > div, button.primary:not(.pswp__button):not([data-loading=true]), button.negative:not(.pswp__button):not([data-loading=true]), .profilePhoto, .list > .photo > div, .profilePhoto.circleCenter-120 + .clearPhotoButton, .list > .photo > div.circleCenter-120 + .clearPhotoButton, .tabBar > div[data-active=true], .attachment, .smallAttachment, .darkFeedback, .feedback, .calendarHead > div:not(.title), .calendarRow > div > div, button:not(.pswp__button):not([data-loading=true]), .circleButton, .inputWithButton > div:last-child, .actionBar > .button, .tabBar > div, .bottomAction > div:not(.space) {
+.lightFeedback, .vipPaging-floatingButton > div, button.primary:not(.pswp__button):not([data-loading=true]), button.negative:not(.pswp__button):not([data-loading=true]), .profilePhoto, .list > .photo > div, .profilePhoto.circleCenter-120 + .clearPhotoButton, .list > .photo > div.circleCenter-120 + .clearPhotoButton, .attachment, .smallAttachment, .darkFeedback, .feedback, .calendarHead > div:not(.title), .calendarRow > div > div, button:not(.pswp__button):not([data-loading=true]), .circleButton, .inputWithButton > div:last-child, .actionBar > .button, .tabBar > div, .bottomAction > div:not(.space) {
   cursor: pointer;
 }
 
-.lightFeedback:active:after, .vipPaging-floatingButton > div:active:after, button.primary:not([data-loading=true]):not(.pswp__button):active:after, button.negative:not([data-loading=true]):not(.pswp__button):active:after, .profilePhoto:active:after, .list > .photo > div:active:after, .profilePhoto.circleCenter-120 + .clearPhotoButton:active:after, .list > .photo > div.circleCenter-120 + .clearPhotoButton:active:after, .tabBar > div[data-active=true]:active:after, .attachment:active:after, .smallAttachment:active:after, .darkFeedback:active:after, .feedback:active:after, .calendarHead > div:not(.title):active:after, .calendarRow > div > div:active:after, button:not([data-loading=true]):not(.pswp__button):active:after, .circleButton:active:after, .inputWithButton > div:last-child:active:after, .actionBar > .button:active:after, .tabBar > div:active:after, .bottomAction > div:not(.space):active:after {
+.lightFeedback:active:after, .vipPaging-floatingButton > div:active:after, button.primary:not([data-loading=true]):not(.pswp__button):active:after, button.negative:not([data-loading=true]):not(.pswp__button):active:after, .profilePhoto:active:after, .list > .photo > div:active:after, .profilePhoto.circleCenter-120 + .clearPhotoButton:active:after, .list > .photo > div.circleCenter-120 + .clearPhotoButton:active:after, .attachment:active:after, .smallAttachment:active:after, .darkFeedback:active:after, .feedback:active:after, .calendarHead > div:not(.title):active:after, .calendarRow > div > div:active:after, button:not([data-loading=true]):not(.pswp__button):active:after, .circleButton:active:after, .inputWithButton > div:last-child:active:after, .actionBar > .button:active:after, .tabBar > div:active:after, .bottomAction > div:not(.space):active:after {
   -webkit-transition: none;
   transition: none;
   opacity: 1;
@@ -71,7 +71,7 @@ h5 {
   opacity: 1;
 }
 
-.lightFeedback:after, .vipPaging-floatingButton > div:after, button.primary:not([data-loading=true]):not(.pswp__button):after, button.negative:not([data-loading=true]):not(.pswp__button):after, .profilePhoto:after, .list > .photo > div:after, .profilePhoto.circleCenter-120 + .clearPhotoButton:after, .list > .photo > div.circleCenter-120 + .clearPhotoButton:after, .tabBar > div[data-active=true]:after, .attachment:after, .smallAttachment:after {
+.lightFeedback:after, .vipPaging-floatingButton > div:after, button.primary:not([data-loading=true]):not(.pswp__button):after, button.negative:not([data-loading=true]):not(.pswp__button):after, .profilePhoto:after, .list > .photo > div:after, .profilePhoto.circleCenter-120 + .clearPhotoButton:after, .list > .photo > div.circleCenter-120 + .clearPhotoButton:after, .attachment:after, .smallAttachment:after {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -108,10 +108,10 @@ body {
 }
 
 .vipPaging-vLayout > .head, .vipPaging-vLayout > .foot {
-  background-color: #f2f2f2;
+  background-color: #fff;
   color: #222;
-  -webkit-box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
-          box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+  -webkit-box-shadow: 0 0 10px 10px #fff;
+          box-shadow: 0 0 10px 10px #fff;
 }
 
 .vipPaging-floatingButton > div {
@@ -470,7 +470,7 @@ button:not(.pswp__button) {
   margin: 0 auto;
   display: block;
   font-family: "Roboto", sans-serif;
-  background-color: #eaeaea;
+  background-color: #f2f2f2;
   color: #222;
   position: relative;
   z-index: 1;
@@ -696,7 +696,7 @@ input[type=text], input[type=number], input[type=tel], input[type=email], input[
   padding: 0 15px;
   min-height: 45px;
   outline: none;
-  background-color: #eaeaea;
+  background-color: #f2f2f2;
   color: #222;
   border: none;
   border-radius: 10px;
@@ -842,7 +842,6 @@ textarea {
 }
 
 .tabBar > div[data-active=true] {
-  background-color: #fff;
   color: #1D89E8;
 }
 
@@ -883,12 +882,12 @@ textarea {
 }
 
 .container {
-  border-bottom: solid 1px #e2e2e2;
+  border-bottom: solid 1px #f2f2f2;
 }
 
 .container-20 {
   padding: 20px;
-  border-bottom: solid 1px #e2e2e2;
+  border-bottom: solid 1px #f2f2f2;
 }
 
 .list {
@@ -945,7 +944,7 @@ textarea {
 .list > .iconCircle > div {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  background-color: #eaeaea;
+  background-color: #f2f2f2;
   color: #222;
   display: -webkit-box !important;
   display: -ms-flexbox !important;
@@ -1170,7 +1169,7 @@ textarea {
 }
 
 .horizontalOverflow::-webkit-scrollbar-thumb {
-  background-color: #eaeaea;
+  background-color: #f2f2f2;
   border-radius: 10px;
 }
 

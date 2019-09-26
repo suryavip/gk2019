@@ -159,8 +159,8 @@ button:not(.pswp__button) {
 	font-family: $font-family;
 	@extend %h3;
 
-	background-color: $b-2;
-	color: $f-2;
+	background-color: $b-1;
+	color: $f-1;
 	&:not([data-loading=true]) { @extend %feedback; }
 	& > .loading > div { background-color: $b-10; }
 
@@ -283,8 +283,8 @@ input[type=text], input[type=number], input[type=tel], input[type=email], input[
 	padding: 0 15px;
 	min-height: 45px;
 	outline: none;
-	background-color: $b-2;
-	color: $f-2;
+	background-color: $b-1;
+	color: $f-1;
 	border: none;
 	border-radius: 10px;
 	//border-bottom: 1px solid $b-10;
@@ -400,9 +400,7 @@ $actionBarInnerSize: 45px;
 		@extend %h3;
 		@extend %feedback;
 		&[data-active=true] {
-			background-color: $b-0;
 			color: $b-10;
-			@extend %lightFeedback;
 		}
 		& .dotIndicator {
 			position: absolute;
@@ -481,8 +479,8 @@ $listPadding: 20px;
 	width: 35px;
 	& > div {
 		box-sizing: border-box;
-		background-color: $b-2;
-		color: $f-2;
+		background-color: $b-1;
+		color: $f-1;
 		@extend .circleCenter-35;
 		display: flex !important;
 	}
@@ -620,7 +618,7 @@ $listPadding: 20px;
 		height: 10px;
 	}
 	&::-webkit-scrollbar-thumb {
-		background-color: $b-2;
+		background-color: $b-1;
 		border-radius: 10px;
 	}
 	padding-bottom: 5px;

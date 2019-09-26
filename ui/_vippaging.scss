@@ -14,9 +14,9 @@ body {
 		color: $f-0;
 	}
 	& > .head, & > .foot {
-		background-color: $b-1;
-		color: $f-1;
-		box-shadow: $strongShadow;
+		background-color: $b-0;
+		color: $f-0;
+		box-shadow: 0 0 10px 10px $b-0;
 	}
 }
 .vipPaging-floatingButton > div {
