@@ -426,11 +426,10 @@ $actionBarInnerSize: 45px;
 ////////////////////////////////////////////////////////////
 
 .card {
-	
 	@if $themeName == 'light' {
 		background-color: $b-0;
 		color: $f-0;
-		box-shadow: $cardShadow;
+		border: 1px solid $borderColor;
 	}
 	@else {
 		background-color: $b-1;

@@ -16,7 +16,12 @@ body {
 	& > .head, & > .foot {
 		background-color: $b-0;
 		color: $f-0;
-		box-shadow: 0 0 10px 10px $b-0;
+	}
+	& > .head {
+		border-bottom: 1px solid $borderColor;
+	}
+	& > .foot {
+		border-top: 1px solid $borderColor;
 	}
 }
 .vipPaging-floatingButton > div {

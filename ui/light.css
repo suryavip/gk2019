@@ -110,8 +110,14 @@ body {
 .vipPaging-vLayout > .head, .vipPaging-vLayout > .foot {
   background-color: #fff;
   color: #222;
-  -webkit-box-shadow: 0 0 10px 10px #fff;
-          box-shadow: 0 0 10px 10px #fff;
+}
+
+.vipPaging-vLayout > .head {
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.vipPaging-vLayout > .foot {
+  border-top: 1px solid #f2f2f2;
 }
 
 .vipPaging-floatingButton > div {
@@ -875,8 +881,7 @@ textarea {
 .card {
   background-color: #fff;
   color: #222;
-  -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
-          box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  border: 1px solid #f2f2f2;
   border-radius: 10px;
   overflow: hidden;
 }

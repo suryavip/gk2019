@@ -110,8 +110,14 @@ body {
 .vipPaging-vLayout > .head, .vipPaging-vLayout > .foot {
   background-color: #000;
   color: #eee;
-  -webkit-box-shadow: 0 0 10px 10px #000;
-          box-shadow: 0 0 10px 10px #000;
+}
+
+.vipPaging-vLayout > .head {
+  border-bottom: 1px solid #141414;
+}
+
+.vipPaging-vLayout > .foot {
+  border-top: 1px solid #141414;
 }
 
 .vipPaging-floatingButton > div {
