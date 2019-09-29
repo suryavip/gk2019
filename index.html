@@ -102,23 +102,27 @@
 					`lib/font-awesome-${fontawesomeVersion}/css/fontawesome.min.css`,
 				]);
 
-				var firebaseVersion = '6.6.0';
+				var firebaseVersion = '7.0.0';
 				var importFirebase = isLocal ? part => `lib/firebase-${firebaseVersion}/firebase-${part}.min.js` : part => `https://www.gstatic.com/firebasejs/${firebaseVersion}/firebase-${part}.js`;
 				importResources([importFirebase('app')], () => {
 					importResources([
 						importFirebase('auth'),
 						importFirebase('database'),
+						importFirebase('analytics'),
 					], () => {
-						var fbConfig = {
+						var firebaseConfig = {
 							apiKey: "AIzaSyDKoUXXyKeagJmlBhX-n66OS_BR36-aatc",
 							authDomain: "rk2019-rk2019.firebaseapp.com",
 							databaseURL: "https://rk2019-rk2019.firebaseio.com",
 							projectId: "rk2019-rk2019",
 							storageBucket: "rk2019-rk2019.appspot.com",
 							messagingSenderId: "1019825268094",
-							appId: "1:1019825268094:web:dc7a9a071b981368"
+							appId: "1:1019825268094:web:dc7a9a071b981368",
+							measurementId: "G-99FH4VSR4N"
 						};
-						firebase.initializeApp(fbConfig);
+						// Initialize Firebase
+						firebase.initializeApp(firebaseConfig);
+						firebase.analytics();
 						window.dispatchEvent(new Event('firebase-ready'));
 					});
 				});
