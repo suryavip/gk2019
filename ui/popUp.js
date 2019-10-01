@@ -44,16 +44,10 @@ ui.popUp = {
 		}, message, callBack);
 	},
 	prompt: function (message, inputDetails, afterBuild, callBack) {
-		var classAdded = false;
 		var inputAttr = [];
 		for (var i in inputDetails) {
-			if (i === 'class') {
-				classAdded = true;
-				inputDetails[i] += ' underline';
-			}
 			inputAttr.push(`${i}="${inputDetails[i]}"`);
 		}
-		if (!classAdded) inputAttr.push('class="underline"');
 		var id = vipPaging.popUp.show('prompt', (id, p) => {
 			return `<div>
 			<div class="inputLabel">${p.message}</div>

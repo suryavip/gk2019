@@ -144,6 +144,12 @@ $font-family: 'Roboto', sans-serif;
 
 ///////////////////////////////////////////////////
 
+a.underline {
+	text-decoration: underline;
+}
+
+///////////////////////////////////////////////////
+
 button:not(.pswp__button) {
 	&:disabled { opacity: .5; }
 	padding: 0;
@@ -162,7 +168,7 @@ button:not(.pswp__button) {
 	background-color: $b-1;
 	color: $f-1;
 	&:not([data-loading=true]) { @extend %feedback; }
-	& > .loading > div { background-color: $b-10; }
+	& > .loading > div { background-color: $f-1; }
 
 	&.primary {
 		background-color: $b-10;

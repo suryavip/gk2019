@@ -464,6 +464,10 @@ i.fab, i.fal, i.far, i.fas {
   width: 100%;
 }
 
+a.underline {
+  text-decoration: underline;
+}
+
 button:not(.pswp__button) {
   padding: 0;
   line-height: 1.8;
@@ -488,7 +492,7 @@ button:not(.pswp__button):disabled {
 }
 
 button:not(.pswp__button) > .loading > div {
-  background-color: #1D89E8;
+  background-color: #222;
 }
 
 button:not(.pswp__button).primary {
