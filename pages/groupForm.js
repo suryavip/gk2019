@@ -88,7 +88,10 @@ vipPaging.pageTemplate['groupForm'] = {
 			dat.server.request(method, 'group', data, (f) => {
 				ui.float.success(success);
 				if (typeof pg.parameter === 'string') window.history.go(-1);
-				else if (vipHistory.getPrevStack() === 'groups') window.history.go(-1);
+				else if (vipHistory.getPrevStack() === 'groups') {
+					if (typeof f.b.newGroupId === 'string') go('group', f.b.newGroupId, 1);
+					else window.history.go(-1);
+				}
 				else go('groups', null, 1);
 			}, (connectionError) => {
 				ui.btnLoading.off(pg.getEl('btn'));
